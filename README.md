@@ -1,6 +1,6 @@
 # 建築物室內裝修工程管理乙級｜術科學習站
 
-110～114 年術科 A／B／C 卷題庫、參考答案、模擬考與重點筆記。
+105～114 年術科歷屆題庫（105～107 年含 D 卷）、參考答案、模擬考與重點筆記。
 
 網站：https://yuan-5149.github.io/interior-renovation-exam/
 
@@ -27,7 +27,7 @@
 },
 ```
 
-- `y` 年度、`p` 卷別（A／B／C）、`n` 題號、`pts` 配分
+- `y` 年度、`p` 卷別（A／B／C／D）、`n` 題號、`pts` 配分
 - `cat` 題型，可用：`draw` `cns` `survey` `mgmt` `law` `safety` `tool` `masonry` `wood` `ceiling` `finish` `glass` `mep`
 
 ## 注意

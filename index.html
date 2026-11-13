@@ -33,7 +33,7 @@ h3{font-size:16px;margin:4px 0 8px}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
 th{background:#fafaf9}
-.heat td{text-align:center;font-size:12px}
+.heat td{text-align:center;font-size:12px}.heat td:first-child,.heat th:first-child{white-space:nowrap}
 .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 select,input[type=search]{font-family:inherit;font-size:14px;padding:7px 10px;border:1px solid #d6d3d1;border-radius:8px;background:#fff}
 input[type=search]{flex:1;min-width:160px}
@@ -69,7 +69,7 @@ textarea{width:100%;min-height:110px;font-family:inherit;font-size:14px;padding:
 <body>
 <header>
 <h1>建築物室內裝修工程管理 乙級｜術科學習站</h1>
-<div class="sub">110～114 年術科 A／B／C 卷 75 題・參考答案・模擬考・重點筆記</div>
+<div class="sub">105～114 年術科歷屆試題・參考答案・模擬考・重點筆記</div>
 <nav id="nav">
 <button data-v="home" class="on">總覽</button>
 <button data-v="bank">題庫</button>
@@ -86,7 +86,6 @@ textarea{width:100%;min-height:110px;font-family:inherit;font-size:14px;padding:
 <script src="data/questions.js"></script>
 <script src="js/svgs.js"></script>
 <script>
-const IMG={"sym110": "img/sym110.png", "fig111": "img/fig111.png", "fig112": "img/fig112.png", "fig114": "img/fig114.png"};
 const YEARS=[...new Set(Q.map(q=>q.y))].sort();
 const $=s=>document.querySelector(s);
 const key=q=>`${q.y}${q.p}${q.n}`;
@@ -121,16 +120,17 @@ function renderHome(){
   <div class="card"><h2>考試時程</h2>
    <table><tr><th>卷別</th><th>時間</th><th>範圍</th><th>備註</th></tr>
    ${SCHEDULE.map(s=>`<tr><td><span class="paper">${s.p}</span></td><td>${s.t}（1 小時 40 分）</td><td>${s.scope}</td><td>${s.note}</td></tr>`).join("")}</table>
-   <p class="mut" style="margin-bottom:0">每卷 5 題、每題 20 分，平均每題約 20 分鐘。</p>
+   <p class="mut" style="margin-bottom:0">每卷 5 題、每題 20 分，平均每題約 20 分鐘。105～107 年曾有 A／B／C／D 四卷，108 年起改為三卷。</p>
   </div>
-  <div class="card"><h2>五年出題規律</h2>
+  <div class="card"><h2>歷年出題規律</h2>
    <div class="callout">
-   <b>A 卷</b>（圖說、放樣、管理）幾乎固定：①大樣圖或詳圖（畫圖、看圖寫材料名稱、寫流程＋畫大樣）②CNS 符號或代號 ③丈量放樣工具與方法 ④⑤工程管理（進度、品質、成本、數量計算）或室內裝修法規。<br>
+   <b>A 卷</b>（圖說、放樣、管理）幾乎固定：①大樣圖或詳圖（畫圖、看圖寫材料名稱、寫流程＋畫大樣）②CNS 符號（電氣、消防、給排水、代號輪流考）③丈量放樣工具與方法 ④⑤工程管理（進度、品質、成本、數量計算）或室內裝修法規。<br>
    <b>B 卷</b>：①法規（室內裝修管理辦法最常考）②職業安全衛生 ③施工機具或工具 ④⑤泥作、木作施工。<br>
-   <b>C 卷</b>：天花板、輕隔間、塗裝、壁紙、玻璃、金屬、照明、用電規則，多為「列舉注意事項」題型。
+   <b>C 卷</b>：天花板、輕隔間、塗裝、壁紙、窗簾、地毯、玻璃、金屬、照明、用電規則，多為「列舉注意事項」題型。<br>
+   <b>重複出題</b>：物料堆放（職安設施規則第 159 條）、專業技術人員廢止登記、地毯接縫、浮式玻璃運送儲存、抿石子流程、馬賽克大樣、氣動釘槍、竣工查驗、數量計算（油漆面積、紅磚、夾板），十年內都考過 2 次以上。
    </div>
   </div>
-  <div class="grid" style="grid-template-columns:1fr 1fr">
+  <div class="grid" style="grid-template-columns:1fr">
    <div class="card"><h3>題型分布（${tot} 題）</h3>${bars}</div>
    <div class="card"><h3>各年出現次數</h3><table class="heat"><tr><th>類別</th>${years.map(y=>`<th>${y}</th>`).join("")}</tr>${heat}</table></div>
   </div>
@@ -142,7 +142,7 @@ function renderHome(){
 function qCard(q,opt={}){
   const k=key(q),s=ST[k]||"";
   const c=CATS[q.cat];
-  const fig=q.img?`<img src="${IMG[q.img]}" alt="${q.y}年${q.p}卷第${q.n}題附圖">`:"";
+  const fig=q.img?`<img src="img/${q.img}.png" alt="${q.y}年${q.p}卷第${q.n}題附圖">`:"";
   const svg=q.svg?`<div class="svgbox"><div class="mut">示意大樣圖（Claude 繪製，僅供參考）</div>${SVGS[q.svg]}</div>`:"";
   return `<div class="card q s-${s}" id="q-${k}">
    <div class="meta"><span class="paper">${q.p}</span><b style="color:var(--ink)">${q.y} 年 ${q.p} 卷 第 ${q.n} 題</b><span class="pill" style="background:${c.c}">${c.n}</span>${q.calc?'<span class="pill" style="background:#0f766e">計算</span>':""}${q.warn?'<span class="pill" style="background:#c2410c">⚠ 對照條文</span>':""}<span>${q.pts} 分</span></div>
@@ -168,7 +168,7 @@ function mark(k,v){
 function renderBankShell(){
   $("#v-bank").innerHTML=`<div class="card"><div class="filters">
    <select id="fY"><option value="">全部年度</option>${YEARS.map(y=>`<option>${y}</option>`).join("")}</select>
-   <select id="fP"><option value="">全部卷別</option><option value="A">A 卷</option><option value="B">B 卷</option><option value="C">C 卷</option></select>
+   <select id="fP"><option value="">全部卷別</option><option value="A">A 卷</option><option value="B">B 卷</option><option value="C">C 卷</option><option value="D">D 卷（105～107）</option></select>
    <select id="fC"><option value="">全部類別</option>${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join("")}</select>
    <select id="fS"><option value="">全部熟練度</option><option value="g">熟練</option><option value="m">待加強</option><option value="b">不會</option><option value="n">未標記</option></select>
    <input type="search" id="fQ" placeholder="搜尋關鍵字，例如：天花板、白華、CNS">
@@ -193,7 +193,7 @@ function renderMockSetup(){
   $("#v-mock").innerHTML=`<div class="card"><h2>模擬考</h2>
    <p>從五年題庫中，依卷別隨機抽 5 題，限時 1 小時 40 分。建議先把答案寫在紙上或下方的作答框，交卷後再對照參考答案，並自行標記熟練度。</p>
    <div class="filters">
-    <select id="mP"><option value="A">A 卷：圖說、放樣、工程管理</option><option value="B">B 卷：法規、安全、機具、施工</option><option value="C">C 卷：相關施工作業</option></select>
+    <select id="mP"><option value="A">A 卷：圖說、放樣、工程管理</option><option value="B">B 卷：法規、安全、機具、施工</option><option value="C">C 卷：相關施工作業</option><option value="D">D 卷：安全、法規、管理（105～107 舊制）</option></select>
     <select id="mT"><option value="100">限時 100 分鐘（正式）</option><option value="50">限時 50 分鐘（加速練習）</option><option value="0">不計時</option></select>
     <label class="mut"><input type="checkbox" id="mW" checked> 優先抽「不會／待加強」的題目</label>
     <button class="btn pri" onclick="startMock()">開始</button>
