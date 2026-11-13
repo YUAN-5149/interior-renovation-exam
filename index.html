@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>室內裝修工程管理乙級｜術科學習站</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1c1917;--mut:#78716c;--line:#e7e5e4;--acc:#b45309;--acc2:#fef3c7;--ok:#15803d;--mid:#ca8a04;--bad:#b91c1c}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header{background:#292524;color:#fafaf9;padding:18px 20px 0}
+header h1{margin:0;font-size:20px;letter-spacing:.5px}
+header .sub{color:#d6d3d1;font-size:13px;margin:2px 0 12px}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:none;border:0;color:#d6d3d1;padding:10px 14px;font-size:15px;cursor:pointer;border-radius:8px 8px 0 0;font-family:inherit}
+nav button.on{background:var(--bg);color:var(--ink);font-weight:700}
+main{max-width:1000px;margin:0 auto;padding:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+h2{font-size:18px;margin:6px 0 12px}
+h3{font-size:16px;margin:4px 0 8px}
+.grid{display:grid;gap:12px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat{font-size:28px;font-weight:800}
+.mut{color:var(--mut);font-size:13px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;color:#fff;margin-right:4px;white-space:nowrap}
+.paper{display:inline-block;width:26px;height:26px;border-radius:6px;background:#292524;color:#fff;text-align:center;line-height:26px;font-weight:800;margin-right:6px}
+.bar{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}
+.bar .lab{width:190px;flex-shrink:0}
+.bar .trk{flex:1;background:#f5f5f4;border-radius:6px;height:18px;overflow:hidden}
+.bar .fill{height:100%;border-radius:6px}
+.bar .v{width:28px;text-align:right;font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#fafaf9}
+.heat td{text-align:center;font-size:12px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select,input[type=search]{font-family:inherit;font-size:14px;padding:7px 10px;border:1px solid #d6d3d1;border-radius:8px;background:#fff}
+input[type=search]{flex:1;min-width:160px}
+.btn{font-family:inherit;font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid #d6d3d1;background:#fff;cursor:pointer}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+.btn:hover{filter:brightness(.96)}
+.q{border-left:4px solid var(--line)}
+.q .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--mut);margin-bottom:6px}
+.q .txt{font-size:15px}
+.q img{max-width:100%;max-height:460px;object-fit:contain;display:block;border:1px solid var(--line);border-radius:8px;margin:10px 0;background:#fff}
+.ans{display:none;margin-top:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px}
+.ans.show{display:block}
+.ans ul{margin:4px 0;padding-left:20px}
+.ans li{margin:3px 0}
+.tip{margin-top:8px;font-size:13px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:8px;padding:7px 10px}
+.warn{font-size:12px;color:#9a3412;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:5px 9px;margin-top:8px}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mk{font-size:13px;padding:5px 10px;border-radius:99px;border:1px solid #d6d3d1;background:#fff;cursor:pointer;font-family:inherit}
+.mk.on.g{background:var(--ok);color:#fff;border-color:var(--ok)}
+.mk.on.m{background:var(--mid);color:#fff;border-color:var(--mid)}
+.mk.on.b{background:var(--bad);color:#fff;border-color:var(--bad)}
+.q.s-g{border-left-color:var(--ok)}.q.s-m{border-left-color:var(--mid)}.q.s-b{border-left-color:var(--bad)}
+textarea{width:100%;min-height:110px;font-family:inherit;font-size:14px;padding:8px;border:1px solid #d6d3d1;border-radius:8px;margin-top:8px}
+.timer{position:sticky;top:0;z-index:5;background:#292524;color:#fff;border-radius:10px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.timer .t{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.svgbox{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;margin-top:8px}
+.svgbox svg{width:100%;height:auto}
+.hide{display:none}
+.callout{background:var(--acc2);border:1px solid #fcd34d;border-radius:10px;padding:10px 14px;font-size:14px}
+@media(max-width:600px){.bar .lab{width:120px}main{padding:12px}}
+</style>
+</head>
+<body>
+<header>
+<h1>建築物室內裝修工程管理 乙級｜術科學習站</h1>
+<div class="sub">110～114 年術科 A／B／C 卷 75 題・參考答案・模擬考・重點筆記</div>
+<nav id="nav">
+<button data-v="home" class="on">總覽</button>
+<button data-v="bank">題庫</button>
+<button data-v="mock">模擬考</button>
+<button data-v="notes">重點筆記</button>
+</nav>
+</header>
+<main>
+<section id="v-home"></section>
+<section id="v-bank" class="hide"></section>
+<section id="v-mock" class="hide"></section>
+<section id="v-notes" class="hide"></section>
+</main>
+<script src="data/questions.js"></script>
+<script src="js/svgs.js"></script>
+<script>
+const IMG={"sym110": "img/sym110.png", "fig111": "img/fig111.png", "fig112": "img/fig112.png", "fig114": "img/fig114.png"};
+const YEARS=[...new Set(Q.map(q=>q.y))].sort();
+const $=s=>document.querySelector(s);
+const key=q=>`${q.y}${q.p}${q.n}`;
+let ST={};
+try{ST=JSON.parse(localStorage.getItem("ic-mark")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("ic-mark",JSON.stringify(ST))}catch(e){}}
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>show(b.dataset.v));
+function show(v){
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  ["home","bank","mock","notes"].forEach(x=>$("#v-"+x).classList.toggle("hide",x!==v));
+  if(v==="home")renderHome();
+  window.scrollTo(0,0);
+}
+
+// ---------- 總覽 ----------
+function renderHome(){
+  const tot=Q.length,g=Q.filter(q=>ST[key(q)]==="g").length,m=Q.filter(q=>ST[key(q)]==="m").length,b=Q.filter(q=>ST[key(q)]==="b").length;
+  const cnt={};Q.forEach(q=>cnt[q.cat]=(cnt[q.cat]||0)+1);
+  const mx=Math.max(...Object.values(cnt));
+  const bars=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar"><span class="lab">${CATS[k].n}</span><span class="trk"><span class="fill" style="display:block;width:${v/mx*100}%;background:${CATS[k].c}"></span></span><span class="v">${v}</span></div>`).join("");
+  const years=YEARS;
+  const heat=Object.keys(CATS).map(k=>`<tr><td style="text-align:left">${CATS[k].n}</td>${years.map(y=>{const n=Q.filter(q=>q.y===y&&q.cat===k).length;return `<td style="background:${n?CATS[k].c+(n>1?"55":"2a"):"#fff"}">${n||""}</td>`}).join("")}</tr>`).join("");
+  $("#v-home").innerHTML=`
+  <div class="grid g4">
+   <div class="card"><div class="mut">題庫題數</div><div class="stat">${tot}</div><div class="mut">${YEARS[0]}～${YEARS[YEARS.length-1]} 年術科</div></div>
+   <div class="card"><div class="mut">已熟練</div><div class="stat" style="color:var(--ok)">${g}</div></div>
+   <div class="card"><div class="mut">待加強</div><div class="stat" style="color:var(--mid)">${m}</div></div>
+   <div class="card"><div class="mut">不會</div><div class="stat" style="color:var(--bad)">${b}</div><div class="mut">尚未標記：${tot-g-m-b}</div></div>
+  </div>
+  <div class="card"><h2>考試時程</h2>
+   <table><tr><th>卷別</th><th>時間</th><th>範圍</th><th>備註</th></tr>
+   ${SCHEDULE.map(s=>`<tr><td><span class="paper">${s.p}</span></td><td>${s.t}（1 小時 40 分）</td><td>${s.scope}</td><td>${s.note}</td></tr>`).join("")}</table>
+   <p class="mut" style="margin-bottom:0">每卷 5 題、每題 20 分，平均每題約 20 分鐘。</p>
+  </div>
+  <div class="card"><h2>五年出題規律</h2>
+   <div class="callout">
+   <b>A 卷</b>（圖說、放樣、管理）幾乎固定：①大樣圖或詳圖（畫圖、看圖寫材料名稱、寫流程＋畫大樣）②CNS 符號或代號 ③丈量放樣工具與方法 ④⑤工程管理（進度、品質、成本、數量計算）或室內裝修法規。<br>
+   <b>B 卷</b>：①法規（室內裝修管理辦法最常考）②職業安全衛生 ③施工機具或工具 ④⑤泥作、木作施工。<br>
+   <b>C 卷</b>：天花板、輕隔間、塗裝、壁紙、玻璃、金屬、照明、用電規則，多為「列舉注意事項」題型。
+   </div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+   <div class="card"><h3>題型分布（${tot} 題）</h3>${bars}</div>
+   <div class="card"><h3>各年出現次數</h3><table class="heat"><tr><th>類別</th>${years.map(y=>`<th>${y}</th>`).join("")}</tr>${heat}</table></div>
+  </div>
+  <div class="card mut" style="font-size:13px">參考答案為 Claude 依考題整理的學習用版本，並非官方解答。標示「⚠」的法規題，請再對照全國法規資料庫的最新條文；熟練度標記只會存在你這台裝置的瀏覽器中。</div>`;
+  if(innerWidth<760)document.querySelectorAll("#v-home .grid[style]").forEach(e=>e.style.gridTemplateColumns="1fr");
+}
+
+// ---------- 題目卡片 ----------
+function qCard(q,opt={}){
+  const k=key(q),s=ST[k]||"";
+  const c=CATS[q.cat];
+  const fig=q.img?`<img src="${IMG[q.img]}" alt="${q.y}年${q.p}卷第${q.n}題附圖">`:"";
+  const svg=q.svg?`<div class="svgbox"><div class="mut">示意大樣圖（Claude 繪製，僅供參考）</div>${SVGS[q.svg]}</div>`:"";
+  return `<div class="card q s-${s}" id="q-${k}">
+   <div class="meta"><span class="paper">${q.p}</span><b style="color:var(--ink)">${q.y} 年 ${q.p} 卷 第 ${q.n} 題</b><span class="pill" style="background:${c.c}">${c.n}</span>${q.calc?'<span class="pill" style="background:#0f766e">計算</span>':""}${q.warn?'<span class="pill" style="background:#c2410c">⚠ 對照條文</span>':""}<span>${q.pts} 分</span></div>
+   <div class="txt">${esc(q.q)}</div>${fig}
+   ${opt.write?`<textarea placeholder="先自己寫寫看，再對答案…"></textarea>`:""}
+   <div class="acts">
+    <button class="btn pri" onclick="toggleAns('${k}',this)">看參考答案</button>
+    <button class="mk g ${s==="g"?"on":""}" onclick="mark('${k}','g')">熟練</button>
+    <button class="mk m ${s==="m"?"on":""}" onclick="mark('${k}','m')">待加強</button>
+    <button class="mk b ${s==="b"?"on":""}" onclick="mark('${k}','b')">不會</button>
+   </div>
+   <div class="ans" id="a-${k}"><b>參考答案</b><ul>${q.a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${svg}${q.tip?`<div class="tip">💡 ${esc(q.tip)}</div>`:""}${q.warn?`<div class="warn">⚠ 法規條文可能修正，請對照全國法規資料庫最新版本。</div>`:""}</div>
+  </div>`;
+}
+function toggleAns(k,b){const a=$("#a-"+k);a.classList.toggle("show");b.textContent=a.classList.contains("show")?"收起答案":"看參考答案"}
+function mark(k,v){
+  ST[k]=ST[k]===v?"":v;save();
+  const el=$("#q-"+k);el.className=`card q s-${ST[k]}`;
+  el.querySelectorAll(".mk").forEach(b=>b.classList.toggle("on",b.classList.contains(ST[k])));
+}
+
+// ---------- 題庫 ----------
+function renderBankShell(){
+  $("#v-bank").innerHTML=`<div class="card"><div class="filters">
+   <select id="fY"><option value="">全部年度</option>${YEARS.map(y=>`<option>${y}</option>`).join("")}</select>
+   <select id="fP"><option value="">全部卷別</option><option value="A">A 卷</option><option value="B">B 卷</option><option value="C">C 卷</option></select>
+   <select id="fC"><option value="">全部類別</option>${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join("")}</select>
+   <select id="fS"><option value="">全部熟練度</option><option value="g">熟練</option><option value="m">待加強</option><option value="b">不會</option><option value="n">未標記</option></select>
+   <input type="search" id="fQ" placeholder="搜尋關鍵字，例如：天花板、白華、CNS">
+   <button class="btn" id="fAll">展開全部答案</button>
+  </div><div class="mut" id="fN" style="margin-top:8px"></div></div><div id="list"></div>`;
+  ["fY","fP","fC","fS"].forEach(i=>$("#"+i).onchange=renderList);
+  $("#fQ").oninput=renderList;
+  $("#fAll").onclick=()=>{const open=$("#fAll").textContent.startsWith("展開");document.querySelectorAll("#list .ans").forEach(a=>a.classList.toggle("show",open));document.querySelectorAll("#list .btn.pri").forEach(b=>b.textContent=open?"收起答案":"看參考答案");$("#fAll").textContent=open?"收起全部答案":"展開全部答案"};
+  renderList();
+}
+function renderList(){
+  const y=$("#fY").value,p=$("#fP").value,c=$("#fC").value,s=$("#fS").value,t=$("#fQ").value.trim();
+  const r=Q.filter(q=>(!y||q.y==y)&&(!p||q.p===p)&&(!c||q.cat===c)&&(!s||(s==="n"?!ST[key(q)]:ST[key(q)]===s))&&(!t||(q.q+q.a.join("")).includes(t)));
+  $("#fN").textContent=`符合 ${r.length} 題`;
+  $("#list").innerHTML=r.map(q=>qCard(q)).join("")||`<div class="card mut">沒有符合條件的題目。</div>`;
+}
+
+// ---------- 模擬考 ----------
+let timerId=null;
+function renderMockSetup(){
+  clearInterval(timerId);
+  $("#v-mock").innerHTML=`<div class="card"><h2>模擬考</h2>
+   <p>從五年題庫中，依卷別隨機抽 5 題，限時 1 小時 40 分。建議先把答案寫在紙上或下方的作答框，交卷後再對照參考答案，並自行標記熟練度。</p>
+   <div class="filters">
+    <select id="mP"><option value="A">A 卷：圖說、放樣、工程管理</option><option value="B">B 卷：法規、安全、機具、施工</option><option value="C">C 卷：相關施工作業</option></select>
+    <select id="mT"><option value="100">限時 100 分鐘（正式）</option><option value="50">限時 50 分鐘（加速練習）</option><option value="0">不計時</option></select>
+    <label class="mut"><input type="checkbox" id="mW" checked> 優先抽「不會／待加強」的題目</label>
+    <button class="btn pri" onclick="startMock()">開始</button>
+   </div></div>`;
+}
+function startMock(){
+  const p=$("#mP").value,mins=+$("#mT").value,weak=$("#mW").checked;
+  let pool=Q.filter(q=>q.p===p).sort(()=>Math.random()-.5);
+  if(weak)pool.sort((a,b)=>(["b","m"].includes(ST[key(b)])?1:0)-(["b","m"].includes(ST[key(a)])?1:0));
+  // 依題號位置各抽一題，貼近正式卷結構
+  const pick=[];for(let n=1;n<=5;n++){const c=pool.find(q=>q.n===n&&!pick.includes(q));if(c)pick.push(c)}
+  let left=mins*60;
+  $("#v-mock").innerHTML=`<div class="timer"><span>${p} 卷模擬考・5 題</span><span class="t" id="tm">${mins?fmt(left):"不計時"}</span><span><button class="btn" onclick="finishMock()">交卷</button></span></div>
+   <div id="mockQ">${pick.map(q=>qCard(q,{write:true})).join("")}</div>
+   <div class="card" style="text-align:center"><button class="btn pri" onclick="finishMock()">交卷並顯示全部答案</button> <button class="btn" onclick="renderMockSetup()">重新出題</button></div>`;
+  document.querySelectorAll("#mockQ .btn.pri").forEach(b=>b.style.display="none");
+  if(mins){timerId=setInterval(()=>{left--;$("#tm").textContent=fmt(Math.max(left,0));if(left<=600)$("#tm").style.color="#fca5a5";if(left<=0)finishMock()},1000)}
+}
+function fmt(s){return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+function finishMock(){
+  clearInterval(timerId);
+  if($("#tm"))$("#tm").textContent="已交卷";
+  document.querySelectorAll("#mockQ .ans").forEach(a=>a.classList.add("show"));
+  document.querySelectorAll("#mockQ .btn.pri").forEach(b=>{b.style.display="";b.textContent="收起答案"});
+}
+
+// ---------- 重點筆記 ----------
+function renderNotes(){
+  $("#v-notes").innerHTML=`
+  <div class="card"><h2>地坪工法比較（粉刷打底 → 貼磚）</h2>
+  <p class="mut">整理自你的手寫筆記。※ 地面要貼磁磚時，先做「磁磚分割計畫」。</p>
+  <table><tr><th>階段</th><th>工序</th><th>濕式・硬底</th><th>磁磚・濕式・軟底</th><th>大理石／石英磚・乾式・軟底</th></tr>
+  <tr><td rowspan="8"><b>粉刷打底</b></td><td>清理</td><td>清除雜質、濕潤</td><td>同左</td><td>同左</td></tr>
+  <tr><td>放樣</td><td>雷射儀、標灰誌</td><td>雷射儀</td><td>雷射儀</td></tr>
+  <tr><td>刷漿</td><td>純水泥漿，加強黏著</td><td>同左</td><td>同左</td></tr>
+  <tr><td>拌漿</td><td>1:3 水泥砂漿<br>※防水區：1:2 水泥砂漿＋防水劑</td><td>1:3 水泥砂漿</td><td>1:3 乾拌水泥砂（半乾濕），以 1m² 為單位</td></tr>
+  <tr><td>鏝平</td><td>下料鏝平（粉光鏝刀、木鏝刀）</td><td>下料鏝平</td><td>下料鏝平</td></tr>
+  <tr><td>修平</td><td>刮尺、鏝刀、鋁條整平尺</td><td>刮尺、鏝刀、水平儀（？）</td><td>刮尺、鏝刀、壓實（？）</td></tr>
+  <tr><td>養護</td><td>48hr 後粉光或貼面材<br>※防水區：陰乾養護 7 日</td><td>✕（免養護）</td><td>✕</td></tr>
+  <tr><td>防水</td><td>彈泥刷塗三度</td><td>同左</td><td>同左</td></tr>
+  <tr><td rowspan="8"><b>貼磚</b></td><td>放樣</td><td>定線（要先整平）</td><td>同左</td><td>同左</td></tr>
+  <tr><td>黏著劑／益膠泥</td><td>塗打底面＋磚背（鋸齒鏝刀）</td><td>打底面＋磚背</td><td>只塗磚背</td></tr>
+  <tr><td>土膏水</td><td>✕</td><td>✕</td><td><b>澆在打底面</b></td></tr>
+  <tr><td>貼磚</td><td>調整間縫</td><td>同左</td><td>逐片貼，磚縫 1.5～2mm</td></tr>
+  <tr><td>清洗</td><td>清潔表面</td><td>同左</td><td>同左</td></tr>
+  <tr><td>養護</td><td>養護 48hr</td><td>48hr</td><td>48hr</td></tr>
+  <tr><td>填縫</td><td>磁磚填縫劑（海綿鏝刀）</td><td>同左</td><td>同左</td></tr>
+  <tr><td>保護</td><td>鋪保護材</td><td>同左</td><td>同左</td></tr></table>
+  <p class="mut">（？）為手寫筆記中較難辨識的字。</p></div>
+
+  <div class="card"><h2>天花板構件速記</h2>
+  <table><tr><th>位置</th><th>輕鋼架明架</th><th>輕鋼架暗架</th><th>木作天花板</th></tr>
+  <tr><td>結構固定</td><td>擊釘＋吊筋固定片</td><td>擊釘或膨脹螺栓＋固定角片</td><td>擊釘／鋼釘＋固定木塊</td></tr>
+  <tr><td>吊筋</td><td>鍍鋅鐵線（附調整彈簧片）</td><td>3 分全牙螺桿＋吊筋調整器</td><td>角材吊筋 @約 90cm</td></tr>
+  <tr><td>骨架</td><td>主 T＋副 T（外露）</td><td>C 型槽鐵主骨＋暗架副骨（隱藏）</td><td>主、副角材 @30～45cm</td></tr>
+  <tr><td>板材固定</td><td>擱置在 T-bar 上</td><td>自攻螺絲鎖固</td><td>釘接（企口板用 F 型暗釘）</td></tr>
+  <tr><td>板材</td><td>礦纖板、矽酸鈣板</td><td>矽酸鈣板、石膏板</td><td>矽酸鈣板、企口木板</td></tr>
+  <tr><td>收邊</td><td colspan="2">L 型收邊條（邊料）</td><td>線板收邊</td></tr></table></div>
+
+  <div class="card"><h2>CNS 常用代號速記</h2>
+  <div class="grid g3">
+   <div><h3>文字簡寫</h3><table>
+   ${[["W","寬度"],["H","高度"],["L","長度"],["D","深度"],["D, d","直徑"],["R","半徑"],["@","間距"],["C.C","中心距"],["HL","水平線"],["VL","垂直線"],["FL","樓板線"],["GL","地盤線"],["CL","天花板線"],["BM","水準點"]].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join("")}</table></div>
+   <div><h3>圖號代號</h3><table>
+   ${[["A","建築圖"],["S","結構圖"],["E","電氣設備圖"],["P","給排水及衛生設備圖"],["M","空調及機械設備圖"],["F","消防設備圖"],["G","瓦斯設備圖"],["W","污水處理設施圖"],["L","景觀圖（待確認）"],["I","室內裝修圖"]].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join("")}</table></div>
+   <div><h3>線條</h3><table>
+   ${[["實線","可見輪廓線"],["虛線","隱蔽線、配管"],["單點線","中心線、建築線"],["雙點線","地界線"]].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join("")}</table>
+   <p class="mut">線條用途請再對照 CNS 11567 原文。</p></div>
+  </div></div>
+
+  <div class="card"><h2>進度管理公式（要徑法 CPM）</h2>
+  <table><tr><th>名稱</th><th>計算</th><th>說明</th></tr>
+  <tr><td>ES 最早開始</td><td>前置作業 EF 的最大值</td><td>順推（由起點往後算）</td></tr>
+  <tr><td>EF 最早完成</td><td>ES＋工期</td><td></td></tr>
+  <tr><td>LF 最遲完成</td><td>後續作業 LS 的最小值</td><td>逆推（由終點往前算）</td></tr>
+  <tr><td>LS 最遲開始</td><td>LF－工期</td><td></td></tr>
+  <tr><td>TF 總浮時</td><td>LS－ES＝LF－EF</td><td>TF＝0 的作業連成「要徑」</td></tr></table></div>
+
+  <div class="card"><h2>單位換算</h2>
+  <table><tr><td>1 坪</td><td>3.3058 m²</td><td>1 m²</td><td>0.3025 坪</td></tr>
+  <tr><td>1 呎</td><td>30.48 cm</td><td>1 吋</td><td>2.54 cm</td></tr>
+  <tr><td>1 台尺</td><td>30.3 cm</td><td>1 分（板厚）</td><td>約 3mm（4 分板約 12mm）</td></tr>
+  <tr><td>4×8 呎板</td><td>121.92×243.84cm ≈ 2.97 m²</td><td>3×6 呎板</td><td>91.44×182.88cm ≈ 1.67 m²</td></tr></table></div>`;
+}
+
+renderHome();renderBankShell();renderMockSetup();renderNotes();
+</script>
+</body>
+</html>
