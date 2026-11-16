@@ -64,16 +64,24 @@ textarea{width:100%;min-height:110px;font-family:inherit;font-size:14px;padding:
 .hide{display:none}
 .callout{background:var(--acc2);border:1px solid #fcd34d;border-radius:10px;padding:10px 14px;font-size:14px}
 @media(max-width:600px){.bar .lab{width:120px}main{padding:12px}}
+.wopts{display:grid;gap:6px;margin-top:10px}
+.wopt{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:14px}
+.wopt:hover{background:#fafaf9}
+.wopt input{margin-top:4px}
+.wopt.right{background:#dcfce7;border-color:#86efac}
+.wopt.wrongpick{background:#fee2e2;border-color:#fca5a5}
+.wres{margin-left:6px;font-size:14px}
 </style>
 </head>
 <body>
 <header>
 <h1>建築物室內裝修工程管理 乙級｜術科學習站</h1>
-<div class="sub">105～114 年術科歷屆試題・參考答案・模擬考・重點筆記</div>
+<div class="sub">術科 105～114 年・學科 105～115 年歷屆試題・參考答案・模擬考・考試策略</div>
 <nav id="nav">
 <button data-v="home" class="on">總覽</button>
-<button data-v="bank">題庫</button>
-<button data-v="mock">模擬考</button>
+<button data-v="bank">術科題庫</button>
+<button data-v="mock">術科模擬考</button>
+<button data-v="written">學科</button>
 <button data-v="notes">重點筆記</button>
 </nav>
 </header>
@@ -81,10 +89,13 @@ textarea{width:100%;min-height:110px;font-family:inherit;font-size:14px;padding:
 <section id="v-home"></section>
 <section id="v-bank" class="hide"></section>
 <section id="v-mock" class="hide"></section>
+<section id="v-written" class="hide"></section>
 <section id="v-notes" class="hide"></section>
 </main>
 <script src="data/questions.js?v=2026111302"></script>
 <script src="js/svgs.js?v=2026111302"></script>
+<script src="data/written.js?v=2026111601"></script>
+<script src="js/written-ui.js?v=2026111601"></script>
 <script>
 const YEARS=[...new Set(Q.map(q=>q.y))].sort();
 const $=s=>document.querySelector(s);
@@ -97,8 +108,9 @@ const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[
 document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>show(b.dataset.v));
 function show(v){
   document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
-  ["home","bank","mock","notes"].forEach(x=>$("#v-"+x).classList.toggle("hide",x!==v));
+  ["home","bank","mock","written","notes"].forEach(x=>$("#v-"+x).classList.toggle("hide",x!==v));
   if(v==="home")renderHome();
+  if(v==="written")renderWritten();
   window.scrollTo(0,0);
 }
 
