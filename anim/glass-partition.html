@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>強化玻璃隔間施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：強化玻璃隔間 9 步驟施工順序 3D 互動動畫，含天地槽、底墊塊、吸盤吊入、透明矽利康對接。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'辦公室要做一道強化玻璃隔間（無框，玻璃以天槽、地槽固定）。',
+   tip:'玻璃是學科最常出現的主題之一（80 多題）。安裝項目可對照「玻璃安裝施作項目」那支注意事項動畫；本動畫步驟依一般施工實務整理，請對照課本確認。'},
+  {t:'放樣', d:'在地面彈出隔間線，並以雷射投到天花板，上下對位。', tip:'天槽與地槽一定要在同一垂直面上。'},
+  {t:'安裝天槽・地槽', d:'以螺絲或擊釘固定天槽（上槽）與地槽（下槽）。', tip:'天槽較深、地槽較淺，玻璃才放得進去。'},
+  {t:'放置底墊塊', d:'在地槽內放置底墊塊（約玻璃寬 1/4 處）。', tip:'玻璃不可直接壓在金屬槽上。'},
+  {t:'吸盤搬運・吊入玻璃', d:'以吸盤搬運強化玻璃，先插入天槽，再落入地槽。', tip:'強化玻璃不可現場切割、鑽孔，尺寸要事先確認。'},
+  {t:'校正垂直・間隙', d:'校正玻璃垂直，玻璃與玻璃間留均勻間隙。', tip:'間隙要一致，對接縫才會整齊。'},
+  {t:'對接縫打透明矽利康', d:'玻璃與玻璃之間的對接縫，打透明矽利康。', tip:'矽利康要飽滿連續，表面刮平。'},
+  {t:'槽內固定', d:'天槽、地槽內玻璃兩側塞入填縫條，或打矽利康固定。', tip:'讓玻璃在槽內不會晃動。'},
+  {t:'防撞標示', d:'在視線高度貼防撞警示標示。', tip:'透明玻璃隔間最容易被人誤撞。'},
+  {t:'清潔', d:'清潔玻璃，做好成品保護。', tip:'用中性清潔劑與軟布，由上而下清洗。'},
+];
+
+createAnim({
+  title: '強化玻璃隔間施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.45,0.3,0.84], dist:6.0, target:[0,1.3,0]},
+    3:  {dir:[0.5,0.45,0.73], dist:2.2, target:[-0.9,0.1,0]},
+    6:  {dir:[0.45,0.2,0.87], dist:2.6, target:[-0.4,1.3,0]},
+  },
+  note: '槽與間隙尺寸有放大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.8, X1=1.8, HC=2.6, PW=1.2, gap=0.006, GT=0.012;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), ghost: mat('#ffffff',{transparent:true, opacity:.14, depthWrite:false}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), alu: mat('#6b7280',{metalness:.6, roughness:.3}),
+      block: mat('#111827'), glass: mat('#bae6fd',{transparent:true, opacity:.32, roughness:.05, depthWrite:false}), edge: mat('#7dd3fc'),
+      cup: mat('#1f2937'), sil: mat('#e0f2fe',{transparent:true, opacity:.8}), strip: mat('#1f2937'), sticker: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.4}),
+      cloth: mat('#facc15'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.2,-0.15,-1.4,2.2,0,1.4,M.slab));
+    fixed(span(-2.2,0,-1.4,X0,HC,1.4,M.wall));
+    const ce=span(-2.2,HC,-1.4,2.2,HC+.15,1.4,M.ghost,{shadow:false}); ce.children[0].material.opacity=.45; fixed(ce);
+    const PX=[X0,X0+PW,X0+2*PW,X1];
+
+    add(1, group(span(X0,.001,-.003,X1,.004,.003,M.laser,NE), span(X0,HC-.004,-.003,X1,HC-.001,.003,M.laser,NE), span(0.5-.002,0,-.002,0.5+.002,HC,.002,M.laser,NE)),{until:2, drop:0, glow:false});
+    add(1, label('地面、天花上下對位',0,2.2,0.3,1.3),{until:1, drop:0, glow:false});
+    add(2, group(span(X0,0,-0.03,X1,0.04,-0.022,M.alu), span(X0,0,0.022,X1,0.04,0.03,M.alu), span(X0,0,-0.03,X1,0.005,0.03,M.alu)),{drop:.3});
+    add(2, group(span(X0,HC-0.08,-0.03,X1,HC,-0.022,M.alu), span(X0,HC-0.08,0.022,X1,HC,0.03,M.alu), span(X0,HC-0.005,-0.03,X1,HC,0.03,M.alu)),{delay:.3, drop:-.3});
+    add(2, label('天槽較深・地槽較淺',0,2.2,0.3,1.3),{until:2, drop:0, glow:false});
+    { let k=0; for (let i=0;i<3;i++){ const a=PX[i], b=PX[i+1]; [a+(b-a)/4, b-(b-a)/4].forEach(x=> add(3, span(x-.04,.005,-GT/2-.002,x+.04,.015,GT/2+.002,M.block),{delay:(k++)*.1, drop:.1})); } }
+    for (let i=0;i<3;i++){ const a=PX[i]+(i?gap/2:0), b=PX[i+1]-(i<2?gap/2:0);
+      add(5, group(span(a,.015,-GT/2,b,HC-.03,GT/2,M.glass,{shadow:false}), span(a,.015,-GT/2,a+.003,HC-.03,GT/2,M.edge,NE), span(b-.003,.015,-GT/2,b,HC-.03,GT/2,M.edge,NE)),{delay:i*.5, drop:-.25}); }
+    add(4, group(span(-0.65,1.2,GT/2,-0.45,1.4,0.08,M.cup), span(-0.35,1.2,GT/2,-0.15,1.4,0.08,M.cup), span(-0.6,1.4,0.04,-0.2,1.44,0.08,M.cup)),{until:5, drop:-.2});
+    for (let i=0;i<3;i++){ const a=PX[i]+(i?gap/2:0), b=PX[i+1]-(i<2?gap/2:0); add(4, span(a,.015,-GT/2,b,HC-.03,GT/2,M.glass,{shadow:false}),{delay:.2, drop:-.4, until:4}); }
+    add(4, label('先插入天槽 → 再落入地槽',0,2.2,0.3,1.6),{until:4, drop:0, glow:false});
+    add(6, span(PX[1]-.002,0.1,GT/2+.004,PX[1]+.002,HC-0.1,GT/2+.006,M.laser,NE),{until:6, drop:0, glow:false});
+    add(6, label('垂直・間隙均勻',PX[1],2.2,0.2,1.0),{until:6, drop:0, glow:false});
+    [PX[1],PX[2]].forEach((x,i)=> add(7, span(x-gap/2,.04,-GT/2,x+gap/2,HC-.08,GT/2,M.sil),{delay:i*.3, drop:0}));
+    add(7, label('對接縫打透明矽利康',0,2.2,0.3,1.3),{until:7, drop:0, glow:false});
+    add(8, group(span(X0,.005,GT/2,X1,.035,0.022,M.strip), span(X0,.005,-0.022,X1,.035,-GT/2,M.strip), span(X0,HC-.075,GT/2,X1,HC-.005,0.022,M.strip), span(X0,HC-.075,-0.022,X1,HC-.005,-GT/2,M.strip)),{drop:0});
+    add(8, label('槽內兩側塞填縫條固定',0,0.45,0.3,1.4),{until:8, drop:0, glow:false});
+    for (let i=0;i<3;i++){ const m=(PX[i]+PX[i+1])/2; add(9, span(m-0.2,1.45,GT/2+.001,m+0.2,1.5,GT/2+.003,M.sticker,NE),{delay:i*.15, drop:0, glow:false}); }
+    add(10, span(-0.4,1.9,GT/2+.003,-0.2,2.0,GT/2+.05,M.cloth),{until:10, drop:-.2});
+    add(10, label('清潔・成品保護',0,2.3,0.3,1.0),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

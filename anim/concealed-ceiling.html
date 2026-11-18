@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>輕鋼架暗架天花板施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：輕鋼架暗架天花板（矽酸鈣板）10 步驟施工順序 3D 互動動畫，含全牙螺桿吊筋、C 型主骨、暗架副骨、自攻螺絲封板。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'RC 樓板下要做暗架天花板：骨架藏在板材後面，以自攻螺絲固定矽酸鈣板。',
+   tip:'112 年術科考過暗架天花板詳圖（材料判讀）：RC 樓板、吊筋固定件、全牙螺桿＋調整器、L 型收邊條、C 型主骨、暗架副骨、自攻螺絲、矽酸鈣板。本動畫依這些構件排出施工順序。'},
+  {t:'放樣', d:'彈出天花板完成高度水平線，標示吊筋、主骨、燈具與設備位置。', tip:'和明架一樣，先定完成高度與設備位置。'},
+  {t:'L 型收邊條', d:'沿水平線在四周牆面固定 L 型收邊條（邊料）。', tip:'暗架的收邊條最後會被板材蓋住或做收邊處理。'},
+  {t:'吊筋（全牙螺桿）', d:'以擊釘或膨脹螺栓加固定角片固定於樓板，掛上 3 分全牙螺桿並裝吊筋調整器。', tip:'暗架天花板較重，吊筋多用全牙螺桿，間距約 90～120 cm。'},
+  {t:'主骨（C 型槽鐵）', d:'主骨（C 型槽鐵／承載龍骨）掛在吊筋調整器上，調整高度與水平。', tip:'主骨是承重骨架，副骨與板材都掛在主骨下方。'},
+  {t:'暗架副骨', d:'暗架副骨（T 型或 W 型龍骨）以掛件扣在主骨下方，間距配合板材。', tip:'副骨間距要讓板材接縫落在副骨上，螺絲才鎖得到。'},
+  {t:'校正水平・方正', d:'校正整體水平與方正。', tip:'封板後就無法再調整，這一步要確實。'},
+  {t:'開口補強', d:'配合燈具、出風口、檢修口位置開口並補強。', tip:'開口處加副骨補強，板材才不會下垂。'},
+  {t:'封矽酸鈣板', d:'矽酸鈣板以自攻螺絲固定在副骨上，接縫錯開並留縫。', tip:'螺絲頭略低於板面，之後才能批土蓋住。'},
+  {t:'接縫批土', d:'板材接縫貼網帶、批土、研磨；螺絲孔補土。', tip:'暗架天花板表面是平的，接縫處理好看不出板縫。'},
+  {t:'塗裝', d:'表面塗裝，完成暗架天花板。', tip:'塗裝前確認批土乾燥、研磨平整。'},
+];
+
+createAnim({
+  title: '輕鋼架暗架天花板施工順序',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.93,
+  views: {
+    def:{dir:[0.58,-0.36,0.73], dist:6.0, target:[0,2.7,0]},
+    1:  {dir:[0.6,-0.2,0.78],   dist:6.2, target:[0,2.6,0]},
+    3:  {dir:[0.55,-0.1,0.83],  dist:5.0, target:[0,2.85,0]},
+    5:  {dir:[0.5,-0.15,0.85],  dist:3.6, target:[0.4,2.75,0.2]},
+  },
+  cut: {
+    board:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.0)],
+  },
+  cutLabel: '移除一半矽酸鈣板，看上方的暗架骨架',
+  note: '鋼材斷面有放大。',
+  build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9); fill.position.set(2,-6,5); scene.add(fill);
+    const X0=-1.8, X1=1.8, Z0=-1.2, Z1=1.2, SB=3.0, FC=2.6, BT=0.012;
+    const YS=FC+BT, YM=YS+0.04;                  // 副骨底、主骨底
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}),
+      ghost: mat('#ffffff',{transparent:true, opacity:.14, depthWrite:false}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), steel: mat('#b9c1c9',{metalness:.3, roughness:.45}),
+      steel2: mat('#8f9aa5',{metalness:.3, roughness:.45}), rod: mat('#8b939b',{metalness:.3}), clip: mat('#d97706'),
+      board: mat('#f1eee6',{roughness:.95}), screw: mat('#292524'), tape: mat('#fef3c7'), mud: mat('#fafaf9'),
+      paint: mat('#ffffff',{roughness:.8}), lamp: mat('#e5e7eb',{metalness:.5}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.9,SB,-1.3,1.9,SB+.15,1.3,M.slab,{shadow:false}));
+    fixed(span(-1.9,1.2,-1.3,1.9,SB,Z0,M.wall)); fixed(span(-1.9,1.2,Z0,X0,SB,1.3,M.wall));
+    for (const w of [span(X0,1.2,Z1,1.9,SB,1.3,M.ghost,{shadow:false}), span(X1,1.2,Z0,1.9,SB,Z1,M.ghost,{shadow:false})]) { w.receiveShadow=false; w.renderOrder=2; w.children[0].material.opacity=.45; fixed(w); }
+
+    const MX=[-1.2,0,1.2], SZ=[-1.2,-0.8,-0.4,0,0.4,0.8,1.2];
+    /* ① 放樣 */
+    { const LA={drop:0, until:2, glow:false};
+      add(1, group(span(X0,FC-.003,Z0,X1,FC+.003,Z0+.004,M.laser,NE), span(X0,FC-.003,Z0,X0+.004,FC+.003,Z1,M.laser,NE)),{...LA});
+      MX.forEach((x,i)=> [-0.7,0.5].forEach(z=> add(1, group(span(x-.06,SB-.004,z-.005,x+.06,SB-.001,z+.005,M.laser,NE), span(x-.005,SB-.004,z-.06,x+.005,SB-.001,z+.06,M.laser,NE)),{...LA, until:3, delay:.4+i*.1}))); }
+    /* ② L 型收邊條 */
+    add(2, group(span(X0,FC,Z0,X1,FC+.004,Z0+.025,M.steel), span(X0,FC,Z0,X1,FC+.025,Z0+.004,M.steel),
+                 span(X0,FC,Z0,X0+.025,FC+.004,Z1,M.steel), span(X0,FC,Z0,X0+.004,FC+.025,Z1,M.steel)),{drop:-.3});
+    /* ③ 吊筋：固定角片＋全牙螺桿＋調整器 */
+    { let k=0; MX.forEach(x=> [-0.7,0.5].forEach(z=> add(3, group(span(x-.03,SB-.006,z-.025,x+.03,SB,z+.025,M.steel), pipe([x,SB-.006,z],[x,YM+.03,z],.006,M.rod), span(x-.012,YM+.03,z-.012,x+.012,YM+.09,z+.012,M.clip)),{delay:(k++)*.1, drop:.4}))); }
+    /* ④ 主骨（C 型槽鐵，沿 z） */
+    MX.forEach((x,i)=> add(4, group(span(x-.02,YM,Z0+.03,x+.02,YM+.004,Z1-.03,M.steel2), span(x-.02,YM,Z0+.03,x-.016,YM+.04,Z1-.03,M.steel2), span(x+.016,YM,Z0+.03,x+.02,YM+.04,Z1-.03,M.steel2)),{delay:i*.2, drop:-.35}));
+    /* ⑤ 暗架副骨（沿 x，掛件扣主骨） */
+    SZ.forEach((z,i)=>{ add(5, group(span(X0+.03,YS,z-.012,X1-.03,YS+.004,z+.012,M.steel), span(X0+.03,YS,z-.002,X1-.03,YS+.035,z+.002,M.steel)),{delay:i*.12, drop:-.3});
+      MX.forEach(x=> add(5, span(x-.025,YS+.035,z-.008,x+.025,YM+.01,z+.008,M.clip),{delay:i*.12+.2, drop:0, glow:false})); });
+    /* ⑥ 校正 */
+    add(6, group(span(X0,FC-.008,-.003,X1,FC-.004,.003,M.laser,NE), (()=>{ const b=box(4.33,.004,.006,M.laser,NE); b.position.set(0,FC-.006,0); b.rotation.y=-Math.atan2(2.4,3.6); return b; })()),{until:6, drop:0, glow:false});
+    add(6, label('水平・方正（對角線）',0,2.2,0.2,1.3),{until:6, drop:0, glow:false});
+    /* ⑦ 開口補強（燈具位置加副骨） */
+    add(7, group(span(0.38,YS,-0.6,0.42,YS+.035,-0.2,M.steel2), span(0.78,YS,-0.6,0.82,YS+.035,-0.2,M.steel2)),{drop:-.2});
+    add(7, label('開口四周加副骨補強',0.6,2.2,-0.4,1.3),{until:7, drop:0, glow:false});
+    /* ⑧ 封矽酸鈣板＋自攻螺絲（接縫錯開） */
+    const SHEETS=[];
+    for (let r=0;r<3;r++){ const z0=Z0+r*0.8, z1=Math.min(z0+0.8,Z1); const off=r%2?0.6:0;
+      for (let x=X0-off; x<X1-1e-3; x+=1.2){ const xa=Math.max(x,X0), xb=Math.min(x+1.2,X1); if (xb-xa<.05) continue; SHEETS.push([xa,xb,z0,z1,r]); } }
+    SHEETS.forEach(([xa,xb,z0,z1,r],i)=>{
+      const g=group(span(xa+.003,FC,z0+.003,xb-.003,YS,z1-.003,M.board));
+      SZ.forEach(z=>{ if (z<z0-.01||z>z1+.01) return; for (let x=xa+0.1;x<xb-0.05;x+=0.25){ const s=new THREE.Mesh(new THREE.CylinderGeometry(.007,.007,.002,8), M.screw.clone()); s.position.set(x,FC-.001,Math.min(Math.max(z,z0+.015),z1-.015)); g.add(s); } });
+      const lampHole = xa<0.6 && xb>0.6 && z0<-0.4 && z1>-0.4;
+      add(8, g, {delay:i*.12, drop:-.3, cat:'board'});
+    });
+    fixed(span(0.48,FC-.02,-0.52,0.72,FC-.003,-0.28,M.lamp)).visible=true;
+    /* ⑨ 接縫批土 */
+    { const g=group(); SHEETS.forEach(([xa,xb,z0,z1])=>{ g.add(span(xb-.04,FC-.003,z0,xb+.04,FC-.001,z1,M.mud,NE)); g.add(span(xa,FC-.003,z1-.04,xb,FC-.001,z1+.04,M.mud,NE)); });
+      add(9, g, {drop:0, cat:'board'}); }
+    add(9, label('接縫貼網帶・批土・研磨',0,2.2,0.2,1.5),{until:9, drop:0, glow:false});
+    /* ⑩ 塗裝 */
+    add(10, span(X0+.02,FC-.005,Z0+.02,X1-.02,FC-.0035,Z1-.02,M.paint,NE),{delay:.2, drop:0, cat:'board'});
+  },
+});
+</script>
+</body>
+</html>

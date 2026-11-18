@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>鋁門窗安裝施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：鋁門窗（濕式）安裝 10 步驟施工順序 3D 互動動畫，含木楔定位、固定片、塞水路、矽利康、試水。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'外牆預留了窗洞，要安裝鋁窗（濕式施工：框與牆之間以水泥砂漿塞水路）。',
+   tip:'鋁門窗、玻璃在學科常出現。步驟依一般施工實務整理（題庫無完整步驟答案），請對照課本確認。'},
+  {t:'放樣', d:'在窗洞彈出垂直、水平基準線與窗台標高。', tip:'同一面牆的窗要對齊同一條水平線。'},
+  {t:'窗框就位・木楔定位', d:'窗框放入窗洞，四周塞木楔暫時固定。', tip:'木楔可以微調框的位置。'},
+  {t:'校正垂直・水平・對角', d:'以水平尺、鉛錘校正垂直與水平，量對角線確認方正。', tip:'框不方正，窗扇會關不密、漏風漏水。'},
+  {t:'固定片固定', d:'框上的固定片（鐵片）以擊釘或螺絲固定於結構體。', tip:'固定片間距要均勻，兩端與轉角都要有。'},
+  {t:'塞水路', d:'框與牆之間的間隙以防水砂漿填塞密實。', tip:'「塞水路」是鋁窗防水的關鍵，要塞到完全沒有空隙。'},
+  {t:'養護', d:'塞水路砂漿養護，期間不可碰撞窗框。', tip:'砂漿硬化前窗框受力會移位。'},
+  {t:'收邊粉刷', d:'窗框內外側收邊粉刷，外側窗台做洩水坡度。', tip:'窗台外側往外傾斜，雨水才不會往室內流。'},
+  {t:'外側打矽利康', d:'窗框外側與牆面交接處打矽利康。', tip:'矽利康是第二道防水，要連續、不中斷。'},
+  {t:'安裝窗扇・五金調整', d:'安裝窗扇、紗窗，調整滑輪與鎖扣。', tip:'窗扇開關要順暢、鎖扣要密合。'},
+  {t:'試水・清潔', d:'灑水試驗確認不漏水，清潔並保留保護膜到完工。', tip:'試水時從外側淋水，檢查室內側是否滲漏。'},
+];
+
+createAnim({
+  title: '鋁門窗安裝施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.4,0.2,0.9],  dist:4.2, target:[0,1.4,0]},
+    5:  {dir:[0.5,0.25,0.83], dist:3.2, target:[0.4,1.5,0]},
+    8:  {dir:[0.5,0.2,0.84], dist:2.4, target:[0.6,1.2,0]},
+  },
+  cut: { fill:[new THREE.Plane(new THREE.Vector3(0,-1,0), 1.3)] },
+  cutLabel: '切掉上半部，看塞水路砂漿與固定片',
+  note: '間隙寬度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const OX=0.8, OY0=0.8, OY1=2.1, G=0.03, T=0.2, FD=0.08;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#c9c4bb',{roughness:1}), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      frame: mat('#9ca3af',{metalness:.6, roughness:.3}), wedge: mat('#a16207'), clip: mat('#f97316'), mortar: mat('#78716c',{roughness:1}),
+      plas: mat('#d6d1c8',{roughness:.8}), sil: mat('#e5e7eb',{roughness:.4}), glass: mat('#bae6fd',{transparent:true, opacity:.35, depthWrite:false}),
+      screen: mat('#57534e',{transparent:true, opacity:.4, depthWrite:false}), film: mat('#60a5fa',{transparent:true, opacity:.5, depthWrite:false}),
+      level: mat('#facc15'), drop: mat('#60a5fa',{roughness:.2}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.15,-0.8,2,0,1.4,M.slab));
+    fixed(span(-2,0,-T,-OX,2.8,0,M.wall)); fixed(span(OX,0,-T,2,2.8,0,M.wall));
+    fixed(span(-OX,0,-T,OX,OY0,0,M.wall)); fixed(span(-OX,OY1,-T,OX,2.8,0,M.wall));
+    const FX=OX-G, FY0=OY0+G, FY1=OY1-G, FW=0.05, FZ0=-0.14, FZ1=-0.06;
+    const frame=()=>group(span(-FX,FY0,FZ0,FX,FY0+FW,FZ1,M.frame), span(-FX,FY1-FW,FZ0,FX,FY1,FZ1,M.frame), span(-FX,FY0,FZ0,-FX+FW,FY1,FZ1,M.frame), span(FX-FW,FY0,FZ0,FX,FY1,FZ1,M.frame), span(-.02,FY0,FZ0,.02,FY1,FZ1,M.frame));
+
+    add(1, group(span(-.002,OY0,.001,.002,OY1,.004,M.laser,NE), span(-OX,OY0+.5,.001,OX,OY0+.504,.004,M.laser,NE), span(-OX-.3,OY0-.002,.001,OX+.3,OY0+.002,.004,M.laser,NE)),{until:4, drop:0, glow:false});
+    add(2, frame(),{drop:.3});
+    [[-FX-G/2,FY0+.15],[FX+G/2,FY0+.15],[-FX-G/2,FY1-.15],[FX+G/2,FY1-.15],[0.3,OY0+G/2],[-0.3,OY0+G/2]].forEach(([x,y],i)=> add(2, span(x-.012,y-.03,FZ0,x+.012,y+.03,FZ1,M.wedge),{delay:.4+i*.05, drop:0, until:5}));
+    add(3, span(-0.3,FY0+FW,FZ1,0.3,FY0+FW+.05,FZ1+.05,M.level),{until:3, drop:-.2});
+    add(3, (()=>{ const L=Math.hypot(2*FX,FY1-FY0), b=box(L,.006,.006,M.laser,NE); b.position.set(0,(FY0+FY1)/2,FZ1+.01); b.rotation.z=Math.atan2(FY1-FY0,2*FX); return b; })(),{until:3, drop:0, glow:false});
+    add(3, label('垂直・水平・對角線',0,2.45,0.2,1.2),{until:3, drop:0, glow:false});
+    [[-1,FY0+.2],[-1,(FY0+FY1)/2],[-1,FY1-.2],[1,FY0+.2],[1,(FY0+FY1)/2],[1,FY1-.2]].forEach(([s,y],i)=> add(4, span(s>0?FX:-OX,y-.02,FZ0+.02,s>0?OX:-FX,y+.02,FZ0+.025,M.clip),{delay:i*.08, drop:0}));
+    add(4, label('固定片擊釘固定',OX,1.65,0.2,1.0),{until:4, drop:0, glow:false});
+    add(5, group(span(-OX,OY0,-T+.01,-FX,OY1,.002,M.mortar), span(FX,OY0,-T+.01,OX,OY1,.002,M.mortar), span(-OX,OY0,-T+.01,OX,FY0,.002,M.mortar), span(-OX,FY1,-T+.01,OX,OY1,.002,M.mortar)),{drop:0, cat:'fill'});
+    add(5, label('塞水路：防水砂漿填塞密實',0.4,2.2,0.2,1.6),{until:5, drop:0, glow:false});
+    add(6, label('養護・不可碰撞窗框',0,2.45,0.2,1.2),{until:6, drop:0, glow:false});
+    add(7, group(span(-OX-.06,OY0-.06,0,OX+.06,OY0+.005,.02,M.plas), span(-OX-.06,OY1-.005,0,OX+.06,OY1+.06,.02,M.plas), span(-OX-.06,OY0,0,-OX+.005,OY1,.02,M.plas), span(OX-.005,OY0,0,OX+.06,OY1,.02,M.plas)),{drop:0, cat:'fill'});
+    add(7, label('收邊粉刷・窗台洩水坡度',0,0.55,0.3,1.5),{until:7, drop:0, glow:false});
+    add(8, group(span(-FX-.01,FY0-.008,FZ1,FX+.01,FY0+.004,FZ1+.012,M.sil), span(-FX-.01,FY1-.004,FZ1,FX+.01,FY1+.008,FZ1+.012,M.sil), span(-FX-.008,FY0,FZ1,-FX+.004,FY1,FZ1+.012,M.sil), span(FX-.004,FY0,FZ1,FX+.008,FY1,FZ1+.012,M.sil)),{drop:0});
+    add(8, label('外側矽利康連續不中斷',0.4,2.2,0.2,1.4),{until:8, drop:0, glow:false});
+    add(9, group(span(-FX+FW,FY0+FW,-0.12,-.02,FY1-FW,-0.11,M.glass,NE), span(.02,FY0+FW,-0.1,FX-FW,FY1-FW,-0.09,M.glass,NE), span(.02,FY0+FW,-0.135,FX-FW,FY1-FW,-0.13,M.screen,NE)),{drop:0});
+    for (let i=0;i<20;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6), M.drop.clone()); d.position.set(-0.7+((i*0.37)%1.4),0.9+((i*0.53)%1.1),.03); add(10, d, {delay:i*.03, drop:.15, until:10, glow:false}); }
+    add(10, span(-FX,FY0,FZ1+.013,FX,FY1,FZ1+.015,M.film,NE),{drop:0});
+    add(10, label('試水不滲漏・保護膜留到完工',0,2.45,0.2,1.7),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

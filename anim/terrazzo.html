@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>嵌銅條磨石子施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級學科：嵌銅條磨石子地坪施工程序（粉刷打底→裝銅條→粉刷上度→磨光）10 步驟 3D 互動動畫。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'RC 樓板地坪要做嵌銅條磨石子。',
+   tip:'115 年學科：「崁銅條磨石子的正確施工程序為：粉刷打底 → 裝銅條 → 粉刷上度 → 磨光」。本動畫把這 4 大步驟拆細，大順序不變。'},
+  {t:'基面清潔・濕潤', d:'清除樓板浮漿雜物，灑水濕潤。', tip:'和所有泥作一樣，先清潔、濕潤。'},
+  {t:'粉刷打底', d:'以 1:3 水泥砂漿粉刷打底，依完成面高度整平。', tip:'打底層決定地坪的平整度。（大步驟 1）'},
+  {t:'放樣分割', d:'在打底面彈出銅條分割線。', tip:'分割可以控制收縮裂縫，也構成地坪圖案。'},
+  {t:'裝銅條', d:'沿分割線以水泥砂漿固定銅條，高度一致。', tip:'銅條頂就是石粒漿的完成高度。（大步驟 2）'},
+  {t:'刷水泥漿黏結層', d:'銅條固定後，刷一道水泥漿作為黏結層。', tip:'讓石粒漿與打底層結合。'},
+  {t:'石粒漿粉刷上度', d:'鋪抹石粒漿（水泥＋石粒），滾壓、鏝平，略高於銅條。', tip:'略高於銅條，磨光時才能把銅條和石粒一起磨出來。（大步驟 3）'},
+  {t:'養護', d:'養護數日，待強度足夠。', tip:'強度不足就磨，石粒會被磨掉、脫落。'},
+  {t:'粗磨', d:'以磨石機粗磨，磨出銅條與石粒。', tip:'粗磨後表面會有砂孔。（大步驟 4：磨光）'},
+  {t:'補漿・細磨', d:'以同色水泥漿填補砂孔，硬化後細磨。', tip:'補漿讓表面沒有孔洞，越磨越平滑。'},
+  {t:'光磨・清洗・打蠟', d:'光磨後清洗乾淨，打蠟保護。', tip:'打蠟增加光澤，也比較耐污。'},
+];
+
+createAnim({
+  title: '嵌銅條磨石子施工順序',
+  steps: STEPS,
+  groundY: -0.2,
+  sun: [3, 8, 5],
+  views: {
+    def:{dir:[0.55,0.62,0.56], dist:4.8, target:[0,0,0.2]},
+    4:  {dir:[0.55,0.45,0.7],  dist:2.6, target:[0,0.05,0.4]},
+    8:  {dir:[0.5,0.55,0.67],  dist:3.4, target:[0.2,0.05,0.3]},
+  },
+  cut: { top:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.0)] },
+  cutLabel: '切開磨石子面層，看銅條與打底層',
+  note: '各層厚度與銅條高度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.2, X1=1.2, Z0=-1.0, Z1=1.4, YB=0.03, YT=0.055, G=0.6;
+    function chipTex(washed){
+      const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d');
+      g.fillStyle=washed?'#e7e2d8':'#a8a29e'; g.fillRect(0,0,256,256); let s=9; const r=()=>(s=(s*16807)%2147483647)/2147483647;
+      const cols=['#1f2937','#f8fafc','#b45309','#57534e','#e5e7eb','#78350f','#065f46'];
+      for (let i=0;i<1100;i++){ g.fillStyle=cols[(r()*cols.length)|0]; g.beginPath(); g.ellipse(r()*256,r()*256,1.5+r()*3,1.2+r()*2.5,r()*3,0,6.29); g.fill(); }
+      if(!washed){ g.fillStyle='rgba(140,136,130,.85)'; g.fillRect(0,0,256,256); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1.2,1.2); return t; }
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), drop: mat('#60a5fa',{roughness:.2}),
+      base: mat('#9a948b',{roughness:1}), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      brass: mat('#ca8a04',{metalness:.7, roughness:.3}), slurry: mat('#8f8b85'), raw: mat('#ffffff',{map:chipTex(false), roughness:1}),
+      ground: mat('#ffffff',{map:chipTex(true), roughness:.6}), polished: mat('#ffffff',{map:chipTex(true), roughness:.15}),
+      hole: mat('#57534e'), patch: mat('#d6d3d1'), machine: mat('#1d4ed8'), dark: mat('#1f2937'), wax: mat('#fef3c7',{transparent:true, opacity:.18, roughness:.05, depthWrite:false}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.5,-0.2,-1.3,1.5,0,1.7,M.slab));
+    fixed(span(-1.5,0,-1.3,X1,1.0,Z0,M.wall)); fixed(span(-1.5,0,Z0,X0,1.0,1.7,M.wall));
+    const XS=[X0+G,X0+2*G,X0+3*G], ZS=[Z0+G,Z0+2*G,Z0+3*G];
+
+    for (let i=0;i<16;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6), M.drop.clone()); d.position.set(X0+0.1+((i*0.37)%2.2),.015,Z0+0.1+((i*0.53)%2.2)); add(1, d, {delay:i*.03, drop:.15, until:1, glow:false}); }
+    add(2, span(X0,0,Z0,X1,YB,Z1,M.base),{drop:0});
+    add(3, group(...XS.map(x=>span(x-.003,YB,Z0,x+.003,YB+.002,Z1,M.laser,NE)), ...ZS.map(z=>span(X0,YB,z-.003,X1,YB+.002,z+.003,M.laser,NE))),{until:4, drop:0, glow:false});
+    { let k=0; XS.forEach(x=> add(4, span(x-.003,YB,Z0,x+.003,YT,Z1,M.brass),{delay:(k++)*.15, drop:.15}));
+      ZS.forEach(z=> add(4, span(X0,YB,z-.003,X1,YT,z+.003,M.brass),{delay:(k++)*.15, drop:.15})); }
+    add(4, label('銅條高度一致＝完成面',0,0.45,0.3,1.4),{until:4, drop:0, glow:false});
+    add(5, span(X0,YB,Z0,X1,YB+.003,Z1,M.slurry,NE),{drop:0, cat:'top'});
+    // 每格石粒漿（略高於銅條）
+    const cells=[]; const xs=[X0,...XS,X1], zs=[Z0,...ZS,Z1];
+    for (let i=0;i<xs.length-1;i++) for (let j=0;j<zs.length-1;j++) cells.push([xs[i]+.003,xs[i+1]-.003,zs[j]+.003,zs[j+1]-.003,i,j]);
+    cells.forEach(([a,b,c,d,i,j])=> add(6, span(a,YB+.003,c,b,YT+.006,d,M.raw),{delay:(i+j)*.12, drop:0, cat:'top', until:7}));
+    add(7, label('養護數日',0,0.45,0.3,0.8),{until:7, drop:0, glow:false});
+    cells.forEach(([a,b,c,d])=> add(8, span(a,YB+.003,c,b,YT,d,M.ground),{drop:0, cat:'top', until:9}));
+    add(8, group(pipe([0.4,0.06,0.5],[0.4,0.12,0.5],.18,M.machine), pipe([0.4,0.12,0.5],[0.4,0.6,0.9],.02,M.dark)),{until:8, drop:.2});
+    { const g=group(); for (let i=0;i<30;i++) g.add(span(X0+0.1+((i*0.37)%2.2),YT+.0005,Z0+0.1+((i*0.53)%2.2),X0+0.115+((i*0.37)%2.2),YT+.001,Z0+0.115+((i*0.53)%2.2),M.hole,NE));
+      add(8, g, {delay:.4, drop:0, until:8}); }
+    add(9, label('補漿填砂孔 → 細磨',0,0.45,0.3,1.2),{until:9, drop:0, glow:false});
+    cells.forEach(([a,b,c,d])=> add(10, span(a,YB+.003,c,b,YT,d,M.polished),{drop:0, cat:'top'}));
+    add(10, span(X0,YT+.001,Z0,X1,YT+.002,Z1,M.wax,NE),{delay:.4, drop:0, cat:'top'});
+    add(10, label('光磨・清洗・打蠟',0,0.45,0.3,1.1),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

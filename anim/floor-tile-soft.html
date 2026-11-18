@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浴室地坪磁磚軟底工法｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：浴室地面磁磚軟底施工法（防水層、乾拌水泥砂、土膏水、洩水坡度）11 步驟 3D 互動動畫。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'浴室 RC 樓板，中間有落水頭，要用軟底工法貼地磚。',
+   tip:'術科考過「浴室軟底施工法地面磁磚大樣圖」：地磚、1:3 乾拌水泥砂（軟底層）、RC 樓板、填縫劑。軟底＝乾拌水泥砂＋土膏水。步驟為一般施工實務整理，請對照課本確認。'},
+  {t:'基面清潔', d:'清除樓板上的浮漿、雜物，修補孔洞，灑水濕潤。', tip:'和牆面一樣，基面要乾淨、濕潤。'},
+  {t:'防水層・試水', d:'地面與牆腳塗佈防水層（彈泥），落水頭周邊加強，完成後蓄水試驗。', tip:'浴室地坪一定先做防水並試水，確認無滲漏才鋪磚。'},
+  {t:'放樣・洩水坡度', d:'彈出完成面高度與磁磚分割線，定出往落水頭的洩水坡度。', tip:'地面要往落水頭傾斜，水才排得掉（圖中坡度有放大）。'},
+  {t:'鋪乾拌水泥砂', d:'鋪 1:3 乾拌水泥砂（軟底層）。', tip:'乾拌砂是「乾的」，手握能成團、放開會散開的程度。'},
+  {t:'刮平・做坡度', d:'依坡度線用刮尺把乾拌砂刮平、壓實。', tip:'坡度在這一層做出來，磁磚只是照著貼。'},
+  {t:'淋土膏水', d:'在乾拌砂上淋土膏水（水泥漿）。', tip:'土膏水是黏著層，讓磁磚與軟底結合。'},
+  {t:'鋪磚・敲實', d:'放上磁磚，以橡皮槌敲實。', tip:'敲實讓磁磚和軟底密合，避免空鼓。'},
+  {t:'調整縫寬・坡度', d:'用定位片控制縫寬，以水平尺檢查坡度。', tip:'坡度方向要正確，不可有積水的凹處。'},
+  {t:'養護', d:'養護，期間不可踩踏。', tip:'軟底層硬化前踩上去，磁磚會下陷移位。'},
+  {t:'填縫・清潔', d:'填縫，清潔磚面。', tip:'浴室填縫要飽滿，避免水從磚縫滲入。'},
+];
+
+createAnim({
+  title: '浴室地坪磁磚軟底工法',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 8, 5],
+  views: {
+    def:{dir:[0.55,0.62,0.56], dist:4.6, target:[0,0.1,0.2]},
+    4:  {dir:[0.7,0.35,0.62],  dist:3.4, target:[0,0.05,0.3]},
+    7:  {dir:[0.55,0.5,0.67],  dist:2.6, target:[-0.3,0.1,0.3]},
+  },
+  cut: {
+    tile:[new THREE.Plane(new THREE.Vector3(-1,0,0), -0.2)],
+    bed: [new THREE.Plane(new THREE.Vector3(-1,0,0), 0.4)],
+  },
+  cutLabel: '階梯式切開磁磚與軟底層，看各層構造',
+  note: '各層厚度與洩水坡度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.0, X1=1.0, Z0=-0.8, Z1=1.2, DX=0.2, DZ=0.3, WP=0.03, BED=0.06, SL=0.03, T=0.25, J=0.005;
+    const top=(x,z)=> WP+BED + SL*Math.min(1, Math.hypot(x-DX,z-DZ)/1.0);    // 完成面高度（往落水頭降）
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#c9c4bb',{roughness:1}), drain: mat('#d1d5db',{metalness:.6, roughness:.3}),
+      bump: mat('#a8a49d'), drop: mat('#60a5fa',{roughness:.2}), wp: mat('#3b82f6',{roughness:.5}), water: mat('#38bdf8',{transparent:true, opacity:.45, depthWrite:false}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), sand: mat('#cbbf9f',{roughness:1}), slurry: mat('#8f8b85',{roughness:.6}),
+      alu: mat('#cbd5e1',{metalness:.4}), tiles: ['#e7e5e4','#d6d3d1','#e2dfdc'].map(c=>mat(c,{roughness:.3})), rubber: mat('#1c1917'), handle: mat('#7c2d12'),
+      spacer: mat('#f97316'), grout: mat('#78716c'), level: mat('#facc15'), dam: mat('#78716c'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.3,-0.15,-1.1,1.3,0,1.5,M.slab));
+    fixed(span(-1.3,0,-1.1,X1,1.0,Z0,M.wall)); fixed(span(-1.3,0,Z0,X0,1.0,1.5,M.wall));
+    fixed(pipe([DX,-0.1,DZ],[DX,0.005,DZ],.05,M.drain));
+
+    add(0, group(span(-0.6,0,0.6,-0.45,.015,0.7,M.bump), span(0.6,0,-0.4,0.72,.012,-0.3,M.bump)),{until:0, drop:0});
+    for (let i=0;i<16;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6), M.drop.clone()); d.position.set(X0+0.1+((i*0.37)%1.8),.015,Z0+0.1+((i*0.53)%1.9)); add(1, d, {delay:i*.03, drop:.15, until:1, glow:false}); }
+    /* ② 防水層（含牆腳上翻）＋試水 */
+    add(2, group(span(X0,.001,Z0,X1,WP,Z1,M.wp), span(X0,0,Z0,X1,0.3,Z0+.004,M.wp), span(X0,0,Z0,X0+.004,0.3,Z1,M.wp)),{drop:0});
+    add(2, group(span(X1-.04,WP,Z0,X1,WP+.06,Z1,M.dam), span(X0,WP,Z1-.04,X1,WP+.06,Z1,M.dam)),{delay:.5, drop:.2, until:2});
+    add(2, span(X0+.005,WP+.001,Z0+.005,X1-.04,WP+.04,Z1-.04,M.water,NE),{delay:.8, drop:0, until:2, glow:false});
+    add(2, label('防水層＋蓄水試驗',0,0.75,0.3,1.2),{until:2, drop:0, glow:false});
+    /* ③ 放樣＋坡度 */
+    add(3, group(span(X0,top(X0,0)-.003,Z0+.005,X0+0.3,top(X0,0)+.003,Z0+.009,M.laser,NE), span(X0+.005,top(X0,0)-.003,Z0,X0+.009,top(X0,0)+.003,Z0+0.3,M.laser,NE)),{until:4, drop:0, glow:false});
+    add(3, arrow([X0+0.3,WP+0.12,Z1-0.2],[DX-0.05,WP+0.05,DZ+0.05],M.laser),{until:3, drop:0, glow:false});
+    add(3, label('往落水頭的洩水坡度',DX,0.7,DZ,1.3),{until:3, drop:0, glow:false});
+    /* ④⑤ 乾拌水泥砂 → 刮平做坡度（以多塊不同高度方塊表示斜面） */
+    const N=10, cw=(X1-X0)/N, cd=(Z1-Z0)/N;
+    { const g=group(); for (let i=0;i<N;i++) for (let j=0;j<N;j++){ const x=X0+i*cw, z=Z0+j*cd; g.add(span(x,WP,z,x+cw,WP+BED+SL+0.02*((i*7+j*3)%3)/2,z+cd,M.sand,NE)); }
+      add(4, g, {drop:.15, until:4, cat:'bed'}); }
+    { const g=group(); for (let i=0;i<N;i++) for (let j=0;j<N;j++){ const x=X0+i*cw, z=Z0+j*cd; g.add(span(x,WP,z,x+cw,top(x+cw/2,z+cd/2)-.006,z+cd,M.sand,NE)); }
+      add(5, g, {drop:0, cat:'bed'}); }
+    add(5, span(-0.6,WP+BED+SL+.01,-0.1,0.6,WP+BED+SL+.03,-0.05,M.alu),{until:5, drop:-.15});
+    /* ⑥ 土膏水 */
+    { const g=group(); for (let i=0;i<N;i++) for (let j=0;j<N;j++){ const x=X0+i*cw, z=Z0+j*cd, y=top(x+cw/2,z+cd/2)-.006; g.add(span(x,y,z,x+cw,y+.004,z+cd,M.slurry,NE)); }
+      add(6, g, {drop:0, cat:'bed'}); }
+    /* ⑦ 鋪磚 */
+    const TILES=[]; for (let i=0;i<8;i++) for (let j=0;j<8;j++){ const x=X0+i*T, z=Z0+j*T; if (x>=X1-1e-3||z>=Z1-1e-3) continue; TILES.push([x,z,i,j]); }
+    TILES.forEach(([x,z,i,j],k)=>{ const y=top(x+T/2,z+T/2)-.002; const hole = Math.abs(x+T/2-DX)<T/2 && Math.abs(z+T/2-DZ)<T/2;
+      if (hole) return; add(7, span(x+J,y,z+J,Math.min(x+T,X1)-J,y+.012,Math.min(z+T,Z1)-J,M.tiles[(i+j)%3]),{delay:(i+j)*.06, drop:.2, cat:'tile'}); });
+    add(7, group(span(-0.4,0.25,0.3,-0.25,0.33,0.4,M.rubber), span(-0.34,0.33,0.33,-0.31,0.6,0.37,M.handle)),{until:7, drop:-.2});
+    /* ⑧ 定位片＋水平尺 */
+    { const g=group(); for (let i=1;i<8;i++) for (let j=1;j<8;j++){ const x=X0+i*T, z=Z0+j*T; if (x>=X1||z>=Z1) continue; const y=top(x,z)+.012; g.add(span(x-.015,y-.004,z-.002,x+.015,y+.004,z+.002,M.spacer,NE)); g.add(span(x-.002,y-.004,z-.015,x+.002,y+.004,z+.015,M.spacer,NE)); }
+      add(8, g, {drop:0, until:9, glow:false}); }
+    add(8, span(-0.8,0.13,0.95,0.0,0.16,1.0,M.level),{until:8, drop:-.2});
+    /* ⑨ 養護 */
+    add(9, label('養護・不可踩踏',0,0.6,0.3,1.0),{until:9, drop:0, glow:false});
+    /* ⑩ 填縫 */
+    { const g=group(); for (let i=1;i<8;i++){ const x=X0+i*T; if (x<X1) g.add(span(x-J,top(x,0.2)-.004,Z0,x+J,top(x,0.2)+.008,Z1,M.grout,NE)); }
+      for (let j=1;j<8;j++){ const z=Z0+j*T; if (z<Z1) g.add(span(X0,top(0.2,z)-.004,z-J,X1,top(0.2,z)+.008,z+J,M.grout,NE)); }
+      add(10, g, {drop:0, cat:'tile'}); }
+  },
+});
+</script>
+</body>
+</html>

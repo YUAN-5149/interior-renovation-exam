@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>滿鋪地毯施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：滿鋪地毯（倒刺條工法）10 步驟施工順序 3D 互動動畫，含底墊、接縫、張緊器、修邊、門口收邊條。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'房間要滿鋪地毯，採倒刺條（勾條）工法，右側有門口。',
+   tip:'地毯在學科考了三十多次、術科也有工具與接縫題。步驟依題庫相關答案與一般施工實務整理，請對照課本確認。'},
+  {t:'地面清潔整平', d:'地面清潔、整平、乾燥。', tip:'地面凸起或雜物會從地毯表面透出來。'},
+  {t:'放樣', d:'決定地毯方向（毛向一致）與接縫位置，避開動線與門口。', tip:'先規劃好接縫，裁切才不會浪費。'},
+  {t:'釘倒刺條', d:'沿牆四周釘倒刺條，倒刺朝向牆面，與牆留約 1 cm。', tip:'倒刺條是用來勾住地毯背面、把地毯撐緊的。'},
+  {t:'鋪底墊', d:'在倒刺條內側鋪底墊，接縫對接不重疊，以膠帶或釘固定。', tip:'底墊不可蓋到倒刺條上。'},
+  {t:'裁切地毯', d:'依房間尺寸裁切地毯，四周預留修邊量。', tip:'預留多出的部分，張緊後再修掉。'},
+  {t:'接縫', d:'兩塊地毯以熱熔接縫帶接合，壓實。', tip:'毛向一致、有花紋要對花。'},
+  {t:'張緊・勾上倒刺條', d:'以膝撐（Knee kicker）與張力器把地毯拉平拉緊，勾上倒刺條。', tip:'張力不足，日後地毯會起皺、鼓起。'},
+  {t:'修邊・塞入', d:'切除多餘地毯，把邊緣塞入倒刺條與牆之間。', tip:'這就是為什麼倒刺條要離牆約 1 cm。'},
+  {t:'門口收邊條', d:'門口與異材交接處安裝收邊條。', tip:'收邊條保護地毯邊緣，也避免絆倒。'},
+  {t:'清潔', d:'吸塵清潔，完成滿鋪地毯。', tip:'新地毯會有浮毛，要吸乾淨。'},
+];
+
+createAnim({
+  title: '滿鋪地毯施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 8, 5],
+  views: {
+    def:{dir:[0.35,0.8,0.5], dist:5.4, target:[0,0,0.1]},
+    3:  {dir:[0.45,0.6,0.66], dist:2.2, target:[-1.4,0,-0.9]},
+    7:  {dir:[0.45,0.55,0.7], dist:3.4, target:[0.4,0,0.2]},
+  },
+  cut: { carpet:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.0)] },
+  cutLabel: '移除一半地毯，看底墊與倒刺條',
+  note: '倒刺條與底墊厚度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.8, X1=1.8, Z0=-1.3, Z1=1.3, TS=0.03, TW=0.025, PAD=0.012, CT=0.02;
+    function carpetTex(){ const c=document.createElement('canvas'); c.width=c.height=64; const g=c.getContext('2d'); g.fillStyle='#475569'; g.fillRect(0,0,64,64);
+      let s=5; const r=()=>(s=(s*16807)%2147483647)/2147483647; for (let i=0;i<400;i++){ g.fillStyle=r()>.5?'#526174':'#3f4c5e'; g.fillRect(r()*64,r()*64,1,1); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(8,6); return t; }
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}), bump: mat('#a8a49d'),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), strip: mat('#a16207'), pin: mat('#374151',{metalness:.5}),
+      pad: mat('#9ca3af',{roughness:1}), carpet: mat('#ffffff',{map:carpetTex(), roughness:1}), tape: mat('#fde68a'),
+      kick: mat('#1d4ed8'), rod: mat('#94a3b8',{metalness:.5}), trim: mat('#d1d5db',{metalness:.6, roughness:.3}), vac: mat('#dc2626'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.0,-0.15,-1.5,2.0,0,1.5,M.slab));
+    fixed(span(-2.0,0,-1.5,2.0,0.5,Z0,M.wall)); fixed(span(-2.0,0,Z0,X0,0.5,1.5,M.wall));
+    fixed(span(X1,0,Z0,2.0,0.5,0.0,M.wall)); fixed(span(X1,0,0.9,2.0,0.5,Z1,M.wall)); fixed(span(-2.0,0,Z1,2.0,0.5,1.5,M.wall));   // 右側門口 z 0～0.9
+    add(0, group(span(-0.6,0,0.3,-0.45,.012,0.45,M.bump), span(0.8,0,-0.6,0.95,.01,-0.5,M.bump)),{until:0, drop:0});
+
+    add(1, label('清潔・整平・乾燥',0,0.6,0,1.1),{until:1, drop:0, glow:false});
+    add(2, group(...[-1.0,-0.6].map(z=>arrow([-0.8,.02,z],[-0.8,.02,z+0.35],M.laser)), span(0.6-.003,.001,Z0,0.6+.003,.003,Z1,M.laser,NE)),{until:2, drop:0, glow:false});
+    add(2, label('毛向一致・接縫避開動線與門口',0,0.6,0,1.9),{until:2, drop:0, glow:false});
+    /* ③ 倒刺條（離牆 1 cm，倒刺朝牆） */
+    const strips=[[X0+.01,Z0+.01,X1-.01,Z0+.01+TW],[X0+.01,Z1-.01-TW,X1-.01,Z1-.01],[X0+.01,Z0+.01,X0+.01+TW,Z1-.01],[X1-.01-TW,Z0+.01,X1-.01,0],[X1-.01-TW,0.9,X1-.01,Z1-.01]];
+    strips.forEach(([a,b,c,d],i)=>{ const g=group(span(a,0,b,c,.012,d,M.strip)); const along=(c-a)>(d-b);
+      for (let t=0.05;t<(along?c-a:d-b)-.03;t+=0.08){ const x=along?a+t:(a+c)/2, z=along?(b+d)/2:b+t; g.add(pipe([x,.012,z],[x,.022,z],.002,M.pin)); }
+      add(3, g, {delay:i*.15, drop:.2}); });
+    add(3, label('倒刺朝牆・離牆約 1 cm',-1.3,0.35,-0.9,1.4),{until:3, drop:0, glow:false});
+    /* ④ 底墊 */
+    [[X0+.04,-1.27,X1-.04,0.0],[X0+.04,0.0,X1-.04,1.27]].forEach(([a,b,c,d],i)=> add(4, span(a,0,b,c,PAD,d,M.pad),{delay:i*.3, drop:.2}));
+    add(4, span(X0+.04,PAD,-.02,X1-.04,PAD+.001,.02,M.tape,NE),{delay:.6, drop:0});
+    /* ⑤ 裁切（地毯卷＋預留量） */
+    add(5, pipe([-1.9,0.12,1.0],[1.9,0.12,1.0],.12,M.carpet),{until:5, drop:.2});
+    add(5, label('依尺寸裁切・四周預留修邊量',0,0.6,0.5,1.8),{until:5, drop:0, glow:false});
+    /* ⑥ 鋪兩塊＋接縫（x=0.6） */
+    add(6, span(X0-.05,PAD,Z0-.05,0.6,PAD+CT,Z1+.05,M.carpet),{drop:.2, cat:'carpet', until:7});
+    add(6, span(0.6,PAD,Z0-.05,X1+.05,PAD+CT,Z1+.05,M.carpet),{delay:.3, drop:.2, cat:'carpet', until:7});
+    add(6, span(0.52,PAD-.001,Z0,0.68,PAD+.002,Z1,M.tape,NE),{delay:.6, drop:0, until:6});
+    /* ⑦ 張緊 */
+    add(7, group(span(-1.5,PAD+CT,0.3,-1.3,PAD+CT+.08,0.45,M.kick), pipe([-1.3,PAD+CT+.05,0.38],[-1.0,PAD+CT+.05,0.38],.02,M.kick)),{until:7, drop:-.2});
+    add(7, group(pipe([-1.6,PAD+CT+.04,-0.4],[1.6,PAD+CT+.04,-0.4],.012,M.rod), span(1.55,PAD+CT,-0.5,1.7,PAD+CT+.06,-0.3,M.kick)),{until:7, drop:-.2});
+    add(7, group(arrow([0.3,PAD+CT+.1,0],[1.2,PAD+CT+.1,0],M.laser), arrow([-0.3,PAD+CT+.1,0],[-1.2,PAD+CT+.1,0],M.laser)),{until:7, drop:0, glow:false});
+    add(7, label('膝撐＋張力器拉緊・勾上倒刺條',0,0.6,0.3,1.9),{until:7, drop:0, glow:false});
+    /* ⑧ 修邊（地毯剛好到牆邊） */
+    add(8, span(X0,PAD,Z0,0.6,PAD+CT,Z1,M.carpet),{drop:0, cat:'carpet'});
+    add(8, span(0.6,PAD,Z0,X1,PAD+CT,Z1,M.carpet),{drop:0, cat:'carpet'});
+    add(8, label('切除多餘・塞入倒刺條與牆之間',-0.6,0.5,-1.0,1.9),{until:8, drop:0, glow:false});
+    /* ⑨ 門口收邊條 */
+    add(9, span(X1-.04,PAD,0,X1+.02,PAD+CT+.008,0.9,M.trim),{drop:.2});
+    add(9, label('門口收邊條',X1-0.3,0.45,0.45,0.9),{until:9, drop:0, glow:false});
+    /* ⑩ 吸塵 */
+    add(10, group(span(-0.3,PAD+CT,0.1,0.0,PAD+CT+.1,0.4,M.vac), pipe([-0.15,PAD+CT+.1,0.25],[-0.15,0.9,0.6],.012,M.rod)),{until:10, drop:-.2});
+  },
+});
+</script>
+</body>
+</html>

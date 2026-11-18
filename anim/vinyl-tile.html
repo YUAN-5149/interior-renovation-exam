@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>塑膠地磚鋪貼施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：塑膠（PVC）地磚鋪貼 10 步驟施工順序 3D 互動動畫，含整平、中心十字放樣、齒刀塗膠、晾膠、壓輥。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'水泥粉光地坪，要鋪貼塑膠（PVC）地磚。',
+   tip:'術科考過「PVC 地板施工工具用途」：美工刀、直尺、直角尺、雷射墨線儀、刮刀、鏟刀、瓦斯噴燈。本動畫步驟依一般施工實務整理，請對照課本確認。'},
+  {t:'地坪檢查', d:'檢查地坪平整度、乾燥程度與含水率。', tip:'地坪潮濕會讓膠失效、地磚翹起。'},
+  {t:'整平・研磨', d:'凹凸處批土或以自平材整平，乾燥後研磨。', tip:'塑膠地磚很薄，地面不平會直接透出來。'},
+  {t:'清潔', d:'清除灰塵、油污、雜物。', tip:'灰塵會讓膠黏不住。'},
+  {t:'中心十字放樣', d:'從房間中心彈出十字基準線。', tip:'從中心往外排，四周裁切的磚才會一樣寬。'},
+  {t:'齒刀塗膠', d:'以齒刀（刮刀）在地面均勻塗膠。', tip:'齒刀讓膠的厚度一致。'},
+  {t:'晾膠', d:'依廠商規定時間晾膠。', tip:'膠還太濕就貼，地磚會滑動、溢膠。'},
+  {t:'由中心往外鋪貼', d:'沿十字基準線，由中心往外鋪貼。', tip:'第一塊要對準十字線，後面依序靠緊。'},
+  {t:'壓輥壓實', d:'以壓輥壓實，擠出空氣。', tip:'壓實讓地磚與膠完全密合。'},
+  {t:'牆邊裁切・踢腳板', d:'牆邊依尺寸裁切（必要時以噴燈加熱軟化），安裝踢腳板。', tip:'裁切要貼齊牆邊，再用踢腳板收邊。'},
+  {t:'清潔保護', d:'擦除溢膠、清潔，養護期間避免重物壓放。', tip:'膠完全乾燥前，不要拖拉重物。'},
+];
+
+createAnim({
+  title: '塑膠地磚鋪貼施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 8, 5],
+  views: {
+    def:{dir:[0.4,0.78,0.48], dist:5.0, target:[0,0,0.1]},
+    5:  {dir:[0.5,0.55,0.67], dist:2.4, target:[0.4,0,0.4]},
+    8:  {dir:[0.5,0.55,0.67], dist:2.4, target:[0.2,0,0.2]},
+  },
+  note: '地磚厚度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.7, X1=1.7, Z0=-1.2, Z1=1.2, T=0.3, TT=0.01, GL=0.002;
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}), bump: mat('#a8a49d'), putty: mat('#e7e5e4'),
+      meter: mat('#facc15'), dark: mat('#292524'), sand: mat('#ca8a04'), dust: mat('#e7e5e4'), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      glue: mat('#fef9c3',{transparent:true, opacity:.75, depthWrite:false}), trowel: mat('#94a3b8',{metalness:.5}), handle: mat('#7c2d12'),
+      tiles: ['#d6c7ae','#cbb89a','#e0d3bd'].map(c=>mat(c,{roughness:.5})), roller: mat('#1f2937'), torch: mat('#2563eb'), flame: mat('#f97316',{emissive:'#ea580c', emissiveIntensity:.8}),
+      skirt: mat('#57534e'), clock: mat('#f8fafc'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.9,-0.15,-1.4,1.9,0,1.4,M.slab));
+    fixed(span(-1.9,0,-1.4,1.9,0.6,Z0,M.wall)); fixed(span(-1.9,0,Z0,X0,0.6,1.4,M.wall));
+    add(0, group(span(-0.8,0,0.4,-0.6,.012,0.6,M.bump), span(0.9,-.006,-0.5,1.1,.0005,-0.3,mat('#78716c'))),{until:1, drop:0});
+
+    add(1, group(span(0.1,0,0.1,0.24,0.04,0.3,M.meter), span(0.12,0.04,0.12,0.22,0.042,0.25,M.dark,NE)),{until:1, drop:-.2});
+    add(1, label('平整度・乾燥・含水率',0,0.5,0.2,1.3),{until:1, drop:0, glow:false});
+    add(2, group(span(-0.85,0,0.35,-0.55,.004,0.65,M.putty,NE), span(0.85,0,-0.55,1.15,.004,-0.25,M.putty,NE)),{drop:0});
+    add(2, span(0.95,.004,-0.45,1.1,.04,-0.35,M.sand),{until:2, drop:-.2});
+    for (let i=0;i<10;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.008,6,6), M.dust.clone()); d.position.set(0.9+((i*0.07)%0.2),.03+((i*0.03)%0.05),-0.5+((i*0.11)%0.2)); add(3, d, {delay:i*.03, drop:0, until:2, glow:false}); }
+    add(3, label('清除灰塵・油污',0,0.5,0.2,1.0),{until:3, drop:0, glow:false});
+    add(4, group(span(X0,.004,-.003,X1,.006,.003,M.laser,NE), span(-.003,.004,Z0,.003,.006,Z1,M.laser,NE)),{until:8, drop:0, glow:false});
+    add(4, label('房間中心十字線',0,0.4,0,1.0),{until:4, drop:0, glow:false});
+    { const g=group(); for (let z=0.02;z<Z1;z+=0.03) g.add(span(0.0,.004,z,X1,.004+GL,z+.015,M.glue,NE)); add(5, g, {drop:0, until:10}); }
+    add(5, group(span(0.6,.006,0.5,0.85,.01,0.6,M.trowel), span(0.7,.01,0.53,0.75,.08,0.57,M.handle)),{until:5, drop:-.2});
+    { const g=group(); for (let z=Z0;z<0;z+=0.03) g.add(span(X0,.004,z,X1,.004+GL,z+.015,M.glue,NE)); for (let z=0.02;z<Z1;z+=0.03) g.add(span(X0,.004,z,0,.004+GL,z+.015,M.glue,NE)); add(5, g, {delay:.6, drop:0, until:10}); }
+    add(6, group(pipe([-1.3,0,0.9],[-1.3,0.02,0.9],.12,M.clock), span(-1.31,0.02,0.82,-1.29,0.025,0.9,M.dark,NE)),{until:6, drop:.1});
+    add(6, label('依廠商規定時間晾膠',-1.0,0.45,0.9,1.2),{until:6, drop:0, glow:false});
+    const tiles=[]; for (let i=-6;i<6;i++) for (let j=-4;j<4;j++){ const x=i*T, z=j*T, xa=Math.max(x,X0), xb=Math.min(x+T,X1), za=Math.max(z,Z0), zb=Math.min(z+T,Z1); if (xb-xa<.02||zb-za<.02) continue; tiles.push([xa,xb,za,zb,i,j]); }
+    tiles.forEach(([xa,xb,za,zb,i,j])=>{ const d=Math.max(Math.abs(i+.5),Math.abs(j+.5)); const edge = xa===X0||xb===X1||za===Z0||zb===Z1;
+      add(edge?9:7, span(xa+.001,.006,za+.001,xb-.001,.006+TT,zb-.001,M.tiles[((i+j)%3+3)%3]),{delay:edge?0.1:d*.15, drop:.15}); });
+    add(8, group(pipe([0.0,0.06,0.2],[0.0,0.06,0.6],.05,M.roller), span(-0.01,0.06,0.38,0.01,0.6,0.42,M.handle)),{until:8, drop:-.15});
+    add(8, label('壓輥壓實・擠出空氣',0.2,0.6,0.4,1.2),{until:8, drop:0, glow:false});
+    add(9, group(span(X0+0.1,.02,-0.95,X0+0.25,.06,-0.9,M.torch), span(X0+0.05,.016,-0.95,X0+0.1,.03,-0.9,M.flame)),{until:9, drop:-.15});
+    add(9, group(span(X0,0,Z0,X1,0.08,Z0+.012,M.skirt), span(X0,0,Z0,X0+.012,0.08,Z1,M.skirt)),{delay:.6, drop:.15});
+    add(9, label('牆邊裁切（噴燈軟化）・踢腳板',-0.6,0.5,-0.7,1.9),{until:9, drop:0, glow:false});
+    add(10, label('清除溢膠・養護期避免重壓',0,0.5,0.2,1.7),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

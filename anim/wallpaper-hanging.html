@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>壁紙張貼施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：壁紙（壁布）張貼 10 步驟施工順序 3D 互動動畫，含封底、鉛垂線、悶膠、對花、刮氣泡、切邊。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'石膏板牆面已完成，要張貼壁紙；牆上有一個開關。',
+   tip:'壁紙在學科、術科都常考（材質、拆除、耐燃壁布注意事項、氣泡處理）。步驟依題庫相關答案與一般施工實務整理，請對照課本確認。'},
+  {t:'底材檢查', d:'確認底材平整、乾燥、無油污。', tip:'壁紙很薄，底材的凹凸都會透出來。'},
+  {t:'批土研磨', d:'接縫、螺絲孔、凹陷批土，乾燥後研磨。', tip:'批土後要清除粉塵，否則壁紙黏不牢。'},
+  {t:'塗封底劑', d:'全面塗刷封底劑。', tip:'防止底材過度吸膠、發霉，日後也比較好拆。'},
+  {t:'鉛垂線放樣', d:'在第一幅位置彈出鉛垂線。', tip:'房間的牆角不一定垂直，第一幅一定要對鉛垂線。'},
+  {t:'裁紙・上膠・悶膠', d:'依高度裁紙（上下各預留約 5 cm），上膠後對折靜置悶膠。', tip:'悶膠讓壁紙吸膠膨脹，貼上牆後才不會再伸縮起皺。'},
+  {t:'貼第一幅', d:'第一幅對齊鉛垂線，由上往下貼。', tip:'第一幅是後面所有幅的基準。'},
+  {t:'刮氣泡', d:'刮刀由中間向外刮，排除氣泡。', tip:'從中間往兩側刮，空氣才有路出去。'},
+  {t:'依序對花對縫', d:'依序貼第二、三幅，對花、對縫。', tip:'對縫可以採「對接」，不要重疊。'},
+  {t:'切邊・開關切割', d:'上下多餘部分沿天花與踢腳切齊；開關處斷電後精準切割。', tip:'用直尺壓著，美工刀一刀切下，切口才整齊。'},
+  {t:'擦拭溢膠・檢查', d:'溢出的膠立即擦拭，檢查氣泡與接縫。', tip:'107 年學科：壁紙起泡，可用針刺孔或割開，注入黏劑壓平。'},
+];
+
+createAnim({
+  title: '壁紙張貼施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.35,0.2,0.92], dist:4.8, target:[0,1.2,0.2]},
+    5:  {dir:[0.45,0.5,0.74], dist:3.0, target:[0.8,0.5,0.8]},
+    10: {dir:[0.3,0.12,0.95], dist:2.4, target:[1.1,1.3,0]},
+  },
+  note: '壁紙厚度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.2, W=0.53, Y0=0.1, Y1=2.45, ZP=.004;
+    function paperTex(){
+      const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+      g.fillStyle='#f3e8d6'; g.fillRect(0,0,128,128); g.fillStyle='#c2a878';
+      for (let i=0;i<4;i++) for (let j=0;j<4;j++){ g.save(); g.translate(16+i*32,16+j*32); g.rotate(.785); g.fillRect(-6,-6,12,12); g.restore(); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2,9); return t; }
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#d9d4c9',{roughness:.95}), skirt: mat('#6b3f22'), plate: mat('#fafaf9'),
+      putty: mat('#f8fafc'), sand: mat('#ca8a04'), prime: mat('#e0e7ff',{transparent:true, opacity:.35, depthWrite:false}),
+      line: mat('#ef4444'), bob: mat('#292524'), paper: mat('#ffffff',{map:paperTex(), roughness:.8}), back: mat('#f8f5ee'),
+      table: mat('#a16207'), glue: mat('#f8fafc',{transparent:true, opacity:.6, depthWrite:false}), steel: mat('#94a3b8',{metalness:.5}),
+      knife: mat('#facc15'), sponge: mat('#facc15'), red: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.6}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.15,-0.3,2,0,1.6,M.slab));
+    fixed(span(-2,0,-0.2,2,2.6,0,M.wall));
+    fixed(span(-2,0,0,2,Y0,.015,M.skirt));
+    const SW={x:1.1,y:1.25};
+    add(0, span(SW.x-.06,SW.y-.09,0,SW.x+.06,SW.y+.09,.008,M.plate),{until:9, drop:0});
+    fixed(span(0.5,0,0.6,1.4,0.7,1.1,M.table));
+
+    add(1, span(-0.9,0.3,.004,-0.84,2.3,.03,M.steel),{until:1, drop:-.2});
+    add(1, label('平整・乾燥・無油污',0,2.55,0.2,1.2),{until:1, drop:0, glow:false});
+    { const g=group(); [-0.6,0.3].forEach(x=> g.add(span(x-.05,Y0,0,x+.05,Y1+.1,.002,M.putty,NE))); for (let i=0;i<8;i++) g.add(span(-1.5+i*0.4,1.0+(i%3)*0.4,0,-1.47+i*0.4,1.03+(i%3)*0.4,.002,M.putty,NE));
+      add(2, g, {drop:0}); add(2, span(0.25,1.3,.003,0.4,1.38,.04,M.sand),{until:2, drop:-.2}); }
+    add(3, span(-2,Y0,.0025,2,2.6,.0035,M.prime,NE),{drop:0});
+    add(4, group(pipe([X0,2.55,.02],[X0,0.2,.02],.002,M.bob), span(X0-.02,0.12,.01,X0+.02,0.2,.03,M.bob), span(X0-.002,Y0,.0035,X0+.002,Y1,.004,M.line,NE)),{until:6, drop:0, glow:false});
+    add(4, label('第一幅對鉛垂線',X0,2.7,0.2,1.1),{until:4, drop:0, glow:false});
+    add(5, group(span(0.55,0.7,0.65,1.35,0.703,1.05,M.back), span(0.55,0.703,0.65,1.35,0.705,1.05,M.glue,NE), span(0.55,0.705,0.85,1.35,0.71,1.05,M.paper)),{drop:.2, until:5});
+    add(5, label('上下各留約 5 cm・上膠後悶膠',0.95,1.1,0.85,1.8),{until:5, drop:0, glow:false});
+    add(6, span(X0,Y0,ZP-.0005,X0+W-.001,Y1+.05,ZP+.002,M.paper),{drop:-.3});
+    add(7, span(X0+W*0.5-.15,1.6,ZP+.003,X0+W*0.5+.15,1.66,ZP+.02,M.steel),{until:7, drop:0});
+    add(7, group(arrow([X0+W*0.5,1.75,.03],[X0+.04,1.75,.03],M.red), arrow([X0+W*0.5,1.75,.03],[X0+W-.04,1.75,.03],M.red)),{until:7, drop:0, glow:false});
+    add(7, label('由中間向外刮',X0+W/2,2.05,0.1,0.9),{until:7, drop:0, glow:false});
+    for (let i=1;i<5;i++) add(8, span(X0+i*W+.001,Y0,ZP-.0005,X0+(i+1)*W-.001,Y1+.05,ZP+.002,M.paper),{delay:(i-1)*.3, drop:-.3});
+    add(8, label('對花・對縫',0,2.65,0.2,0.9),{until:8, drop:0, glow:false});
+    add(9, span(X0,Y1,ZP+.002,X0+5*W,Y1+.004,ZP+.005,M.red,NE),{until:9, drop:0, glow:false});
+    add(9, span(SW.x-.06,SW.y-.09,ZP+.002,SW.x+.06,SW.y+.09,ZP+.004,M.red,NE),{until:9, drop:0, glow:false});
+    add(9, group(span(SW.x+.1,SW.y-.02,.02,SW.x+.25,SW.y+.01,.04,M.knife)),{until:9, drop:-.2});
+    add(9, label('沿天花・踢腳切齊，開關先斷電再切',0.2,2.65,0.2,2.1),{until:9, drop:0, glow:false});
+    add(10, span(SW.x-.06,SW.y-.09,ZP+.002,SW.x+.06,SW.y+.09,ZP+.009,M.plate),{drop:.1});
+    add(10, span(X0+2*W-.05,0.8,.01,X0+2*W+.1,0.92,.06,M.sponge),{until:10, drop:-.2});
+    add(10, label('溢膠立即擦拭・檢查',0,2.65,0.2,1.3),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

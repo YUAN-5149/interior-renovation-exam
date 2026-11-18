@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>高架實木地板施工程序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：高架實木地板（以角材為支撐結構、下墊木塊）9 步驟施工程序 3D 互動動畫。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'RC 樓板上要做高架實木地板，角材下方墊木塊調整高度。',
+   tip:'114 年術科：「依序寫出高架實木地板（以角材為支撐結構）之施工程序及內容」。和「高架木地板（固定筋）」是不同題，答案也不同：這題用「墊木塊」調高度。'},
+  {t:'放樣', d:'彈出完成面高度水平線，以及角材位置（@30～45 cm）。', tip:'完成面高度扣掉面板、底板、角材，就是墊木塊要墊的高度。'},
+  {t:'清潔整平・PE 防潮布', d:'地面清潔、整平，滿鋪 PE 防潮布（重疊 15 cm 以上）。', tip:'PE 布接縫要重疊 15 cm 以上，四周往牆上翻。'},
+  {t:'架設角材・墊木塊', d:'架設角材：下墊木塊調整高度，以鋼釘或擊釘固定於樓板，並調整水平。', tip:'木塊墊在角材下方，一邊墊一邊用水平儀調整。'},
+  {t:'加橫撐成格架', d:'支撐角材之間加橫撐，形成格架。', tip:'格架讓底板四邊都有角材可以釘。'},
+  {t:'舖 12 mm 底板', d:'12 mm 夾板釘於角材上，接縫錯開，留約 3 mm 伸縮縫。', tip:'底板之間留縫，吸收木材伸縮。'},
+  {t:'舖實木地板', d:'從牆邊開始，母榫靠牆，牆邊留 8～10 mm 伸縮縫；於公榫處斜打暗釘並塗白膠。', tip:'實木伸縮量大，牆邊一定要留伸縮縫，否則會拱起。'},
+  {t:'板端接頭錯開', d:'板端接頭錯開。', tip:'接頭集中在同一條線上，地板容易沿接頭下陷、開裂。'},
+  {t:'踢腳板・收邊條', d:'安裝踢腳板或收邊條。', tip:'踢腳板蓋住牆邊的伸縮縫。'},
+  {t:'表面處理與保護', d:'表面處理與保護。', tip:'完成後鋪保護板，避免後續工程刮傷。'},
+];
+
+createAnim({
+  title: '高架實木地板施工程序',
+  steps: STEPS,
+  views: {
+    def:{dir:[0.62,0.55,0.70], dist:7.6, target:[0,0.1,0]},
+    3:  {dir:[0.55,0.42,0.78], dist:4.6, target:[0.3,0.1,0.1]},
+    6:  {dir:[0.5,0.5,0.7],    dist:4.6, target:[-0.8,0.2,-0.6]},
+  },
+  cut: {
+    plank:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.4)],
+    ply:  [new THREE.Plane(new THREE.Vector3(-1,0,0), 1.0)],
+  },
+  cutLabel: '切開實木地板與底板，看角材與墊木塊',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.9, X1=1.9, Z0=-1.4, Z1=1.4, S=0.05, B=0.05, H=B+S, PLY=0.025, FIN=0.02, FF=H+PLY+FIN, GAP=0.03;
+    const M = {
+      wall: mat('#f5f4f1',{roughness:.95}), slab: mat('#d3cec8',{roughness:1}),
+      ghost: mat('#ffffff',{transparent:true, opacity:.18, depthWrite:false}),
+      wood: mat('#dcb97f'), block: mat('#a16207'), ply: mat('#ead39f',{roughness:.9}),
+      pe: mat('#dbeafe',{roughness:.4, transparent:true, opacity:.6, side:2, depthWrite:false}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), nail: mat('#7f1d1d'),
+      skirt: mat('#6b3f22',{roughness:.7}), board: mat('#cbd5e1',{transparent:true, opacity:.5, depthWrite:false}),
+      planks: ['#b8763f','#a86a36','#c4844c','#9c5e30'].map(c=>mat(c,{roughness:.5})),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.2,-1.5,2,0,1.5,M.slab));
+    fixed(span(-2,0,-1.5,2,1.4,Z0,M.wall)); fixed(span(-2,0,Z0,X0,1.4,1.5,M.wall));
+    for (const w of [span(X0,0,Z1,2,0.5,1.5,M.ghost,{shadow:false}), span(X1,0,Z0,2,0.5,Z1,M.ghost,{shadow:false})]) { w.receiveShadow=false; w.renderOrder=2; w.children[0].material.opacity=.5; fixed(w); }
+
+    /* ① 放樣 */
+    { const LA={drop:0, until:3, glow:false};
+      add(1, span(X0,FF-.005,Z0,X1,FF+.005,Z0+.01,M.laser,NE),{...LA, until:8});
+      add(1, span(X0,FF-.005,Z0,X0+.01,FF+.005,Z1,M.laser,NE),{...LA, until:8});
+      for (let z=-1.2;z<=1.21;z+=0.4) add(1, span(X0,0.001,z-.003,X1,0.003,z+.003,M.laser,NE),{...LA, delay:.3}); }
+    add(1, label('完成面水平線・角材 @30～45',0,0.9,0.3,1.6),{until:1, drop:0, glow:false});
+
+    /* ② PE 防潮布（重疊） */
+    add(2, group(span(X0,.004,Z0,0.1,.008,Z1,M.pe,NE), span(-0.05,.009,Z0,X1,.013,Z1,M.pe,NE),
+      span(X0,.004,Z0,X1,.14,Z0+.004,M.pe,NE), span(X0,.004,Z0,X0+.004,.14,Z1,M.pe,NE)),{delay:0, drop:.4});
+    add(2, label('重疊 15 cm 以上',0.02,0.45,0.2,1.0),{until:2, drop:0, glow:false});
+
+    /* ③ 角材＋墊木塊（沿 z 方向的主角材，每 0.4 m） */
+    const JZ=[]; for (let z=-1.2;z<=1.21;z+=0.4) JZ.push(z);
+    JZ.forEach((z,i)=>{
+      const g=group(span(X0+.02,B,z-S/2,X1-.02,H,z+S/2,M.wood));
+      for (let x=X0+0.2;x<X1;x+=0.6){ g.add(span(x-.05,0.013,z-.04,x+.05,B,z+.04,M.block)); g.add(pipe([x,H,z],[x,0,z],.005,M.nail)); }
+      add(3, g, {delay:i*.15, drop:.4});
+    });
+    add(3, label('下墊木塊調高度・擊釘固定・調水平',0.3,0.85,0.2,2.0),{until:3, drop:0, glow:false});
+
+    /* ④ 橫撐 */
+    { let k=0; for (let i=0;i<JZ.length-1;i++) for (let x=X0+0.5;x<X1;x+=0.6)
+        add(4, span(x-S/2,B,JZ[i]+S/2,x+S/2,H,JZ[i+1]-S/2,M.wood),{delay:(k++)*.03, drop:.3}); }
+
+    /* ⑤ 12 mm 底板（接縫錯開、留縫） */
+    { let k=0; const W=1.22, D=0.61;
+      for (let r=0, z=Z0; z<Z1-1e-3; r++, z+=D){ for (let x=X0-(r%2?W/2:0); x<X1-1e-3; x+=W){
+        const xa=Math.max(x,X0)+.004, xb=Math.min(x+W,X1)-.004; if (xb-xa<.05) continue;
+        add(5, span(xa,H,z+.004,xb,H+PLY,Math.min(z+D,Z1)-.004,M.ply),{delay:(k++)*.05, drop:.3, cat:'ply'}); } } }
+    add(5, label('接縫錯開・留約 3 mm',0,0.75,0.3,1.3),{until:5, drop:0, glow:false});
+
+    /* ⑥⑦ 實木地板（母榫靠牆、牆邊留縫；接頭錯開） */
+    { const PW=0.15, PL=0.9, FIRST=6; let r=0;
+      for (let z=Z0+GAP; z<Z1-GAP-1e-3; z+=PW, r++){
+        const step = r<FIRST ? 6 : 7, off=(r*0.37)%PL; let c=0;
+        for (let x=X0+GAP-off; x<X1-GAP-1e-3; x+=PL, c++){
+          const xa=Math.max(x,X0+GAP), xb=Math.min(x+PL,X1-GAP); if (xb-xa<.05) continue;
+          add(step, span(xa+.002,H+PLY,z+.002,xb-.002,FF,Math.min(z+PW,Z1-GAP)-.002,M.planks[(r+c)%4]),{delay:(step===6?r*.12:(r-FIRST)*.06)+c*.03, drop:.25, cat:'plank'});
+        }
+        if (r===FIRST-1) for (let x=X0+0.3;x<X1;x+=0.6) add(6, pipe([x,H+PLY+FIN*.6,z+PW+.003],[x,H+.01,z+PW-.03],.005,M.nail),{delay:FIRST*.12+.3, drop:0, until:6, glow:false});
+      } }
+    add(6, label('牆邊留 8～10 mm・公榫斜打暗釘＋白膠',-0.5,0.85,-0.6,2.2),{until:6, drop:0, glow:false});
+    add(7, label('板端接頭錯開',0,0.75,0.3,1.0),{until:7, drop:0, glow:false});
+
+    /* ⑧ 踢腳板 */
+    add(8, span(X0,FF,Z0,X1,FF+.08,Z0+.015,M.skirt),{delay:0, drop:.2});
+    add(8, span(X0,FF,Z0+.015,X0+.015,FF+.08,Z1,M.skirt),{delay:.2, drop:.2});
+    add(8, span(X0+.015,FF,Z1-.015,X1,FF+.08,Z1,M.skirt),{delay:.4, drop:.2});
+    add(8, span(X1-.015,FF,Z0+.015,X1,FF+.08,Z1-.015,M.skirt),{delay:.6, drop:.2});
+
+    /* ⑨ 表面處理與保護（保護板） */
+    add(9, span(-1.0,FF+.001,-0.8,1.0,FF+.01,0.8,M.board,NE),{delay:.3, drop:.2});
+    add(9, label('表面處理・鋪保護板',0,0.75,0.3,1.2),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

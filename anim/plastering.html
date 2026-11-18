@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>牆面水泥砂漿粉刷施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：牆面水泥砂漿粉刷（打底、粉光）9 步驟施工順序 3D 互動動畫，含灰誌標筋、刮尺、木鏝、鐵鏝。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'磚牆已砌好，要做水泥砂漿粉刷：先打底，再粉光。',
+   tip:'粉刷在學科、術科都常出現（工具題、粉刷前檢查題、面磚打底）。步驟依題庫相關答案與一般施工實務整理。'},
+  {t:'基面處理・濕潤', d:'清除浮灰、突出物，修補孔洞，灑水濕潤。', tip:'磚牆吸水快，粉刷前要充分濕潤。'},
+  {t:'刷純水泥漿', d:'刷一道純水泥漿，增加附著。', tip:'光滑或吸水性差的面，也可改塗接著劑。'},
+  {t:'設灰誌・標筋', d:'先做灰誌（灰餅），再連成標筋，控制粉刷厚度與垂直。', tip:'灰誌用鉛錘或雷射校正垂直，是整面牆的基準。'},
+  {t:'1:3 砂漿打底', d:'在標筋之間抹 1:3 水泥砂漿打底。', tip:'一次不要抹太厚，太厚要分層。'},
+  {t:'刮尺刮平・木鏝搓平', d:'以刮尺靠著標筋刮平，再以木鏝搓平（打底面略粗）。', tip:'打底面保持粗糙，上層粉光才咬得住。'},
+  {t:'打底養護', d:'打底層養護，待其硬化。', tip:'打底太快乾會龜裂，要保濕養護。'},
+  {t:'1:2 砂漿粉光（上度）', d:'以較細的 1:2 水泥砂漿薄抹一層粉光。', tip:'粉光層薄而細，是油漆或壁紙的底。'},
+  {t:'鐵鏝壓光', d:'以鐵鏝壓光，表面平整細緻。', tip:'壓光時機在初凝前後，太早會起砂、太晚壓不動。'},
+  {t:'養護', d:'粉刷完成後保濕養護。', tip:'養護不足會產生收縮裂縫與起砂。'},
+];
+
+createAnim({
+  title: '牆面水泥砂漿粉刷施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.4,0.22,0.89], dist:5.4, target:[0,1.15,0]},
+    3:  {dir:[0.6,0.25,0.76], dist:4.6, target:[0,1.15,0]},
+    5:  {dir:[0.6,0.2,0.77],  dist:4.0, target:[0,1.2,0]},
+  },
+  cut: {
+    fin: [new THREE.Plane(new THREE.Vector3(-1,0,0), -0.4)],
+    base:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.5)],
+  },
+  cutLabel: '階梯式切開粉光層與打底層',
+  note: '粉刷層厚度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.6, X1=1.6, Y1=2.5, ZS=0.003, ZB=0.022, ZF=0.028;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), joint: mat('#a8a29e'), brick: mat('#b45309',{roughness:.9}),
+      drop: mat('#60a5fa',{roughness:.2}), slurry: mat('#8f8b85'), dot: mat('#78716c'), base: mat('#9a948b',{roughness:1}),
+      baseD: mat('#b8b2a8',{roughness:1}), fin: mat('#d6d1c8',{roughness:.5}), finD: mat('#e2ded6',{roughness:.35}),
+      alu: mat('#cbd5e1',{metalness:.4}), wood: mat('#a16207'), steel: mat('#94a3b8',{metalness:.5}), handle: mat('#7c2d12'), line: mat('#ef4444'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.15,-0.4,2,0,1.5,M.slab));
+    fixed(span(-2,0,-0.2,2,2.6,-0.005,M.joint));
+    for (let r=0;r<41;r++){ const y=r*0.063, off=(r%2)*0.1; for (let x=-2-off;x<2;x+=0.21){ const a=Math.max(x,-2), b=Math.min(x+0.2,2); if (b-a>.03) fixed(span(a,y+.005,-0.005,b,y+.058,0,M.brick,NE)); } }
+
+    for (let i=0;i<22;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.016,8,6), M.drop.clone()); d.position.set(X0+0.1+((i*0.37)%3.0),0.2+((i*0.53)%2.2),.015); add(1, d, {delay:i*.03, drop:.15, until:1, glow:false}); }
+    add(2, span(X0,0,.0005,X1,Y1,ZS,M.slurry,NE),{drop:0, cat:'base'});
+    const RX=[X0+.05,-0.55,0.55,X1-.05];
+    { let k=0; RX.forEach(x=> [0.2,1.25,2.3].forEach(y=> add(3, span(x-.04,y-.04,ZS,x+.04,y+.04,ZB,M.dot),{delay:(k++)*.05, drop:0})));
+      RX.forEach((x,i)=> add(3, span(x-.04,0,ZS,x+.04,Y1,ZB-.0005,M.base),{delay:.8+i*.1, drop:0, cat:'base'}));
+      add(3, pipe([X0+.05,2.45,ZB+.01],[X0+.05,0.15,ZB+.01],.002,M.line),{until:3, drop:0, glow:false});
+      add(3, label('灰誌 → 標筋（校正垂直）',0,2.75,0.2,1.5),{until:3, drop:0, glow:false}); }
+    for (let i=0;i<RX.length-1;i++){ const g=group(); for (let y=0;y<Y1;y+=0.3) g.add(span(RX[i]+.04,y,ZS,RX[i+1]-.04,Math.min(y+0.3,Y1),ZB-.002+((y*7)%3)*.002,M.base,NE));
+      add(4, g, {delay:i*.3, drop:0, cat:'base'}); }
+    add(5, span(X0-.1,1.4,ZB+.002,X1+.1,1.46,ZB+.03,M.alu),{until:5, drop:-.6});
+    add(5, span(X0,0,ZB-.004,X1,Y1,ZB-.0005,M.base,NE),{delay:.4, drop:0, cat:'base'});
+    add(5, group(span(0.2,0.8,ZB+.002,0.45,0.92,ZB+.02,M.wood), span(0.3,0.84,ZB+.02,0.35,0.88,ZB+.07,M.handle)),{delay:.6, drop:0, until:5});
+    add(6, span(X0,0,ZB-.0004,X1,Y1,ZB,M.baseD,NE),{delay:.2, drop:0, cat:'base'});
+    add(6, label('打底層養護',0,2.75,0.2,1.0),{until:6, drop:0, glow:false});
+    for (let i=0;i<4;i++) add(7, span(X0+i*0.8,0,ZB,X0+(i+1)*0.8,Y1,ZF,M.fin,NE),{delay:i*.25, drop:0, cat:'fin'});
+    add(7, label('1:2 砂漿薄抹一層',0,2.75,0.2,1.2),{until:7, drop:0, glow:false});
+    add(8, span(X0,0,ZF,X1,Y1,ZF+.0005,M.finD,NE),{delay:.3, drop:0, cat:'fin'});
+    add(8, group(span(-0.3,1.0,ZF+.002,0.0,1.1,ZF+.006,M.steel), span(-0.17,1.04,ZF+.006,-0.13,1.06,ZF+.06,M.steel), span(-0.22,1.03,ZF+.05,-0.08,1.07,ZF+.07,M.handle)),{until:8, drop:-.2});
+    for (let i=0;i<16;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6), M.drop.clone()); d.position.set(X0+0.1+((i*0.41)%3.0),0.2+((i*0.57)%2.2),ZF+.012); add(9, d, {delay:i*.03, drop:.12, until:9, glow:false}); }
+    add(9, label('保濕養護',0,2.75,0.2,0.9),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>
