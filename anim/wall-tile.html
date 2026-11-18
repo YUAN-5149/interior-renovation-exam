@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>牆面磁磚硬底工法施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：RC 內牆硬底工法面磚鋪貼 11 步驟施工順序 3D 互動動畫，可逐步播放、旋轉視角、看剖面。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111803';
+
+const STEPS = [
+  {t:'施工前', d:'鋼筋混凝土內牆，要用硬底工法鋪貼磁磚。',
+   tip:'術科考過「RC 內牆硬底工法面磚鋪貼施工程序」：基面處理 → 刷純水泥漿 → 灰誌與 1:3 砂漿打底 → 養護 → 分割放樣 → 塗黏著劑 → 由下往上鋪貼 → 清溢漿 → 養護 → 填縫 → 清潔保護。'},
+  {t:'基面處理', d:'清除浮漿、油污、突出物，修補孔洞，再灑水濕潤。',
+   tip:'灑水濕潤，是避免乾燥的混凝土把砂漿水分吸走，造成打底層黏不牢。'},
+  {t:'刷純水泥漿', d:'在牆面刷一層純水泥漿。',
+   tip:'純水泥漿可以增加打底砂漿與 RC 牆面的附著力。'},
+  {t:'灰誌・1:3 砂漿打底', d:'先設灰誌（標筋），再以 1:3 水泥砂漿粉刷打底，刮尺修平、木鏝搓平。',
+   tip:'灰誌是粉刷厚度與平整度的基準；刮尺靠著灰誌刮過，牆面才會平直。'},
+  {t:'養護', d:'打底層養護約 48 小時以上，讓砂漿硬化。',
+   tip:'打底層沒養護好就貼磚，容易收縮開裂、造成空鼓。'},
+  {t:'分割計畫・放樣', d:'依磁磚分割計畫，彈出水平、垂直基準線。',
+   tip:'分割計畫要避免出現小於 1/3 的碎磚；基準線決定整面磚縫是否平直。'},
+  {t:'塗佈黏著劑', d:'以鋸齒鏝刀在打底面塗佈黏著劑（或益膠泥）。',
+   tip:'鋸齒鏝刀刮出的齒紋讓黏著材厚度一致，壓貼後才能滿漿、不空鼓。'},
+  {t:'由下往上鋪貼', d:'依基準線由下往上鋪貼，以橡皮槌敲實，用定位片控制縫寬。',
+   tip:'由下往上貼，下排磚可以撐住上排；橡皮槌敲實能排出空氣，避免空鼓。'},
+  {t:'清除溢出黏著材', d:'趁黏著材還沒乾，清除磚縫與磚面溢出的黏著材。',
+   tip:'溢漿乾了很難清除，也會讓之後的填縫不飽滿。'},
+  {t:'養護', d:'鋪貼完成後養護 24～48 小時。',
+   tip:'黏著材硬化前不要填縫或碰撞磁磚，以免磁磚移位。'},
+  {t:'填縫', d:'取下定位片，以海綿鏝把填縫劑壓入磚縫。',
+   tip:'填縫要飽滿、無孔洞，才能防止水分與髒污滲入磚縫。'},
+  {t:'清潔與保護', d:'清潔磚面並做好保護，完成磁磚鋪貼。',
+   tip:'完成後要檢查：平整度、縫寬是否一致、敲擊檢查有無空鼓、有無色差或破損。'},
+];
+
+createAnim({
+  title: '牆面磁磚硬底工法施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.38,0.2,0.9],  dist:6.2, target:[0,1.2,0]},
+    1:  {dir:[0.35,0.18,0.92], dist:5.0, target:[0,1.1,0]},
+    3:  {dir:[0.55,0.2,0.81], dist:5.6, target:[0,1.2,0]},
+    7:  {dir:[0.4,0.25,0.88], dist:4.4, target:[0,0.8,0]},
+    8:  {dir:[0.35,0.15,0.92], dist:3.2, target:[0.3,0.9,0]},
+    10: {dir:[0.35,0.15,0.92], dist:3.2, target:[0.3,0.9,0]},
+  },
+  cut: {
+    tile:   [new THREE.Plane(new THREE.Vector3(-1,0,0), -0.3)],
+    glue:   [new THREE.Plane(new THREE.Vector3(-1,0,0), 0.3)],
+    plaster:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.9)],
+  },
+  cutLabel: '階梯式切開磁磚、黏著劑、打底層，看各層構造',
+  note: '模型的粉刷、黏著劑與磁磚厚度有誇大，方便看清楚各層構造。',
+  build({THREE, mat, box, span, pipe, group, add, fixed}) {
+    /* 尺寸（公尺）：牆面在 z=0，各層往 +z 疊 */
+    const X0=-1.5, X1=1.5, Y0=0, Y1=2.4, T=0.3, J=0.006;      // 範圍、磚 30×30、縫寬
+    const Z_SL=0.003, Z_PL=0.025, Z_AD0=0.026, Z_AD=0.031, Z_TL=0.041;
+
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      rc:    mat('#b9b6b0',{roughness:1}),
+      bump:  mat('#a8a49d',{roughness:1}),
+      hole:  mat('#57534e',{roughness:1}),
+      patch: mat('#c9c5bd',{roughness:1}),
+      wet:   mat('#475569',{transparent:true, opacity:.22, depthWrite:false}),
+      drop:  mat('#60a5fa',{roughness:.2}),
+      slurry:mat('#8f8b85',{roughness:1}),
+      plasW: mat('#9a948b',{roughness:1}),
+      plasD: mat('#d4cec3',{roughness:1}),
+      alu:   mat('#cbd5e1',{metalness:.4, roughness:.35}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      glue:  mat('#e7e5e4',{roughness:1}),
+      steel: mat('#94a3b8',{metalness:.4, roughness:.4}),
+      handle:mat('#7c2d12',{roughness:.6}),
+      tiles: ['#eef1f3','#e8ecef','#f3f5f6'].map(c=>mat(c,{roughness:.22})),
+      blob:  mat('#d6d3d1',{roughness:1}),
+      spacer:mat('#f97316',{roughness:.6}),
+      rubber:mat('#1c1917',{roughness:.7}),
+      grout: mat('#a8a29e',{roughness:1}),
+      sponge:mat('#facc15',{roughness:1}),
+      film:  mat('#bae6fd',{transparent:true, opacity:.28, roughness:.2, depthWrite:false}),
+    };
+    const NE = {edges:false, shadow:false};
+
+    // 文字標籤（永遠面向鏡頭）
+    function label(text, x, y, z, w=1.3){
+      const c=document.createElement('canvas'); c.width=512; c.height=128;
+      const g=c.getContext('2d');
+      g.fillStyle='#fffbeb'; g.strokeStyle='#d97706'; g.lineWidth=8;
+      g.beginPath(); g.roundRect(6,6,500,116,28); g.fill(); g.stroke();
+      g.fillStyle='#92400e';
+      let fs=54; do { g.font=`bold ${fs}px "Noto Sans TC","Microsoft JhengHei",sans-serif`; fs-=2; } while (g.measureText(text).width>450 && fs>20);
+      g.textAlign='center'; g.textBaseline='middle'; g.fillText(text,256,68);
+      const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace;
+      const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex, depthTest:false}));
+      s.scale.set(w, w/4, 1); s.position.set(x,y,z); s.renderOrder=10;
+      return s;
+    }
+
+    // 樓板、RC 牆
+    fixed(span(-2.1,-0.15,-0.4, 2.1,0,1.6, M.slab));
+    fixed(span(-2.1,0,-0.25, 2.1,2.7,0, M.rc));
+
+    /* 施工前：突出物、孔洞（第 1 步處理掉） */
+    const BUMPS=[[-1.0,1.8],[0.4,0.7],[1.1,1.5],[-0.3,0.35]], HOLES=[[-0.7,1.0],[0.8,2.0],[0.2,1.5]];
+    BUMPS.forEach(([x,y])=> add(0, span(x-.06,y-.04,0,x+.06,y+.04,.02,M.bump),{until:0, drop:0}));
+    HOLES.forEach(([x,y])=> add(0, span(x-.05,y-.05,0,x+.05,y+.05,.001,M.hole,NE),{until:0, drop:0}));
+
+    /* ① 基面處理：補孔、灑水濕潤 */
+    HOLES.forEach(([x,y],i)=> add(1, span(x-.06,y-.06,0,x+.06,y+.06,.002,M.patch),{delay:.2+i*.12, drop:0}));
+    add(1, span(X0,Y0,.0025,X1,Y1,.003,M.wet,NE),{delay:.7, drop:0, until:2});
+    for (let i=0;i<26;i++){
+      const x=X0+0.1+((i*0.37)%2.8), y=0.2+((i*0.53)%2.1);
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.018,10,8), M.drop.clone());
+      d.position.set(x,y,.015);
+      add(1, d, {delay:.7+i*.02, drop:.15, until:1, glow:false});
+    }
+
+    /* ② 純水泥漿 */
+    add(2, span(X0,Y0,.0005,X1,Y1,Z_SL,M.slurry,NE),{delay:0, drop:0, cat:'plaster'});
+
+    /* ③ 灰誌 → 標筋 → 1:3 砂漿打底 → 刮尺 */
+    const RIBS=[X0+0.03, -0.5, 0.5, X1-0.03];
+    { let k=0;
+      RIBS.forEach(x=> [0.2,1.2,2.2].forEach(y=>
+        add(3, span(x-.03,y-.03,Z_SL,x+.03,y+.03,Z_PL,M.plasW),{delay:(k++)*.04, drop:0, cat:'plaster'})));
+      RIBS.forEach((x,i)=> add(3, span(x-.03,Y0,Z_SL,x+.03,Y1,Z_PL-.0005,M.plasW),{delay:.6+i*.1, drop:0, cat:'plaster'}));
+      for (let i=0;i<RIBS.length-1;i++)
+        add(3, span(RIBS[i]+.03,Y0,Z_SL,RIBS[i+1]-.03,Y1,Z_PL-.0005,M.plasW,NE),{delay:1.1+i*.2, drop:.15, cat:'plaster'});
+      add(3, span(X0-.1,1.4,Z_PL+.002,X1+.1,1.45,Z_PL+.03,M.alu),{delay:1.8, drop:-.8, until:3, glow:false}); }
+
+    /* ④ 養護：砂漿由濕變乾（顏色變淺） */
+    for (let i=0;i<6;i++)
+      add(4, span(X0,Y0+i*0.4,Z_PL-.0004,X1,Y0+(i+1)*0.4,Z_PL,M.plasD,NE),{delay:.2+i*.15, drop:0, cat:'plaster'});
+    add(4, label('養護 48 小時以上',0,2.5,.3,1.5),{delay:0, drop:.1, until:4, glow:false});
+
+    /* ⑤ 分割放樣：基準線＋分割線 */
+    { const t=.005, z0=Z_PL, z1=Z_PL+.002, LA={drop:0, until:6, glow:false};
+      add(5, span(X0,T-t/2,z0,X1,T+t/2,z1+.001,M.laser,NE),{...LA, delay:.1});
+      add(5, span(-t/2,Y0,z0,t/2,Y1,z1+.001,M.laser,NE),{...LA, delay:.3});
+      for (let k=1;k<10;k++) if (k!==5) add(5, span(X0+k*T-.0015,Y0,z0,X0+k*T+.0015,Y1,z1,M.laser,NE),{...LA, delay:.6+k*.03});
+      for (let k=2;k<8;k++) add(5, span(X0,k*T-.0015,z0,X1,k*T+.0015,z1,M.laser,NE),{...LA, delay:.9+k*.03}); }
+
+    /* ⑥ 鋸齒鏝刀塗黏著劑（齒紋） */
+    for (let r=0;r<8;r++){
+      const y0=r*T, g=group(span(X0,y0,Z_PL,X1,y0+T,Z_AD0,M.glue,NE));
+      for (let y=y0+.012; y<y0+T-.01; y+=.025) g.add(span(X0,y,Z_AD0,X1,y+.012,Z_AD,M.glue,NE));
+      add(6, g, {delay:r*.18, drop:0, cat:'glue'});
+    }
+    add(6, group(span(-0.45,1.5,Z_AD+.004,0.15,1.62,Z_AD+.008,M.steel),
+                 span(-0.2,1.62,Z_AD+.004,-0.1,1.66,Z_AD+.06,M.steel),
+                 span(-0.25,1.66,Z_AD+.04,-0.05,1.70,Z_AD+.09,M.handle)),{delay:.4, drop:-.4, until:6});
+
+    /* ⑦ 由下往上鋪貼＋定位片＋橡皮槌＋溢漿 */
+    for (let r=0;r<8;r++) for (let c=0;c<10;c++){
+      const x0=X0+c*T, y0=r*T;
+      add(7, span(x0+J/2,y0+J/2,Z_AD,x0+T-J/2,y0+T-J/2,Z_TL,M.tiles[(r*7+c*3)%3]),{delay:r*.32+c*.025, drop:.25, cat:'tile'});
+    }
+    for (let r=1;r<8;r++) for (let c=1;c<10;c++){
+      const x=X0+c*T, y=r*T;
+      add(7, group(span(x-.02,y-.002,Z_AD,x+.02,y+.002,Z_TL+.004,M.spacer,NE),
+                   span(x-.002,y-.02,Z_AD,x+.002,y+.02,Z_TL+.004,M.spacer,NE)),{delay:r*.32+.15, drop:0, until:9, glow:false});
+    }
+    add(7, group(span(0.35,0.95,Z_TL+.01,0.5,1.05,Z_TL+.1,M.rubber),
+                 span(0.41,1.05,Z_TL+.04,0.44,1.4,Z_TL+.07,M.handle)),{delay:1.2, drop:-.3, until:7});
+    [[-1.2,0.3],[-0.6,0.6],[0.3,0.9],[0.9,0.3],[1.2,1.2],[-0.9,1.5],[0.6,1.8],[-0.3,2.1],[1.5-0.3,2.1],[0,1.2]].forEach(([x,y],i)=>
+      add(7, span(x-.04,y-.005,Z_TL,x+.04,y+.005,Z_TL+.006,M.blob,NE),{delay:2.6+i*.03, drop:0, until:7, cat:'tile'}));
+
+    /* ⑧ 清除溢漿（海綿） */
+    add(8, span(0.15,0.75,Z_TL+.01,0.4,0.88,Z_TL+.07,M.sponge),{delay:0, drop:-.3, until:8});
+
+    /* ⑨ 養護 */
+    add(9, label('養護 24～48 小時',0,2.5,.3,1.5),{delay:0, drop:.1, until:9, glow:false});
+
+    /* ⑩ 填縫（取下定位片後） */
+    { let k=0;
+      for (let r=1;r<8;r++) add(10, span(X0,r*T-J/2,Z_AD,X1,r*T+J/2,Z_TL-.003,M.grout,NE),{delay:(k++)*.08, drop:0, cat:'tile'});
+      for (let c=1;c<10;c++) add(10, span(X0+c*T-J/2,Y0,Z_AD,X0+c*T+J/2,Y1,Z_TL-.003,M.grout,NE),{delay:(k++)*.06, drop:0, cat:'tile'});
+      add(10, group(span(0.15,0.72,Z_TL+.008,0.45,0.86,Z_TL+.03,M.sponge),
+                    span(0.25,0.86,Z_TL+.012,0.35,0.9,Z_TL+.07,M.handle)),{delay:.3, drop:-.3, until:10}); }
+
+    /* ⑪ 清潔與保護 */
+    add(11, span(X0,Y0,Z_TL+.001,X1,Y1,Z_TL+.002,M.film,NE),{delay:.2, drop:0, cat:'tile'});
+    add(11, label('✓ 平整・縫寬・無空鼓',0,2.5,.3,1.7),{delay:.6, drop:.1, glow:false});
+  },
+});
+</script>
+</body>
+</html>
