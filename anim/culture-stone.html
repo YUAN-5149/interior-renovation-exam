@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>牆面文化石軟底施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：室內牆面文化石（軟底）11 步驟施工程序 3D 互動動畫，含轉角石、軟底砂漿、勾縫。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111804';
+
+const STEPS = [
+  {t:'施工前', d:'磚牆已完成水泥砂漿飾面，要在牆面（含一個外轉角）貼文化石，採軟底工法。',
+   tip:'術科考過「室內牆面文化石（軟底）施工程序」：基面 → 放樣 → 石材背面清潔 → 調砂漿 → 背面滿抹 → 由下往上貼（先轉角石）→ 調整 → 清溢漿 → 勾縫 → 養護 → 清潔防護。'},
+  {t:'基面檢查與清潔', d:'去除浮砂、油污，確認平整度；施工前灑水濕潤。',
+   tip:'牆面太乾會吸走砂漿水分，文化石容易黏不牢。'},
+  {t:'放樣・排列計畫', d:'彈出水平與垂直基準線，並做排列計畫。',
+   tip:'先在地上把石材排排看，大小、顏色交錯分布，貼上牆才自然。'},
+  {t:'石材背面清潔', d:'清潔文化石背面，必要時先浸水。',
+   tip:'背面有灰塵會影響黏結；浸水可避免石材吸走砂漿水分。'},
+  {t:'調製黏著砂漿', d:'調製 1:3 水泥砂漿或專用黏著劑。',
+   tip:'軟底工法是用較厚的砂漿層，同時黏著並調整平整度。'},
+  {t:'背面滿抹砂漿', d:'在石材背面滿抹砂漿，軟底厚度約 1.5～2 cm。',
+   tip:'要「滿抹」，不留空隙，才不會空鼓、脫落。'},
+  {t:'由下往上鋪貼', d:'由下往上鋪貼，先貼轉角石再貼平面石；輕壓並敲實，讓砂漿擠出。',
+   tip:'轉角石是 L 形，先定好轉角，平面石再往中間排；砂漿被擠出代表貼實了。'},
+  {t:'調整平整度與縫寬', d:'用靠尺檢查平整，調整縫寬。',
+   tip:'趁砂漿未硬化前調整，硬化後就調不動了。'},
+  {t:'清除溢出砂漿', d:'清除被擠出、沾到石面的砂漿。',
+   tip:'砂漿乾在石面上很難清，會留下灰白痕跡。'},
+  {t:'勾縫', d:'以擠縫袋填縫，再以勾縫工具修整。',
+   tip:'擠縫袋把砂漿擠進縫裡，勾縫工具壓實修整，縫才會飽滿整齊。'},
+  {t:'養護', d:'勾縫完成後養護。',
+   tip:'養護期間避免碰撞，讓砂漿充分硬化。'},
+  {t:'清潔・防護劑', d:'完成後清潔表面，視需要塗佈防護劑。',
+   tip:'防護劑可以防水、防污，也比較不容易產生白華。'},
+];
+
+createAnim({
+  title: '牆面文化石軟底施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [4, 7, 6],
+  views: {
+    def:{dir:[0.5,0.22,0.84],  dist:5.4, target:[-0.1,1.1,0]},
+    3:  {dir:[0.5,0.5,0.7],    dist:3.4, target:[0.7,0.2,0.8]},
+    5:  {dir:[0.45,0.45,0.77], dist:2.6, target:[0.6,0.25,0.75]},
+    6:  {dir:[0.62,0.25,0.74], dist:4.4, target:[0.4,0.8,0]},
+    10: {dir:[0.4,0.15,0.9],   dist:2.8, target:[0.2,1.0,0]},
+  },
+  cut: {
+    stone:[new THREE.Plane(new THREE.Vector3(-1,0,0), -0.3)],
+    grout:[new THREE.Plane(new THREE.Vector3(-1,0,0), -0.3)],
+  },
+  cutLabel: '移除右半部文化石，看後面的軟底砂漿層',
+  note: '文化石排列為示意，厚度與縫寬有誇大。',
+  build({THREE, mat, box, span, pipe, group, label, add, fixed}) {
+    const X0=-1.3, XC=1.0, ZR=-0.35, Y1=2.2;      // 牆面 z=0、外轉角在 x=XC，側面往 -z
+    const BED=0.018, ST=0.03, J=0.012;           // 軟底、石材厚、縫寬
+
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      wall:  mat('#c9c4bb',{roughness:1}),
+      drop:  mat('#60a5fa',{roughness:.2}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      mortar:mat('#a8a29e',{roughness:1}),
+      grout: mat('#b8b2a8',{roughness:1}),
+      water: mat('#38bdf8',{transparent:true, opacity:.5, depthWrite:false}),
+      tub:   mat('#1f2937',{roughness:.6}),
+      alu:   mat('#cbd5e1',{metalness:.4, roughness:.35}),
+      bag:   mat('#e2e8f0',{roughness:.6}),
+      seal:  mat('#fef3c7',{transparent:true, opacity:.16, roughness:.1, depthWrite:false}),
+      stones:['#b8a38a','#a38f78','#c9b79e','#8f7d69','#d4c4ad','#9c8a74'].map(c=>mat(c,{roughness:.95})),
+    };
+    const NE={edges:false, shadow:false};
+
+    // 磚牆（含外轉角）
+    fixed(span(-1.9,-0.15,-0.9, 1.9,0,1.4, M.slab));
+    fixed(span(-1.9,0,-0.9, XC,2.5,0, M.wall));
+
+    // 文化石排列（固定亂數）
+    let seed=11; const rnd=()=> (seed=(seed*16807)%2147483647)/2147483647;
+    const rows=[]; { let y=0.0; while (y<Y1-0.05){ const h=0.08+rnd()*0.06; rows.push([y,Math.min(y+h,Y1)]); y+=h+J; } }
+
+    /* ① 基面檢查・灑水 */
+    for (let i=0;i<20;i++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.016,10,8), M.drop.clone());
+      d.position.set(X0+0.1+((i*0.37)%2.2), 0.2+((i*0.53)%1.9), .015);
+      add(1, d, {delay:i*.03, drop:.15, until:1, glow:false});
+    }
+
+    /* ② 放樣：基準線＋地上排列 */
+    add(2, span(X0,rows[0][1]+J/2-.003,.001,XC,rows[0][1]+J/2+.003,.003,M.laser,NE),{delay:0, drop:0, until:6, glow:false});
+    add(2, span(XC-.25-.003,0,.001,XC-.25+.003,Y1,.003,M.laser,NE),{delay:.2, drop:0, until:6, glow:false});
+    { let k=0; for (let r=0;r<3;r++) for (let c=0;c<5;c++){
+        const w=0.18+((r*5+c)*0.07)%0.2, x=-0.4+c*0.32, z=0.6+r*0.16;
+        add(2, span(x,0,z,x+w,ST,z+0.11,M.stones[(r*5+c)%6]),{delay:.4+(k++)*.04, drop:.2, until:6});
+      } }
+
+    /* ③ 背面清潔・浸水 */
+    add(3, group(span(0.4,0,0.55,1.1,0.18,1.1,M.tub), span(0.43,0.1,0.58,1.07,0.15,1.07,M.water,NE)),{delay:0, drop:.3, until:5});
+
+    /* ④ 調製黏著砂漿 */
+    add(4, group(pipe([-0.9,0,0.8],[-0.9,0.3,0.8],.2,M.tub), span(-1.05,0.28,0.65,-0.75,0.29,0.95,M.mortar,NE)),{delay:0, drop:.3, until:9});
+
+    /* ⑤ 石材背面滿抹砂漿（示範一塊） */
+    add(5, group(span(0.5,0.2,0.75,0.8,0.2+BED,0.86,M.mortar), span(0.5,0.2+BED,0.75,0.8,0.2+BED+ST,0.86,M.stones[2])),{delay:0, drop:.3, until:5});
+    add(5, label('軟底厚約 1.5～2 cm',0.65,0.6,0.85,1.2),{delay:.4, drop:0, until:5, glow:false});
+
+    /* ⑥ 由下往上鋪貼：每排先轉角石（L 形），再往左貼平面石 */
+    const STONES=[];
+    rows.forEach(([y0,y1],r)=>{
+      const longFront = r%2===0;
+      const fw = longFront ? 0.32 : 0.16, sw = longFront ? 0.16 : 0.3;     // 轉角石兩翼長度交錯
+      const z0 = BED, z1 = BED+ST;
+      // 砂漿軟底（不切）與石材（剖面時切掉）分開加入
+      add(6, group(span(XC-fw,y0,0,XC+BED,y1,z0,M.mortar,NE), span(XC,y0,-sw,XC+BED,y1,0,M.mortar,NE)),{delay:r*.18, drop:.25});
+      add(6, group(span(XC-fw,y0,z0,XC+z1-BED,y1,z1,M.stones[r%6]), span(XC+BED,y0,-sw,XC+z1,y1,z0,M.stones[r%6])),{delay:r*.18, drop:.25, cat:'stone'});
+      let x=XC-fw-J, c=0;
+      while (x>X0+0.04){
+        const w=Math.min(0.18+rnd()*0.26, x-X0), xa=x-w;
+        add(6, span(xa,y0,0,x,y1,z0,M.mortar,NE), {delay:r*.18+.08+c*.02, drop:.2});
+        add(6, span(xa,y0,z0,x,y1,z1-(rnd()*.008),M.stones[(r*3+c)%6]), {delay:r*.18+.08+c*.02, drop:.2, cat:'stone'});
+        STONES.push([xa,x,y0,y1]); x=xa-J; c++;
+      }
+    });
+    add(6, label('先貼轉角石',XC+0.15,2.45,0.1,1.0),{delay:.2, drop:0, until:6, glow:false});
+    // 溢出砂漿
+    for (let i=0;i<14;i++){ const s=STONES[(i*7)%STONES.length];
+      add(6, span(s[0]-.01,s[3]-.004,BED+ST-.004,s[0]+.05,s[3]+.008,BED+ST+.004,M.mortar,NE),{delay:2.2+i*.03, drop:0, until:8, cat:'stone'}); }
+
+    /* ⑦ 調整平整度（靠尺） */
+    add(7, span(-0.3,0.15,BED+ST+.004,-0.25,2.0,BED+ST+.03,M.alu),{delay:0, drop:-.3, until:7});
+
+    /* ⑧ 清除溢漿 → 溢漿在 until:8 前一步消失（第 8 步本身就不再顯示） */
+    add(8, label('清除溢漿',0,2.45,0.2,1.0),{delay:0, drop:.1, until:8, glow:false});
+
+    /* ⑨ 勾縫：縫內填滿砂漿 */
+    add(9, span(X0,0,BED,XC,Y1,BED+ST*0.55,M.grout,NE),{delay:.2, drop:0, cat:'grout'});
+    add(9, span(XC,0,ZR+0.05,XC+BED+ST*0.55,Y1,0,M.grout,NE),{delay:.4, drop:0, cat:'grout'});
+    add(9, group(span(0.05,1.0,BED+ST+.02,0.35,1.12,BED+ST+.12,M.bag),
+                 pipe([0.05,1.06,BED+ST+.06],[-0.05,1.06,BED+ST+.03],.01,M.bag)),{delay:0, drop:-.2, until:9});
+
+    /* ⑩ 養護 */
+    add(10, label('養護',0,2.45,0.2,0.8),{delay:0, drop:.1, until:10, glow:false});
+
+    /* ⑪ 清潔・防護劑 */
+    add(11, span(X0,0,BED+ST+.001,XC,Y1,BED+ST+.002,M.seal,NE),{delay:.2, drop:0, cat:'stone'});
+    add(11, label('塗佈防護劑',0,2.45,0.2,1.0),{delay:.4, drop:.1, until:11, glow:false});
+  },
+});
+</script>
+</body>
+</html>

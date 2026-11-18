@@ -117,6 +117,21 @@ export function createAnim(cfg) {
     return g;
   }
 
+  // 文字標籤（永遠面向鏡頭），字太長會自動縮小
+  function label(text, x, y, z, w=1.3){
+    const c=document.createElement('canvas'); c.width=512; c.height=128;
+    const g=c.getContext('2d');
+    g.fillStyle='#fffbeb'; g.strokeStyle='#d97706'; g.lineWidth=8;
+    g.beginPath(); g.roundRect(6,6,500,116,28); g.fill(); g.stroke();
+    g.fillStyle='#92400e';
+    let fs=54; do { g.font=`bold ${fs}px "Noto Sans TC","Microsoft JhengHei",sans-serif`; fs-=2; } while (g.measureText(text).width>450 && fs>20);
+    g.textAlign='center'; g.textBaseline='middle'; g.fillText(text,256,68);
+    const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace;
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex, depthTest:false}));
+    s.scale.set(w, w/4, 1); s.position.set(x,y,z); s.renderOrder=10;
+    return s;
+  }
+
   /* ---------- 動畫項目 ---------- */
   const items = [];
   const DUR = 0.55;
@@ -130,7 +145,7 @@ export function createAnim(cfg) {
   }
   const fixed = obj => { scene.add(obj); return obj; };
 
-  cfg.build({THREE, scene, mat, box, span, pipe, group, arrow, add, fixed, EDGE});
+  cfg.build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed, EDGE});
 
   /* ---------- 剖面 ---------- */
   let cut=false;

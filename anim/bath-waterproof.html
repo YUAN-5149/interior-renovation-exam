@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浴廁壁面防水粉刷施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：浴廁內部壁面防水水泥砂漿粉刷 9 步驟施作程序 3D 互動動畫。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111804';
+
+const STEPS = [
+  {t:'施工前', d:'浴廁的 RC 牆角（淋浴區），牆上有給水管、地上有落水頭，要做壁面防水水泥砂漿粉刷。',
+   tip:'術科考過「浴廁內部壁面防水水泥砂漿粉刷之施作程序」：基面處理 → 管線處理 → 牆角圓角 → 純水泥漿 → 第一層打底刮毛 → 第二層粉刷鏝平 → 彈性防水塗膜 → 養護 → 試水。'},
+  {t:'基面處理', d:'清除浮漿、油污，修補孔洞與裂縫，再灑水濕潤。',
+   tip:'基面不乾淨、有孔洞裂縫，防水層就黏不牢，日後容易從這些地方滲水。'},
+  {t:'管線處理', d:'給排水管、落水頭等穿牆、穿樓板處，先以防水砂漿或止水材填實。',
+   tip:'管線周圍是最常漏水的地方，要在粉刷前先填實、加強。'},
+  {t:'牆角做圓角', d:'牆角與牆地交接處先做圓角（或加強防水）。',
+   tip:'直角轉角的防水層容易拉裂；做成圓角，防水層才能連續、不斷裂。'},
+  {t:'刷純水泥漿', d:'刷一道純水泥漿（或防水黏結劑）作為黏結層。',
+   tip:'黏結層讓防水砂漿與 RC 牆面結合得更牢。'},
+  {t:'第一層打底・刮毛', d:'以 1:2 防水水泥砂漿（加防水劑）打底，表面刮毛。',
+   tip:'表面刮毛（刮出紋路）是為了讓第二層砂漿咬得更牢。'},
+  {t:'第二層粉刷・鏝平', d:'第二層防水水泥砂漿粉刷並鏝平，控制垂直與平整。',
+   tip:'第二層決定牆面的垂直與平整度，之後貼磁磚才會平。'},
+  {t:'彈性防水塗膜', d:'需要時再塗佈彈性防水塗膜（彈泥）三度，淋浴區高度至少到 180 cm。',
+   tip:'淋浴區會被直接噴濕，防水高度至少 180 cm；彈泥分三度塗，每度乾了再塗下一度。'},
+  {t:'保濕養護', d:'防水層完成後保濕養護。',
+   tip:'砂漿太快乾會收縮龜裂，防水效果就打折扣。'},
+  {t:'試水（蓄水試驗）', d:'地面蓄水，確認無滲漏後，才進行貼磚。',
+   tip:'蓄水試驗通常放水靜置一段時間，檢查樓下與牆面有無滲漏，確認沒問題才貼磚。'},
+];
+
+createAnim({
+  title: '浴廁壁面防水粉刷施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [4, 8, 6],
+  views: {
+    def:{dir:[0.62,0.42,0.66], dist:5.6, target:[-0.25,1.0,0.35]},
+    2:  {dir:[0.5,0.35,0.8],   dist:3.6, target:[0.2,0.6,0.4]},
+    3:  {dir:[0.6,0.4,0.7],    dist:3.6, target:[-0.9,0.4,0.3]},
+    5:  {dir:[0.45,0.2,0.87],  dist:3.6, target:[-0.2,1.0,0]},
+    9:  {dir:[0.55,0.65,0.52], dist:5.0, target:[-0.1,0.3,0.6]},
+  },
+  cut: {
+    coat:[new THREE.Plane(new THREE.Vector3(-1,0,0), -0.5)],
+    l2:  [new THREE.Plane(new THREE.Vector3(-1,0,0), 0.0)],
+    l1:  [new THREE.Plane(new THREE.Vector3(-1,0,0), 0.5)],
+  },
+  cutLabel: '階梯式切開塗膜、第二層、第一層，看各層構造',
+  note: '模型的粉刷層與塗膜厚度有誇大，方便看清楚各層構造。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const XL=-1.2, XR=1.2, ZF=1.6, H=2.4;          // 後牆面 z=0、左牆面 x=XL
+    const M = {
+      slab:  mat('#cfcac4',{roughness:1}),
+      rc:    mat('#b9b6b0',{roughness:1}),
+      bump:  mat('#a8a49d',{roughness:1}),
+      hole:  mat('#57534e',{roughness:1}),
+      patch: mat('#c9c5bd',{roughness:1}),
+      drop:  mat('#60a5fa',{roughness:.2}),
+      wet:   mat('#475569',{transparent:true, opacity:.2, depthWrite:false}),
+      hot:   mat('#dc2626',{roughness:.4}),
+      cold:  mat('#2563eb',{roughness:.4}),
+      seal:  mat('#44403c',{roughness:.9}),
+      drain: mat('#d1d5db',{metalness:.6, roughness:.3}),
+      slurry:mat('#8f8b85',{roughness:1}),
+      l1:    mat('#9ca3a8',{roughness:1}),
+      scr:   mat('#6b7280',{roughness:1}),
+      l2:    mat('#c4c7c9',{roughness:.9}),
+      coat:  ['#93c5fd','#60a5fa','#3b82f6'].map(c=>mat(c,{roughness:.5})),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      water: mat('#38bdf8',{transparent:true, opacity:.45, roughness:.1, depthWrite:false}),
+      dam:   mat('#78716c',{roughness:1}),
+    };
+    const NE={edges:false, shadow:false};
+
+    // 兩面牆的同一層：後牆往 +z、左牆往 +x
+    function layer(t0, t1, m, y0=0, y1=H, opt={}) {
+      return group(
+        span(XL+t0, y0, t0, XR, y1, t1, m, opt),
+        span(XL+t0, y0, t1, XL+t1, y1, ZF, m, opt));
+    }
+
+    fixed(span(-1.45,-0.15,-0.25, XR,0,ZF, M.slab));
+    fixed(span(-1.45,0,-0.25, XR,H,0, M.rc));
+    fixed(span(-1.45,0,0, XL,H,ZF, M.rc));
+    // 給水管（冷熱）、落水頭
+    const P=[[0.2,1.0,M.hot],[0.4,1.0,M.cold]];
+    P.forEach(([x,y,m])=> fixed(pipe([x,y,-0.1],[x,y,0.08],.018,m)));
+    const DR=[0.35,0.9];
+    fixed(span(DR[0]-.07,-0.002,DR[1]-.07,DR[0]+.07,.004,DR[1]+.07,M.drain));
+
+    /* 施工前：突出物、孔洞（第 1 步處理掉） */
+    const BUMPS=[[-0.6,1.7],[0.8,0.6]], HOLES=[[-0.3,0.5],[0.9,1.6]];
+    BUMPS.forEach(([x,y])=> add(0, span(x-.06,y-.04,0,x+.06,y+.04,.02,M.bump),{until:0, drop:0}));
+    HOLES.forEach(([x,y])=> add(0, span(x-.05,y-.05,0,x+.05,y+.05,.001,M.hole,NE),{until:0, drop:0}));
+
+    /* ① 基面處理 */
+    HOLES.forEach(([x,y],i)=> add(1, span(x-.06,y-.06,0,x+.06,y+.06,.002,M.patch),{delay:.2+i*.15, drop:0}));
+    add(1, layer(.0015,.002,M.wet,0,H,NE),{delay:.6, drop:0, until:3});
+    for (let i=0;i<22;i++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.016,10,8), M.drop.clone());
+      if (i%2) d.position.set(XL+.015, 0.2+((i*0.53)%2.0), 0.15+((i*0.41)%1.3));
+      else     d.position.set(XL+0.15+((i*0.37)%2.2), 0.2+((i*0.61)%2.0), .015);
+      add(1, d, {delay:.6+i*.02, drop:.15, until:1, glow:false});
+    }
+
+    /* ② 管線處理：止水環 */
+    P.forEach(([x,y],i)=> add(2, pipe([x,y,-0.005],[x,y,0.012],.04,M.seal),{delay:i*.25, drop:0}));
+    add(2, span(DR[0]-.11,0,DR[1]-.11,DR[0]+.11,.006,DR[1]+.11,M.seal),{delay:.6, drop:0});
+    add(2, span(DR[0]-.07,.006,DR[1]-.07,DR[0]+.07,.009,DR[1]+.07,M.drain,NE),{delay:.6, drop:0});
+
+    /* ③ 牆角圓角（以 45° 斜放的方料表示） */
+    { const s=.07;
+      const cove=(len)=>box(s,s,len,M.l1);
+      const a=box(XR-XL,s,s,M.l1); a.rotation.x=Math.PI/4; a.position.set(0,0,0);          // 後牆 × 地坪
+      const b=box(s,s,ZF,M.l1);   b.rotation.z=Math.PI/4; b.position.set(XL,0,ZF/2);       // 左牆 × 地坪
+      const c=box(s,H,s,M.l1);    c.rotation.y=Math.PI/4; c.position.set(XL,H/2,0);        // 陰角
+      add(3, a, {delay:0, drop:0}); add(3, b, {delay:.2, drop:0}); add(3, c, {delay:.4, drop:0}); }
+
+    /* ④ 純水泥漿 */
+    add(4, layer(.002,.004,M.slurry,0,H,NE),{delay:0, drop:0});
+
+    /* ⑤ 第一層打底＋刮毛 */
+    add(5, layer(.004,.015,M.l1),{delay:0, drop:0, cat:'l1'});
+    { const g=group();
+      for (let y=0.1; y<H; y+=0.08) g.add(span(XL+.015,y,.015,XR,y+.006,.0165,M.scr,NE));
+      for (let y=0.1; y<H; y+=0.08) g.add(span(XL+.015,y,.0165,XL+.0165,y+.006,ZF,M.scr,NE));
+      add(5, g, {delay:.5, drop:0, until:5, cat:'l1'}); }
+
+    /* ⑥ 第二層粉刷鏝平 */
+    add(6, layer(.015,.025,M.l2),{delay:0, drop:0, cat:'l2'});
+
+    /* ⑦ 彈性防水塗膜三度（淋浴區到 180 cm 以上） */
+    M.coat.forEach((m,i)=> add(7, layer(.025+i*.0017,.025+(i+1)*.0017,m,0,1.9,NE),{delay:i*.5, drop:0, cat:'coat'}));
+    add(7, span(XR-0.05,1.8-.003,.03,XR,1.8+.003,.08,M.laser,NE),{delay:1.6, drop:0, until:7, glow:false});
+    add(7, arrow([XR-0.12,0.05,0.12],[XR-0.12,1.8,0.12],M.laser),{delay:1.6, drop:0, until:7, glow:false});
+    add(7, label('淋浴區 ≥ 180 cm',0.75,1.95,0.3,1.2),{delay:1.8, drop:0, until:7, glow:false});
+
+    /* ⑧ 保濕養護 */
+    add(8, label('保濕養護',-0.2,2.2,0.4,1.0),{delay:0, drop:.1, until:8, glow:false});
+    for (let i=0;i<16;i++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.014,10,8), M.drop.clone());
+      d.position.set(XL+0.2+((i*0.43)%2.1), 0.2+((i*0.57)%1.6), .04);
+      add(8, d, {delay:.3+i*.03, drop:.12, until:8, glow:false});
+    }
+
+    /* ⑨ 試水（蓄水試驗） */
+    add(9, group(span(XR-.06,0,0,XR,.08,ZF,M.dam), span(XL,0,ZF-.06,XR,.08,ZF,M.dam)),{delay:0, drop:.2, until:9});
+    add(9, span(XL+.035,.002,.035,XR-.06,.06,ZF-.06,M.water,NE),{delay:.5, drop:0, until:9, glow:false});
+    add(9, label('蓄水試驗・無滲漏',0,0.7,0.9,1.3),{delay:1.0, drop:.1, until:9, glow:false});
+  },
+});
+</script>
+</body>
+</html>

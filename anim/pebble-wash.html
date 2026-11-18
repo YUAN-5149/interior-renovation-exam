@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>牆面抿石子施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：RC 牆面抿石子 10 步驟施工流程 3D 互動動畫，含塑膠壓條、石粒漿、海綿擦洗與凡立水。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111804';
+
+const STEPS = [
+  {t:'施工前', d:'RC 牆面已完成 1:3 水泥砂漿粉刷，要做室內牆面抿石子。',
+   tip:'112 年術科：「依序寫出牆面抿石子施工流程（14 分）＋大樣圖（6 分）」。流程題要依序寫，順序錯會扣分。'},
+  {t:'基面檢查', d:'確認粉刷面平整，清除浮塵與油污，灑水濕潤。',
+   tip:'粉刷面太乾會吸走石粒漿的水分，造成黏結不良、日後脫落。'},
+  {t:'放樣', d:'依圖彈出分割線。',
+   tip:'分割線就是塑膠壓條的位置，大面積抿石子靠分割來控制收縮裂縫。'},
+  {t:'固定塑膠壓條', d:'以小鋼釘（或益膠泥）沿分割線固定塑膠壓條，校正垂直與水平。',
+   tip:'壓條（9×6×0.8 mm）同時是分割縫與抹平的厚度基準。'},
+  {t:'刷黏結層', d:'刷一道純水泥漿（或益膠泥）作為黏結層。',
+   tip:'黏結層讓石粒漿與粉刷底層結合牢固。'},
+  {t:'拌合石粒漿', d:'2 分天然石＋抿石粉加水，調成石粒漿。',
+   tip:'石粒漿稠度要適中：太稀會流垂，太乾不好壓實。'},
+  {t:'抹石粒漿・壓實', d:'抹上石粒漿，厚度與壓條齊平（約 8～10 mm），以鏝刀壓實抹平。',
+   tip:'厚度以壓條為準；用鏝刀反覆壓實，石粒才會排列緊密。'},
+  {t:'海綿擦洗', d:'初凝後（手壓不陷），以海綿沾水擦洗表面水泥漿，使石粒外露約 1/3。',
+   tip:'擦洗時機很重要：太早石粒會掉，太晚水泥漿洗不掉。石粒外露約 1/3 最理想。'},
+  {t:'清洗・修整壓條', d:'清洗乾淨，並修整壓條邊緣。',
+   tip:'壓條邊緣要清乾淨，分割線才會俐落整齊。'},
+  {t:'保濕養護', d:'保濕養護約 7 天。',
+   tip:'養護不足，水泥強度不夠，石粒容易鬆脫。'},
+  {t:'塗凡立水', d:'乾燥後塗刷凡立水 2 道。',
+   tip:'凡立水保護表面、防污防水，也讓石粒顏色更明顯。'},
+];
+
+createAnim({
+  title: '牆面抿石子施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.38,0.2,0.9],  dist:5.6, target:[0,1.1,0]},
+    3:  {dir:[0.45,0.2,0.87], dist:4.0, target:[0.3,1.1,0]},
+    5:  {dir:[0.55,0.4,0.73], dist:3.4, target:[0.9,0.3,0.6]},
+    7:  {dir:[0.3,0.12,0.95], dist:2.6, target:[0.3,1.0,0]},
+    8:  {dir:[0.3,0.12,0.95], dist:2.6, target:[0.3,1.0,0]},
+  },
+  cut: {
+    stone:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.0)],
+    glue: [new THREE.Plane(new THREE.Vector3(-1,0,0), 0.6)],
+  },
+  cutLabel: '切開抿石子面層與黏結層，看壓條與粉刷底層',
+  note: '模型的各層厚度與壓條有誇大，方便看清楚構造。',
+  build({THREE, mat, box, span, pipe, group, label, add, fixed}) {
+    const X0=-1.2, X1=1.2, Y0=0, Y1=2.4;
+    const XS=[-1.2,-0.6,0,0.6,1.2], YS=[0,0.8,1.6,2.4];     // 分割線
+    const Z_G=0.004, Z_S=0.014, SW=0.012;                     // 黏結層、面層、壓條寬
+
+    // 石粒貼圖：washed=false 時表面蓋一層水泥漿
+    function pebbleTex(washed){
+      const c=document.createElement('canvas'); c.width=c.height=256;
+      const g=c.getContext('2d');
+      g.fillStyle='#8a857d'; g.fillRect(0,0,256,256);
+      let s=7; const r=()=> (s=(s*16807)%2147483647)/2147483647;
+      const cols=['#e7e5e4','#d6d3d1','#57534e','#a8a29e','#78716c','#f5f5f4','#44403c','#b45309'];
+      for (let i=0;i<900;i++){ g.fillStyle=cols[(r()*cols.length)|0]; g.beginPath();
+        g.ellipse(r()*256,r()*256,2+r()*3.5,1.6+r()*3,r()*3.14,0,6.29); g.fill(); }
+      if(!washed){ g.fillStyle='rgba(150,146,140,.82)'; g.fillRect(0,0,256,256); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace;
+      t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1.6,2.2); return t;
+    }
+
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      plas:  mat('#c9c4bb',{roughness:1}),
+      rc:    mat('#b9b6b0',{roughness:1}),
+      drop:  mat('#60a5fa',{roughness:.2}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      strip: mat('#f8fafc',{roughness:.5}),
+      nail:  mat('#374151',{metalness:.5, roughness:.4}),
+      glue:  mat('#8f8b85',{roughness:1}),
+      raw:   mat('#ffffff',{map:pebbleTex(false), roughness:1}),
+      washed:mat('#ffffff',{map:pebbleTex(true), roughness:.85}),
+      bucket:mat('#1f2937',{roughness:.6}),
+      sponge:mat('#facc15',{roughness:1}),
+      steel: mat('#94a3b8',{metalness:.4, roughness:.4}),
+      handle:mat('#7c2d12',{roughness:.6}),
+      varn:  mat('#fef3c7',{transparent:true, opacity:.18, roughness:.08, depthWrite:false}),
+    };
+    const NE={edges:false, shadow:false};
+
+    fixed(span(-1.8,-0.15,-0.3, 1.8,0,1.6, M.slab));
+    fixed(span(-1.8,0,-0.25, 1.8,2.7,-0.02, M.rc));
+    fixed(span(-1.8,0,-0.02, 1.8,2.7,0, M.plas));             // 已完成的 1:3 粉刷
+
+    /* ① 基面檢查・灑水 */
+    for (let i=0;i<22;i++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.016,10,8), M.drop.clone());
+      d.position.set(X0+0.1+((i*0.37)%2.2), 0.2+((i*0.53)%2.0), .015);
+      add(1, d, {delay:i*.03, drop:.15, until:1, glow:false});
+    }
+
+    /* ② 放樣：分割線 */
+    { const LA={drop:0, until:3, glow:false}; let k=0;
+      XS.forEach(x=> add(2, span(x-.003,Y0,.001,x+.003,Y1,.003,M.laser,NE),{...LA, delay:(k++)*.1}));
+      YS.forEach(y=> add(2, span(X0,y-.003,.001,X1,y+.003,.003,M.laser,NE),{...LA, delay:(k++)*.1})); }
+
+    /* ③ 塑膠壓條＋小鋼釘 */
+    { let k=0;
+      XS.forEach(x=>{ const g=group(span(x-SW/2,Y0,0,x+SW/2,Y1,Z_S,M.strip));
+        for (let y=0.2;y<Y1;y+=0.4) g.add(pipe([x,y,Z_S],[x,y,Z_S+.004],.004,M.nail));
+        add(3, g, {delay:(k++)*.12, drop:.3}); });
+      YS.forEach(y=>{ for (let i=0;i<XS.length-1;i++){
+        const ya=Math.max(Y0,y-SW/2), yb=Math.min(Y1,y+SW/2);
+        add(3, span(XS[i]+SW/2,ya,0,XS[i+1]-SW/2,yb,Z_S,M.strip),{delay:.7+(k++)*.03, drop:.3}); } }); }
+
+    // 各分割格
+    const CELLS=[];
+    for (let j=0;j<YS.length-1;j++) for (let i=0;i<XS.length-1;i++)
+      CELLS.push([XS[i]+SW/2, YS[j]+(j?SW/2:0), XS[i+1]-SW/2, YS[j+1]-(j<YS.length-2?SW/2:0)]);
+
+    /* ④ 黏結層 */
+    CELLS.forEach(([a,b,c,d],i)=> add(4, span(a,b,.0005,c,d,Z_G,M.glue,NE),{delay:i*.05, drop:0, cat:'glue'}));
+
+    /* ⑤ 拌合石粒漿（桶子） */
+    add(5, group(pipe([0.9,0,0.6],[0.9,0.32,0.6],.2,M.bucket),
+                 span(0.75,0.3,0.45,1.05,0.31,0.75,M.raw,NE)),{delay:0, drop:.4, until:7});
+
+    /* ⑥ 抹石粒漿（與壓條齊平） */
+    CELLS.forEach(([a,b,c,d],i)=> add(6, span(a,b,Z_G,c,d,Z_S-.0005,M.raw),{delay:i*.12, drop:0, cat:'stone'}));
+    add(6, group(span(-0.35,0.95,Z_S+.003,0.15,1.07,Z_S+.008,M.steel),
+                 span(-0.15,1.07,Z_S+.003,-0.05,1.1,Z_S+.06,M.steel),
+                 span(-0.2,1.1,Z_S+.04,0.0,1.14,Z_S+.09,M.handle)),{delay:.6, drop:-.3, until:6});
+
+    /* ⑦ 海綿擦洗：石粒外露 */
+    CELLS.forEach(([a,b,c,d],i)=> add(7, span(a,b,Z_S-.0005,c,d,Z_S,M.washed,NE),{delay:.3+i*.12, drop:0, cat:'stone'}));
+    add(7, span(0.15,0.85,Z_S+.005,0.4,0.98,Z_S+.06,M.sponge),{delay:0, drop:-.3, until:7});
+    add(7, label('石粒外露約 1/3',0.3,1.45,0.2,1.1),{delay:.5, drop:0, until:7, glow:false});
+
+    /* ⑧ 清洗・修整壓條 */
+    for (let i=0;i<18;i++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.014,10,8), M.drop.clone());
+      d.position.set(XS[1+(i%3)]+((i%2)?.012:-.012), 0.2+((i*0.37)%2.0), Z_S+.012);
+      add(8, d, {delay:i*.04, drop:.15, until:8, glow:false});
+    }
+
+    /* ⑨ 保濕養護 */
+    add(9, label('保濕養護約 7 天',0,2.45,0.3,1.3),{delay:0, drop:.1, until:9, glow:false});
+
+    /* ⑩ 凡立水 2 道 */
+    [0,1].forEach(k=> CELLS.forEach(([a,b,c,d],i)=>
+      add(10, span(a,b,Z_S+.001+k*.001,c,d,Z_S+.0015+k*.001,M.varn,NE),{delay:k*.9+i*.04, drop:0, cat:'stone'})));
+    add(10, label('凡立水 2 道',0,2.45,0.3,1.0),{delay:.2, drop:.1, until:10, glow:false});
+  },
+});
+</script>
+</body>
+</html>
