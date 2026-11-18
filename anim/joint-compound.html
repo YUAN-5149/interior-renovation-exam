@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>輕隔間接縫批土施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：輕隔間板材接縫批土 8 步驟程序 3D 互動動畫，含接縫紙帶、三道批土逐道加寬、研磨、護角條。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111804';
+
+const STEPS = [
+  {t:'施工前', d:'石膏板輕隔間已封板完成，左邊是陰角、右邊是陽角，要做接縫批土。',
+   tip:'術科考過「輕隔間牆板材安裝後的接縫批土程序」：檢查 → 第一道貼紙帶 → 點補螺絲孔 → 第二道加寬 → 第三道再加寬羽化 → 研磨 → 陽角陰角處理 → 檢查。'},
+  {t:'檢查', d:'確認板材固定確實、螺絲頭略低於板面、接縫清潔無粉塵。',
+   tip:'螺絲頭若凸出板面，批土會被頂出一個包；接縫有粉塵，批土會黏不牢。'},
+  {t:'第一道・貼接縫帶', d:'接縫內填滿批土，貼上接縫紙帶（或玻璃纖維網帶），壓實刮平。',
+   tip:'接縫帶是防止接縫開裂的關鍵，要壓實、不能起泡。'},
+  {t:'點補螺絲孔', d:'螺絲孔、凹陷處同時點補批土。',
+   tip:'螺絲孔不補，塗裝後會一顆顆凹下去，非常明顯。'},
+  {t:'第二道批土', d:'乾燥後上第二道批土，寬度加寬到約 15～20 cm。',
+   tip:'每一道都比上一道寬，讓接縫處的厚度變化平緩，看不出隆起。'},
+  {t:'第三道批土・羽化', d:'第三道批土再加寬到約 25～30 cm，邊緣羽化收薄。',
+   tip:'「羽化」是把批土邊緣刮得越來越薄，和板面自然銜接。'},
+  {t:'研磨', d:'每道乾燥後以砂紙研磨平順。',
+   tip:'研磨把刮刀痕跡磨平；磨太多會磨破紙帶，要小心。'},
+  {t:'陽角・陰角處理', d:'陽角使用護角條；陰角以紙帶對折補強。',
+   tip:'陽角容易被撞，用護角條保護；陰角則把紙帶對折貼入轉角。'},
+  {t:'完成檢查', d:'完成後檢查平整度，再進行塗裝或貼壁紙。',
+   tip:'用燈光斜照牆面最容易看出不平整的地方。'},
+];
+
+createAnim({
+  title: '輕隔間接縫批土施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.4,0.2,0.9],   dist:5.4, target:[-0.15,1.15,0]},
+    1:  {dir:[0.3,0.12,0.95], dist:2.4, target:[-0.6,1.3,0]},
+    3:  {dir:[0.3,0.12,0.95], dist:2.6, target:[-0.3,1.1,0]},
+    7:  {dir:[0.15,0.2,0.97], dist:4.6, target:[-0.15,1.15,0]},
+  },
+  cut: {
+    mud:[new THREE.Plane(new THREE.Vector3(0,-1,0), 1.0)],
+  },
+  cutLabel: '切掉上半部批土，看底下的接縫帶與螺絲',
+  note: '批土厚度有誇大；實際每道批土都很薄。',
+  build({THREE, mat, box, span, pipe, group, label, add, fixed}) {
+    const X0=-1.5, X1=1.2, H=2.4, JX=[-0.6,0.3];       // 牆面範圍、板材接縫
+    const SX=[-1.5,-1.05,-0.6,-0.15,0.3,0.75,1.2];      // 立柱（螺絲位置）
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      board: mat('#ddd6c8',{roughness:.95}),
+      side:  mat('#e7e3da',{roughness:.95}),
+      screw: mat('#292524',{roughness:.5}),
+      tape:  mat('#fef3c7',{roughness:1}),
+      mud1:  mat('#f5f5f4',{roughness:1}),
+      mud2:  mat('#fafaf9',{roughness:1}),
+      mud3:  mat('#ffffff',{roughness:1}),
+      feath: mat('#ffffff',{transparent:true, opacity:.55, roughness:1, depthWrite:false}),
+      sand:  mat('#ca8a04',{roughness:1}),
+      dust:  mat('#e7e5e4',{roughness:1}),
+      bead:  mat('#9ca3af',{metalness:.3, roughness:.4}),
+      alu:   mat('#cbd5e1',{metalness:.4, roughness:.35}),
+      ok:    mat('#16a34a',{emissive:'#16a34a', emissiveIntensity:.5}),
+    };
+    const NE={edges:false, shadow:false};
+
+    fixed(span(-2.0,-0.15,-0.6, 1.8,0,1.4, M.slab));
+    // 石膏板牆（正面 z=0；左側另一道牆形成陰角；右端轉角形成陽角）
+    [[X0,-0.6],[-0.6,0.3],[0.3,X1]].forEach(([a,b])=> fixed(span(a+.002,0,-0.1,b-.002,H,0,M.board)));
+    fixed(span(X1,0,-0.1,X1+.0,H,0,M.board));
+    fixed(span(-1.62,0,-0.6,X0,H,1.0,M.side));                       // 左側牆（陰角）
+    const screws=(z)=>{ const g=group();
+      SX.forEach(x=>{ const xs=Math.min(Math.max(x,X0+.015),X1-.015);
+        const near=JX.some(j=>Math.abs(j-x)<.01);
+        (near?[x-.015,x+.015]:[xs]).forEach(xx=>{ for (let y=0.15;y<H-0.1;y+=0.3){
+          const s=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,.002,10), M.screw.clone());
+          s.rotation.x=Math.PI/2; s.position.set(xx,y,z); g.add(s); } }); });
+      return g; };
+    fixed(screws(-0.0005));
+
+    /* ① 檢查 */
+    add(1, label('螺絲頭略低於板面',-0.6,1.75,0.15,1.2),{delay:.2, drop:0, until:1, glow:false});
+    add(1, label('接縫清潔無粉塵',-0.6,0.85,0.15,1.1),{delay:.5, drop:0, until:1, glow:false});
+
+    /* ② 第一道＋接縫帶 */
+    JX.forEach((x,i)=>{
+      add(2, span(x-.04,0,0,x+.04,H,.002,M.mud1,NE),{delay:i*.3, drop:0, cat:'mud'});
+      add(2, span(x-.026,0,.002,x+.026,H,.004,M.tape,NE),{delay:.5+i*.3, drop:0, cat:'mud'});
+    });
+
+    /* ③ 點補螺絲孔 */
+    { const g=group();
+      SX.forEach(x=>{ if (JX.some(j=>Math.abs(j-x)<.01)) return;
+        const xs=Math.min(Math.max(x,X0+.015),X1-.015);
+        for (let y=0.15;y<H-0.1;y+=0.3) g.add(span(xs-.022,y-.022,0,xs+.022,y+.022,.003,M.mud1,NE)); });
+      add(3, g, {delay:.2, drop:0, cat:'mud'}); }
+
+    /* ④ 第二道（15～20 cm） */
+    JX.forEach((x,i)=> add(4, span(x-.09,0,.004,x+.09,H,.006,M.mud2,NE),{delay:i*.3, drop:0, cat:'mud'}));
+    add(4, label('第二道 約 15～20 cm',-0.6,2.2,0.15,1.3),{delay:.6, drop:0, until:4, glow:false});
+
+    /* ⑤ 第三道（25～30 cm）＋羽化 */
+    JX.forEach((x,i)=>{
+      add(5, span(x-.1,0,.006,x+.1,H,.007,M.mud3,NE),{delay:i*.3, drop:0, cat:'mud'});
+      add(5, group(span(x-.14,0,.006,x-.1,H,.0065,M.feath,NE), span(x+.1,0,.006,x+.14,H,.0065,M.feath,NE)),{delay:.3+i*.3, drop:0, cat:'mud'});
+    });
+    add(5, label('第三道 約 25～30 cm・邊緣羽化',-0.6,2.2,0.15,1.8),{delay:.6, drop:0, until:5, glow:false});
+
+    /* ⑥ 研磨 */
+    add(6, span(-0.68,1.0,.01,-0.52,1.08,.05,M.sand),{delay:0, drop:-.25, until:6});
+    for (let i=0;i<14;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.008,6,6), M.dust.clone());
+      d.position.set(-0.68+((i*0.37)%0.16), 0.8+((i*0.53)%0.2), .03+((i*0.11)%0.05));
+      add(6, d, {delay:.3+i*.03, drop:.1, until:6, glow:false}); }
+
+    /* ⑦ 陽角護角條、陰角紙帶對折 */
+    add(7, group(span(X1-.03,0,-.002,X1+.003,H,.003,M.bead), span(X1-.002,0,-.03,X1+.003,H,.003,M.bead)),{delay:0, drop:.3});
+    add(7, group(span(X0,0,0,X0+.03,H,.003,M.tape,NE), span(X0,0,0,X0+.003,H,.03,M.tape,NE)),{delay:.4, drop:.3});
+    add(7, label('陽角：護角條',X1-0.1,2.2,0.2,1.1),{delay:.2, drop:0, until:7, glow:false});
+    add(7, label('陰角：紙帶對折',X0+0.3,2.2,0.2,1.1),{delay:.6, drop:0, until:7, glow:false});
+
+    /* ⑧ 完成檢查 */
+    add(8, span(-0.9,1.2,.012,0.0,1.25,.04,M.alu),{delay:0, drop:-.25, until:8});
+    add(8, label('✓ 平整度檢查 → 塗裝／壁紙',-0.15,2.2,0.2,1.9),{delay:.4, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

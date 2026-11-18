@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>牆面馬賽克舖貼施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：牆面 5×5 cm 馬賽克舖貼 11 步驟施工流程 3D 互動動畫，含表貼紙撕除、抹縫、伸縮縫背襯材與彈性填縫。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111804';
+
+const STEPS = [
+  {t:'施工前', d:'RC 牆面已完成 1:3 水泥砂漿粉刷，要舖貼 5×5 cm 馬賽克，並在適當間距留伸縮縫。',
+   tip:'113 年術科：「依序寫出牆面馬賽克舖貼施工流程（14 分）＋大樣圖（6 分）」，和 112 年抿石子是同一題型。'},
+  {t:'基面檢查', d:'清潔牆面，確認平整度，灑水濕潤。',
+   tip:'粉刷面不平，馬賽克貼上去會高低不平、反光不均。'},
+  {t:'分割計畫・放樣', d:'彈出水平、垂直基準線及伸縮縫位置（約每 3～4 m 或依設計）。',
+   tip:'伸縮縫吸收熱脹冷縮與結構變位，避免整面馬賽克拱起或開裂。'},
+  {t:'調製益膠泥', d:'依廠商比例調製益膠泥（或黏著劑）。',
+   tip:'比例要照廠商規定，並在可使用時間內用完。'},
+  {t:'鋸齒鏝刀塗抹', d:'以鋸齒鏝刀在牆面塗抹益膠泥，厚約 3～5 mm。',
+   tip:'齒紋讓益膠泥厚度一致，拍壓後才能滿漿。'},
+  {t:'鋪貼整張馬賽克', d:'依基準線鋪貼整張馬賽克（表貼紙式），以木拍板拍壓平整。',
+   tip:'馬賽克是整張（約 30×30 cm）出貨：背網式網在背面，表貼紙式紙在正面。'},
+  {t:'對齊縫線・校正', d:'對齊張與張之間的縫線，校正垂直與水平。',
+   tip:'張與張之間的縫要和單粒之間的縫一樣寬，整面才看不出接縫。'},
+  {t:'撕除表紙・修正單粒', d:'噴濕表紙後撕除，修正歪斜的單粒。',
+   tip:'表紙撕掉後才看得到單粒有沒有歪斜，要趁益膠泥未乾前撥正。'},
+  {t:'清除溢漿・養護', d:'清除縫內溢出的黏著劑，養護約 24～48 小時。',
+   tip:'縫內殘留的黏著劑會讓之後的填縫不飽滿。'},
+  {t:'抹縫', d:'以海綿鏝或橡膠鏝斜向推壓填縫劑，讓縫內飽滿。',
+   tip:'斜向（對角）推壓，填縫劑才不會被鏝刀從縫裡帶出來。'},
+  {t:'伸縮縫處理', d:'清潔伸縮縫，放入背襯材（PE 棒），再填彈性填縫材（矽利康或 PU）。',
+   tip:'背襯材控制填縫深度，並避免填縫材三面黏結而失去彈性。'},
+  {t:'清洗・養護・保護', d:'清洗表面、養護，並做好保護，完成馬賽克舖貼。',
+   tip:'大樣圖層次：RC 牆 → 1:3 粉刷 → 益膠泥 → 馬賽克 → 填縫劑；伸縮縫畫出背襯材與彈性填縫膠。'},
+];
+
+createAnim({
+  title: '牆面馬賽克舖貼施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.38,0.2,0.9],  dist:6.0, target:[0,1.1,0]},
+    3:  {dir:[0.5,0.45,0.74], dist:3.2, target:[1.1,0.25,0.6]},
+    7:  {dir:[0.3,0.12,0.95], dist:2.4, target:[-0.5,1.1,0]},
+    9:  {dir:[0.3,0.12,0.95], dist:2.4, target:[-0.5,1.1,0]},
+    10: {dir:[0.55,0.25,0.8], dist:2.2, target:[0,1.0,0]},
+  },
+  cut: {
+    face:[new THREE.Plane(new THREE.Vector3(-1,0,0), -0.6)],
+    glue:[new THREE.Plane(new THREE.Vector3(-1,0,0), -1.2)],
+  },
+  cutLabel: '切開馬賽克與益膠泥，看各層構造',
+  note: '馬賽克以貼圖表示，各層厚度與伸縮縫寬度有誇大。',
+  build({THREE, mat, box, span, pipe, group, label, add, fixed}) {
+    const X0=-1.8, X1=1.8, Y1=2.4, S=0.3, EJ=0.012;           // 每張 30 cm、伸縮縫寬
+    const Z_G0=0.003, Z_G=0.008, Z_M=0.014;                   // 益膠泥、馬賽克面
+
+    // 馬賽克貼圖：6×6 粒；gap 為縫的顏色
+    function mosaicTex(gap){
+      const c=document.createElement('canvas'); c.width=c.height=192;
+      const g=c.getContext('2d'); g.fillStyle=gap; g.fillRect(0,0,192,192);
+      let s=5; const r=()=> (s=(s*16807)%2147483647)/2147483647;
+      const cols=['#1e3a8a','#1d4ed8','#3b82f6','#93c5fd','#e0f2fe','#0e7490','#f8fafc'];
+      for (let i=0;i<6;i++) for (let j=0;j<6;j++){ g.fillStyle=cols[(r()*cols.length)|0]; g.fillRect(i*32+2,j*32+2,28,28); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t;
+    }
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      rc:    mat('#b9b6b0',{roughness:1}),
+      plas:  mat('#c9c4bb',{roughness:1}),
+      drop:  mat('#60a5fa',{roughness:.2}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      glue:  mat('#e7e5e4',{roughness:1}),
+      tub:   mat('#1f2937',{roughness:.6}),
+      steel: mat('#94a3b8',{metalness:.4, roughness:.4}),
+      handle:mat('#7c2d12',{roughness:.6}),
+      raw:   mat('#ffffff',{map:mosaicTex('#9ca3af'), roughness:.3}),
+      grouted:mat('#ffffff',{map:mosaicTex('#f1f5f9'), roughness:.3}),
+      paper: mat('#c8a46e',{roughness:1}),
+      chip:  mat('#3b82f6',{roughness:.3}),
+      float: mat('#facc15',{roughness:1}),
+      pe:    mat('#f8fafc',{roughness:.6}),
+      seal:  mat('#64748b',{roughness:.5}),
+      film:  mat('#bae6fd',{transparent:true, opacity:.25, roughness:.2, depthWrite:false}),
+      alu:   mat('#cbd5e1',{metalness:.4, roughness:.35}),
+    };
+    const NE={edges:false, shadow:false};
+
+    fixed(span(-2.2,-0.15,-0.3, 2.2,0,1.6, M.slab));
+    fixed(span(-2.2,0,-0.25, 2.2,2.7,-0.02, M.rc));
+    fixed(span(-2.2,0,-0.02, 2.2,2.7,0, M.plas));
+
+    // 每張馬賽克的位置（中間 x=0 留伸縮縫）
+    const SHEETS=[];
+    for (let r=0;r<8;r++) for (let c=0;c<12;c++){
+      let x0=X0+c*S, x1=x0+S;
+      if (c===5) x1-=EJ/2; if (c===6) x0+=EJ/2;
+      SHEETS.push([x0,r*S,x1,r*S+S,r,c]);
+    }
+
+    /* ① 基面檢查・灑水 */
+    for (let i=0;i<22;i++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.016,10,8), M.drop.clone());
+      d.position.set(X0+0.15+((i*0.37)%3.3), 0.2+((i*0.53)%2.0), .015);
+      add(1, d, {delay:i*.03, drop:.15, until:1, glow:false});
+    }
+
+    /* ② 放樣＋伸縮縫位置 */
+    { const LA={drop:0, until:6, glow:false};
+      add(2, span(X0,S-.003,.001,X1,S+.003,.003,M.laser,NE),{...LA, delay:.1});
+      add(2, span(-S-.003,0,.001,-S+.003,Y1,.003,M.laser,NE),{...LA, delay:.3});
+      add(2, group(span(-EJ/2-.003,0,.001,-EJ/2,Y1,.004,M.laser,NE), span(EJ/2,0,.001,EJ/2+.003,Y1,.004,M.laser,NE)),{...LA, until:9, delay:.6});
+      add(2, label('伸縮縫',0,2.55,0.2,0.8),{delay:.8, drop:0, until:2, glow:false}); }
+
+    /* ③ 調製益膠泥 */
+    add(3, group(pipe([1.2,0,0.6],[1.2,0.3,0.6],.2,M.tub), span(1.05,0.28,0.45,1.35,0.29,0.75,M.glue,NE)),{delay:0, drop:.3, until:5});
+
+    /* ④ 鋸齒鏝刀塗抹（齒紋） */
+    [[X0,-EJ/2],[EJ/2,X1]].forEach(([a,b],k)=>{ for (let r=0;r<8;r++){
+      const y0=r*S, g=group(span(a,y0,0,b,y0+S,Z_G0,M.glue,NE));
+      for (let y=y0+.01;y<y0+S-.008;y+=.02) g.add(span(a,y,Z_G0,b,y+.009,Z_G,M.glue,NE));
+      add(4, g, {delay:k*.6+r*.07, drop:0, cat:'glue'}); } });
+    add(4, group(span(-0.95,1.5,Z_G+.004,-0.35,1.62,Z_G+.008,M.steel),
+                 span(-0.7,1.62,Z_G+.004,-0.6,1.66,Z_G+.06,M.steel),
+                 span(-0.75,1.66,Z_G+.04,-0.55,1.7,Z_G+.09,M.handle)),{delay:.3, drop:-.3, until:4});
+
+    /* ⑤ 鋪貼整張（表貼紙朝外）＋木拍板 */
+    SHEETS.forEach(([x0,y0,x1,y1,r,c])=>{
+      add(5, span(x0+.002,y0+.002,Z_G,x1-.002,y1-.002,Z_M,M.raw,NE),{delay:r*.2+c*.02, drop:.2, cat:'face'});
+      add(5, span(x0+.002,y0+.002,Z_M,x1-.002,y1-.002,Z_M+.002,M.paper),{delay:r*.2+c*.02, drop:.2, until:6, cat:'face'});
+    });
+    add(5, group(span(0.3,0.9,Z_M+.01,0.6,1.0,Z_M+.04,M.handle)),{delay:1.0, drop:-.3, until:5});
+    // 一粒歪掉的（撕紙後才看得到）
+    { const ch=box(.045,.045,.006,M.chip); ch.position.set(-0.47,1.21,Z_M+.003); ch.rotation.z=.35;
+      add(5, ch, {delay:1.8, drop:0, until:7, glow:false}); }
+
+    /* ⑥ 對齊校正（靠尺） */
+    add(6, span(-0.33,0.1,Z_M+.004,-0.27,2.3,Z_M+.03,M.alu),{delay:0, drop:-.3, until:6});
+
+    /* ⑦ 噴濕撕紙、修正單粒 */
+    for (let i=0;i<14;i++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(.013,10,8), M.drop.clone());
+      d.position.set(-1.2+((i*0.37)%1.1), 0.8+((i*0.53)%0.8), Z_M+.01);
+      add(7, d, {delay:i*.02, drop:.1, until:7, glow:false});
+    }
+    add(7, label('撕紙後撥正歪斜單粒',-0.47,1.42,0.1,0.6),{delay:.5, drop:0, until:7, glow:false});
+
+    /* ⑧ 清除溢漿・養護 */
+    add(8, label('清溢漿・養護 24～48 小時',0,2.5,0.25,1.7),{delay:0, drop:.1, until:8, glow:false});
+
+    /* ⑨ 抹縫（縫色變淺） */
+    SHEETS.forEach(([x0,y0,x1,y1,r,c])=>
+      add(9, span(x0+.002,y0+.002,Z_M-.0005,x1-.002,y1-.002,Z_M+.0003,M.grouted,NE),{delay:r*.15+c*.015, drop:0, cat:'face'}));
+    { const fl=group(span(-0.15,-0.06,0,0.15,0.06,.02,M.float), span(-0.05,-0.02,.02,0.05,0.02,.07,M.handle));
+      fl.rotation.z=Math.PI/4; fl.position.set(-0.6,1.0,Z_M+.005);
+      add(9, fl, {delay:.2, drop:0, until:9}); }
+    add(9, label('斜向推壓',-0.6,1.3,0.1,0.45),{delay:.4, drop:0, until:9, glow:false});
+
+    /* ⑩ 伸縮縫：PE 棒 → 彈性填縫 */
+    add(10, pipe([0,0.02,Z_G0+.004],[0,Y1-.02,Z_G0+.004],EJ*0.45,M.pe),{delay:0, drop:0});
+    add(10, span(-EJ/2,0,Z_G0+.008,EJ/2,Y1,Z_M-.001,M.seal,NE),{delay:.6, drop:0});
+    add(10, label('背襯材（PE 棒）＋彈性填縫',0,1.3,0.1,0.75),{delay:.3, drop:0, until:10, glow:false});
+
+    /* ⑪ 清洗・保護 */
+    add(11, span(X0,0,Z_M+.001,X1,Y1,Z_M+.002,M.film,NE),{delay:.2, drop:0, cat:'face'});
+    add(11, label('清洗・養護・保護',0,2.5,0.25,1.3),{delay:.4, drop:.1, until:11, glow:false});
+  },
+});
+</script>
+</body>
+</html>

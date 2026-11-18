@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>櫥櫃西德鉸鍊安裝程序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：木作櫥櫃西德鉸鍊安裝 9 步驟程序 3D 互動動畫，含杯孔放樣、35 mm 杯孔、座板、三向調整。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111804';
+
+const STEPS = [
+  {t:'施工前', d:'櫃體已組好，門片放在工作台上，要安裝西德鉸鍊（全蓋式）。',
+   tip:'術科考過「櫥櫃安裝西德鉸鍊的程序與內容」：確認型式 → 決定數量 → 放樣 → 鑽杯孔 → 鎖鉸鍊杯 → 鎖座板 → 掛門組合 → 三向調整 → 開合測試。'},
+  {t:'確認型式', d:'確認全蓋（蓋柱）、半蓋、入柱，以及門片厚度與開啟角度。',
+   tip:'全蓋：門片蓋住側板；半蓋：兩扇門共用一片中隔板；入柱：門片嵌在櫃體內。型式不同，鉸鍊臂的彎度就不同。'},
+  {t:'決定數量', d:'門高約 90 cm 以內用 2 個，門越高增加數量。',
+   tip:'這扇門高 80 cm，用 2 個；門片越高越重，就要加鉸鍊分擔重量。'},
+  {t:'放樣', d:'杯孔中心距門片上下緣約 7～12 cm，杯孔邊距門邊約 3～6 mm。',
+   tip:'杯孔離門邊的距離會影響門片蓋柱的多寡，要依鉸鍊型式決定。'},
+  {t:'鑽杯孔', d:'以 35 mm 杯孔鑽頭鑽孔，深約 12 mm。',
+   tip:'鑽太深會鑽穿門片表面，要用有限深裝置的鑽頭或鑽台。'},
+  {t:'鎖固鉸鍊杯', d:'把鉸鍊杯放進杯孔，鎖固在門片上。',
+   tip:'鉸鍊臂要與門邊垂直，否則門片掛上去會歪。'},
+  {t:'鎖固座板', d:'在櫃體側板放樣座板位置並鎖固。',
+   tip:'座板高度要對齊門片上鉸鍊杯的位置。'},
+  {t:'掛門組合', d:'將門片掛上座板，組合鉸鍊。',
+   tip:'卡式鉸鍊可以直接扣上座板，拆裝門片很方便。'},
+  {t:'三向調整', d:'調整三向螺絲（上下、左右、前後），使門縫均勻、門片齊平。',
+   tip:'上下調門片高度、左右調門縫寬窄、前後調門片與櫃體的貼合。'},
+  {t:'開合測試', d:'開合測試，確認順暢、不碰撞。',
+   tip:'開到最大角度時，門片不可撞到旁邊的門或牆面。'},
+];
+
+createAnim({
+  title: '櫥櫃西德鉸鍊安裝程序',
+  steps: STEPS,
+  groundY: 0,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.2,0.45,0.87],  dist:3.4, target:[-0.35,0.6,0.1]},
+    3:  {dir:[0.05,0.92,0.38], dist:1.8, target:[-0.95,0.76,0.5]},
+    4:  {dir:[0.05,0.92,0.38], dist:1.5, target:[-1.25,0.76,0.4]},
+    5:  {dir:[0.05,0.92,0.38], dist:1.5, target:[-1.25,0.76,0.4]},
+    6:  {dir:[0.75,0.35,0.55], dist:1.8, target:[0.1,0.5,-0.2]},
+    8:  {dir:[-0.3,0.25,0.92], dist:1.4, target:[0.05,0.75,0.05]},
+    9:  {dir:[0.35,0.4,0.85],  dist:2.8, target:[0.1,0.5,0.2]},
+  },
+  note: '鉸鍊大小有放大，方便看清楚各部位。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const T=0.018;                                   // 板厚
+    const CX0=0, CX1=0.6, CY0=0.08, CY1=0.88, CZ0=-0.5;   // 櫃體
+    const HY=[CY1-0.1, CY0+0.1];                     // 鉸鍊高度（距上下緣 10 cm）
+    const M = {
+      floor: mat('#d6d3d1',{roughness:1}),
+      body:  mat('#e7d7bd',{roughness:.7}),
+      door:  mat('#f5efe4',{roughness:.6}),
+      bench: mat('#a16207',{roughness:.8}),
+      leg:   mat('#57534e',{roughness:.7}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      hole:  mat('#3f2a14',{roughness:1}),
+      drill: mat('#94a3b8',{metalness:.5, roughness:.3}),
+      metal: mat('#cbd5e1',{metalness:.6, roughness:.3}),
+      arrow: mat('#ea580c',{emissive:'#ea580c', emissiveIntensity:.4}),
+      ghost: mat('#3b82f6',{transparent:true, opacity:.25, depthWrite:false}),
+    };
+    const NE={edges:false, shadow:false};
+
+    fixed(span(-2,-0.02,-1.2,1.2,0,1.2,M.floor));
+    // 櫃體（底座、側板、頂底板、背板、層板）
+    fixed(span(CX0+.03,0,CZ0+.03,CX1-.03,CY0,-.03,M.leg));
+    fixed(span(CX0,CY0,CZ0,CX0+T,CY1,0,M.body));
+    fixed(span(CX1-T,CY0,CZ0,CX1,CY1,0,M.body));
+    fixed(span(CX0+T,CY0,CZ0,CX1-T,CY0+T,0,M.body));
+    fixed(span(CX0+T,CY1-T,CZ0,CX1-T,CY1,0,M.body));
+    fixed(span(CX0+T,CY0+T,CZ0,CX1-T,CY1-T,CZ0+.006,M.body));
+    fixed(span(CX0+T,0.47,CZ0+.006,CX1-T,0.47+T,-.03,M.body));
+    // 工作台
+    const BY=0.75;
+    fixed(span(-1.5,BY-0.04,0.1,-0.4,BY,0.9,M.bench));
+    [[-1.45,0.15],[-0.45,0.15],[-1.45,0.85],[-0.45,0.85]].forEach(([x,z])=> fixed(span(x-.03,0,z-.03,x+.03,BY-.04,z+.03,M.leg)));
+
+    // 平放門片：長邊沿 x（高 0.8），寬沿 z（0.6），鉸鍊邊在 z=DZ0
+    const DX0=-1.35, DX1=-0.55, DZ0=0.2, DZ1=0.8, DY=BY+T;
+    const cupX=[DX0+0.1, DX1-0.1], cupZ=DZ0+0.004+0.0175;
+    add(0, span(DX0,BY,DZ0,DX1,DY,DZ1,M.door),{until:6, drop:0});
+
+    /* ① 確認型式：全蓋門片蓋住側板（藍色示意） */
+    add(1, span(CX0,CY0,.002,CX1,CY1,.004,M.ghost,NE),{delay:0, drop:0, until:1, glow:false});
+    add(1, label('全蓋・半蓋・入柱',0.3,1.22,0.1,0.8),{delay:.3, drop:0, until:1, glow:false});
+    add(1, label('門片蓋住側板＝全蓋',0.3,1.0,0.1,0.8),{delay:.6, drop:0, until:1, glow:false});
+
+    /* ② 決定數量 */
+    add(2, label('門高 80 cm → 2 個',-0.95,1.15,0.5,0.8),{delay:0, drop:0, until:2, glow:false});
+    cupX.forEach((x,i)=> add(2, arrow([x,DY+0.3,cupZ],[x,DY+0.03,cupZ],M.arrow),{delay:.3+i*.2, drop:0, until:2, glow:false}));
+
+    /* ③ 放樣（十字記號＋距離標示） */
+    cupX.forEach((x,i)=>{
+      add(3, group(span(x-.04,DY,cupZ-.002,x+.04,DY+.001,cupZ+.002,M.laser,NE),
+                   span(x-.002,DY,cupZ-.04,x+.002,DY+.001,cupZ+.04,M.laser,NE)),{delay:i*.3, drop:0, until:4, glow:false});
+    });
+    add(3, label('距上下緣 7～12 cm',-0.95,0.98,0.45,0.75),{delay:.6, drop:0, until:3, glow:false});
+    add(3, label('杯孔邊距門邊 3～6 mm',-0.95,1.0,0.1,0.7),{delay:.9, drop:0, until:3, glow:false});
+
+    /* ④ 鑽杯孔 Ø35 深 12 mm */
+    add(4, pipe([cupX[0],DY+0.002,cupZ],[cupX[0],DY+0.25,cupZ],.0175,M.drill),{delay:0, drop:.15, until:4});
+    cupX.forEach((x,i)=> add(4, pipe([x,DY-0.012,cupZ],[x,DY+0.0005,cupZ],.0175,M.hole),{delay:.5+i*.3, drop:0, until:6}));
+    add(4, label('Ø35 mm・深約 12 mm',-0.95,1.1,0.4,0.8),{delay:.3, drop:0, until:4, glow:false});
+
+    /* ⑤ 鎖固鉸鍊杯（杯＋鉸鍊臂） */
+    cupX.forEach((x,i)=> add(5, group(
+      pipe([x,DY-0.01,cupZ],[x,DY+0.003,cupZ],.0175,M.metal),
+      span(x-.012,DY+.003,cupZ-.0,x+.012,DY+.016,cupZ+.1,M.metal)),{delay:i*.3, drop:.2, until:6}));
+
+    /* ⑥ 側板上鎖座板 */
+    HY.forEach((y,i)=> add(6, span(CX0+T,y-.018,-0.09,CX0+T+.01,y+.018,-0.035,M.metal),{delay:i*.3, drop:.15}));
+
+    /* ⑦ 掛門（門片關閉在櫃體前方） */
+    const doorClosed = group(span(CX0,CY0,.002,CX1,CY1,.002+T,M.door));
+    HY.forEach(y=> doorClosed.add(span(CX0+T+.01,y-.012,-0.06,CX0+T+.022,y+.012,.002,M.metal)));
+    add(7, doorClosed, {delay:0, drop:.3, until:8});
+
+    /* ⑧ 三向調整 */
+    { const y=HY[0], p=[CX0+0.04,y,-0.02];
+      add(8, arrow([p[0],y-0.12,p[2]+.06],[p[0],y+0.12,p[2]+.06],M.arrow),{delay:0, drop:0, until:8, glow:false});
+      add(8, arrow([p[0]-0.12,y,p[2]+.06],[p[0]+0.12,y,p[2]+.06],M.arrow),{delay:.2, drop:0, until:8, glow:false});
+      add(8, arrow([p[0],y-0.06,p[2]-0.1],[p[0],y-0.06,p[2]+0.14],M.arrow),{delay:.4, drop:0, until:8, glow:false});
+      add(8, label('上下・左右・前後',0.25,1.08,0.1,0.75),{delay:.6, drop:0, until:8, glow:false}); }
+
+    /* ⑨ 開合測試：門片開啟約 100° */
+    { const pivot=new THREE.Group(); pivot.position.set(CX0-.002,0,.02);
+      const d=span(0.002,CY0,-T,0.602,CY1,0,M.door); pivot.add(d);
+      HY.forEach(y=> pivot.add(span(.02,y-.012,-T-.05,.032,y+.012,-T,M.metal)));
+      pivot.rotation.y=-1.75;
+      add(9, pivot, {delay:0, drop:0});
+      add(9, label('開合順暢・不碰撞',0.3,1.08,0.3,0.75),{delay:.4, drop:0, glow:false}); }
+  },
+});
+</script>
+</body>
+</html>
