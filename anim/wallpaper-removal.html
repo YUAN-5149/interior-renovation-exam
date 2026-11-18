@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>舊壁紙拆除流程｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：室內裝修舊壁紙拆除 6 步驟流程 3D 互動動畫，含斷電拆面板、乾撕、劃痕、浸潤、刮除、修補封底。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111805';
+
+const STEPS = [
+  {t:'施工前', d:'石膏板牆面貼著舊壁紙，牆上有開關、插座，旁邊有家具，要拆除舊壁紙。',
+   tip:'113 年術科：「舊壁紙之拆除流程（12 分）及注意事項（8 分）」。注意事項：斷電、刮刀不可刮傷石膏板紙面、水量不可過多、保持通風。'},
+  {t:'斷電・拆面板・保護', d:'切斷電源，拆下開關與插座面板；保護地面與家具。',
+   tip:'拆面板前一定要斷電，避免噴水、刮除時觸電。'},
+  {t:'試撕・乾撕', d:'先試撕，表層能乾撕的直接剝除。',
+   tip:'很多壁紙是表層與底紙兩層，表層能乾撕就先撕，省水也省力。'},
+  {t:'劃痕', d:'以刮刀或打孔滾輪在表面劃痕，讓水分能滲入。',
+   tip:'劃痕是讓水滲進去軟化背膠；力道不可太大，以免刮傷石膏板紙面。'},
+  {t:'浸潤', d:'噴灑溫水或除膠劑，浸潤 10～15 分鐘。',
+   tip:'水量不可過多，石膏板吸水會軟化受損。'},
+  {t:'由下往上刮除', d:'以刮刀由下往上刮除底紙與殘膠。',
+   tip:'由下往上刮，比較好施力，也不容易讓濕的底紙往下黏在已清好的牆面。'},
+  {t:'清洗・修補・封底', d:'清洗殘膠，修補底材（批土、研磨），乾燥後塗封底劑。',
+   tip:'殘膠沒清乾淨，新壁紙或油漆會起泡、脫落；封底劑讓底材吸收均勻。'},
+];
+
+createAnim({
+  title: '舊壁紙拆除流程',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.4,0.25,0.88], dist:5.6, target:[0,1.1,0.2]},
+    2:  {dir:[0.35,0.15,0.92], dist:3.6, target:[-0.9,1.2,0]},
+    3:  {dir:[0.3,0.12,0.95], dist:3.0, target:[0.6,1.2,0]},
+    5:  {dir:[0.35,0.12,0.93], dist:3.4, target:[0.6,0.9,0]},
+  },
+  note: '壁紙厚度有誇大，方便看清楚表層與底紙。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.6, X1=1.6, H=2.4, W=(X1-X0)/6;          // 6 幅壁紙
+    const SW={x:0.9,y:1.2}, OUT={x:-1.2,y:0.3};
+
+    function paperTex(){
+      const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+      g.fillStyle='#dbe7d3'; g.fillRect(0,0,128,128);
+      g.fillStyle='#8fb08a'; for (let i=0;i<4;i++) for (let j=0;j<4;j++){ g.beginPath(); g.arc(16+i*32+(j%2)*16,16+j*32,6,0,6.29); g.fill(); }
+      g.strokeStyle='#b7cdb0'; g.lineWidth=3; for (let i=0;i<128;i+=32){ g.beginPath(); g.moveTo(i,0); g.lineTo(i,128); g.stroke(); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(3,12); return t;
+    }
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      board: mat('#e2ddd2',{roughness:.95}),
+      face:  mat('#ffffff',{map:paperTex(), roughness:.8}),
+      back:  mat('#f3efe4',{roughness:1}),
+      plate: mat('#fafaf9',{roughness:.4}),
+      ebox:  mat('#1d4ed8',{roughness:.6}),
+      tarp:  mat('#60a5fa',{roughness:.8}),
+      sofa:  mat('#78716c',{roughness:.9}),
+      cover: mat('#e0f2fe',{transparent:true, opacity:.6, roughness:.5, depthWrite:false}),
+      score: mat('#57534e',{roughness:1}),
+      roller:mat('#f97316',{roughness:.5}),
+      dark:  mat('#292524',{roughness:.6}),
+      drop:  mat('#60a5fa',{roughness:.2}),
+      wet:   mat('#475569',{transparent:true, opacity:.2, depthWrite:false}),
+      bottle:mat('#22c55e',{roughness:.4}),
+      steel: mat('#94a3b8',{metalness:.4, roughness:.4}),
+      handle:mat('#7c2d12',{roughness:.6}),
+      glue:  mat('#fde68a',{transparent:true, opacity:.55, roughness:.4, depthWrite:false}),
+      putty: mat('#ffffff',{roughness:1}),
+      primer:mat('#e0e7ff',{transparent:true, opacity:.3, roughness:.6, depthWrite:false}),
+      arrow: mat('#ea580c',{emissive:'#ea580c', emissiveIntensity:.4}),
+    };
+    const NE={edges:false, shadow:false};
+
+    fixed(span(-2.2,-0.15,-0.3, 2.2,0,1.8, M.slab));
+    fixed(span(-2.2,0,-0.15, 2.2,2.7,0, M.board));
+    [SW,OUT].forEach(p=> fixed(span(p.x-.04,p.y-.06,-.03,p.x+.04,p.y+.06,.001,M.ebox)));
+
+    // 舊壁紙：底紙一整片＋6 幅表層
+    add(0, span(X0,0.08,0,X1,H,.003,M.back,NE),{until:4, drop:0});
+    for (let i=0;i<6;i++) add(0, span(X0+i*W+.002,0.08,.003,X0+(i+1)*W-.002,H,.006,M.face),{until: i<3?1:4, drop:0});
+    [SW,OUT].forEach(p=>{ const g=group(span(p.x-.06,p.y-.085,.006,p.x+.06,p.y+.085,.014,M.plate));
+      add(0, g, {until:0, drop:0}); });
+    fixed(span(-1.7,0,0.5,-0.3,0.45,1.3,M.sofa));
+
+    /* ① 斷電・拆面板・保護 */
+    add(1, label('斷電！',1.3,1.55,0.3,0.7),{delay:0, drop:0, until:1, glow:false});
+    add(1, span(-1.9,0.002,0.08,1.9,0.006,1.6,M.tarp,NE),{delay:.4, drop:0, until:6});
+    add(1, span(-1.75,0,0.45,-0.25,0.5,1.35,M.cover,NE),{delay:.7, drop:.2, until:6});
+
+    /* ② 乾撕表層（左邊 3 幅撕掉，剩底紙） */
+    { const peel=span(0,0,0,0.5,0.6,.003,M.face); peel.geometry.translate(0,0,0);
+      peel.position.set(X0+2*W+0.2,1.9,.05); peel.rotation.set(-0.5,0.4,0.15);
+      add(2, peel, {delay:.3, drop:0, until:2}); }
+    add(2, label('能乾撕的先撕',-0.9,2.0,0.3,1.0),{delay:.5, drop:0, until:2, glow:false});
+
+    /* ③ 劃痕（右邊 3 幅＋底紙） */
+    { const g=group();
+      for (let i=0;i<40;i++){ const x=X0+0.1+((i*0.29)%3.0), y=0.2+((i*0.47)%2.1);
+        const s=box(.12,.004,.002,M.score,NE); s.position.set(x,y,.0075); s.rotation.z=(i%2?.6:-.6); g.add(s); }
+      add(3, g, {delay:.3, drop:0, until:4}); }
+    add(3, group(pipe([0.45,1.15,.03],[0.75,1.15,.03],.035,M.roller), span(0.58,1.15,.02,0.62,1.5,.05,M.dark)),{delay:0, drop:-.2, until:3});
+
+    /* ④ 浸潤 */
+    add(4, span(X0,0.08,.0065,X1,H,.007,M.wet,NE),{delay:.5, drop:0, until:4});
+    for (let i=0;i<26;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.015,10,8), M.drop.clone());
+      d.position.set(X0+0.1+((i*0.37)%3.0), 0.2+((i*0.53)%2.1), .02);
+      add(4, d, {delay:i*.02, drop:.12, until:4, glow:false}); }
+    add(4, group(pipe([1.2,1.3,.25],[1.2,1.55,.25],.05,M.bottle), span(1.17,1.55,.18,1.23,1.62,.3,M.bottle)),{delay:0, drop:-.2, until:4});
+    add(4, label('浸潤 10～15 分鐘',0,2.55,0.3,1.2),{delay:.3, drop:0, until:4, glow:false});
+
+    /* ⑤ 由下往上刮除：剩殘膠 */
+    [[-1.3,0.6],[-0.4,1.5],[0.5,0.4],[1.1,1.9],[0.2,2.1]].forEach(([x,y],i)=>
+      add(5, span(x-.15,y-.1,0,x+.15,y+.1,.002,M.glue,NE),{delay:.4+i*.08, drop:0, until:5}));
+    add(5, group(span(0.45,0.65,.01,0.75,0.68,.03,M.steel), span(0.57,0.68,.02,0.63,0.95,.06,M.handle)),{delay:0, drop:.3, until:5});
+    add(5, arrow([0.95,0.3,.1],[0.95,1.2,.1],M.arrow),{delay:.2, drop:0, until:5, glow:false});
+    add(5, label('由下往上刮',0.95,1.4,0.2,0.9),{delay:.4, drop:0, until:5, glow:false});
+
+    /* ⑥ 清洗・批土修補・封底 */
+    [[-0.9,1.1],[0.3,1.7],[1.3,0.7]].forEach(([x,y],i)=>
+      add(6, span(x-.07,y-.05,0,x+.07,y+.05,.002,M.putty,NE),{delay:i*.15, drop:0}));
+    add(6, span(X0,0.08,.0025,X1,H,.003,M.primer,NE),{delay:.8, drop:0});
+    add(6, label('修補・研磨・塗封底劑',0,2.55,0.3,1.5),{delay:.4, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

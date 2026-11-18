@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>油漆塗裝前底材處理｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：油漆施工前木作與泥作底材表面處理 7 步驟 3D 互動動畫，含含水率、清潔、節疤封閉、補土、研磨、抗鹼封底、遮蔽。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111805';
+
+const STEPS = [
+  {t:'施工前', d:'左邊是木作壁板、右邊是水泥粉刷牆，油漆前要先做底材處理。',
+   tip:'術科考過「油漆施工前的底材（木作、泥作）表面應處理事項」。答題時把木作、泥作分開寫，最後加上共通的遮蔽保護。'},
+  {t:'含水率檢查', d:'木材含水率須符合規定；泥作要充分養護，乾燥後含水率合格才可塗裝。',
+   tip:'底材太濕就塗裝，漆膜會起泡、剝落，泥作還會析出白華。'},
+  {t:'清潔表面', d:'木作清除油污、灰塵、溢膠；泥作清除浮灰、白華、油污、霉斑。',
+   tip:'表面有油污、灰塵，油漆附著不良；霉斑要徹底清除，否則會從漆膜底下長出來。'},
+  {t:'木作節疤封閉', d:'節疤與含油脂處以蟲膠漆（或封底劑）封閉。',
+   tip:'節疤含油脂，不封閉會「吐油」，讓漆面泛黃、斑點。'},
+  {t:'補土', d:'木作釘孔、接縫、裂縫，以及泥作裂縫、孔洞，以補土填平。',
+   tip:'補土要稍微高出表面，乾燥收縮後再研磨平順。'},
+  {t:'研磨', d:'補土乾燥後研磨平順。',
+   tip:'研磨後要清除粉塵，再進行下一道。'},
+  {t:'泥作抗鹼封底', d:'鹼性強的泥作面先塗抗鹼封底漆。',
+   tip:'水泥面呈鹼性，會讓面漆變色、粉化，所以要先塗抗鹼封底。'},
+  {t:'遮蔽保護', d:'周邊不需塗裝的部分（地面、插座、相鄰材料）先遮蔽保護。',
+   tip:'遮蔽做好，塗裝時才不會沾到地板、開關面板和其他完成面。'},
+];
+
+createAnim({
+  title: '油漆塗裝前底材處理',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.35,0.22,0.91], dist:5.2, target:[0,1.1,0]},
+    3:  {dir:[0.3,0.12,0.95],  dist:2.6, target:[-0.8,1.1,0]},
+    4:  {dir:[0.3,0.12,0.95],  dist:3.6, target:[0,1.1,0]},
+  },
+  note: '缺陷大小有誇大，方便辨認。',
+  build({THREE, mat, box, span, pipe, group, label, add, fixed}) {
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      plas:  mat('#c9c4bb',{roughness:1}),
+      wood:  mat('#d9b98a',{roughness:.7}),
+      knot:  mat('#6b4423',{roughness:.7}),
+      hole:  mat('#3f3a36',{roughness:1}),
+      oil:   mat('#78716c',{transparent:true, opacity:.45, depthWrite:false}),
+      efflo: mat('#ffffff',{roughness:1}),
+      mold:  mat('#365314',{roughness:1}),
+      crack: mat('#44403c',{roughness:1}),
+      meter: mat('#facc15',{roughness:.5}),
+      dark:  mat('#292524',{roughness:.6}),
+      brush: mat('#7c2d12',{roughness:.6}),
+      shell: mat('#d97706',{transparent:true, opacity:.6, roughness:.3, depthWrite:false}),
+      putty: mat('#f5f5f4',{roughness:1}),
+      sand:  mat('#ca8a04',{roughness:1}),
+      dust:  mat('#e7e5e4',{roughness:1}),
+      alk:   mat('#c7d2fe',{transparent:true, opacity:.35, roughness:.6, depthWrite:false}),
+      tape:  mat('#3b82f6',{roughness:.6}),
+      sheet: mat('#e0f2fe',{transparent:true, opacity:.7, roughness:.4, depthWrite:false}),
+      plate: mat('#fafaf9',{roughness:.4}),
+    };
+    const NE={edges:false, shadow:false};
+
+    fixed(span(-2.2,-0.15,-0.3, 2.2,0,1.6, M.slab));
+    fixed(span(-2.2,0,-0.2, 0,2.6,-0.02, M.plas));
+    fixed(span(0,0,-0.2, 2.2,2.6,0, M.plas));                     // 右：泥作
+    [[-1.8,-1.0],[-1.0,-0.2]].forEach(([a,b])=> fixed(span(a+.002,0,-.02,b-.002,2.4,0,M.wood)));   // 左：木作壁板
+    fixed(span(0.9,1.14,0,1.02,1.3,.008,M.plate));                 // 開關面板
+
+    // 缺陷：釘孔、節疤、油污、溢膠（木作）；裂縫、白華、霉斑（泥作）
+    const NAILS=[[-1.6,0.5],[-1.6,1.3],[-1.6,2.0],[-0.4,0.6],[-0.4,1.4],[-0.4,2.1]];
+    const KNOTS=[[-1.3,1.7],[-0.65,0.8]];
+    NAILS.forEach(([x,y])=> fixed(span(x-.01,y-.01,-.001,x+.01,y+.01,.0008,M.hole,NE)));
+    KNOTS.forEach(([x,y])=> { const k=new THREE.Mesh(new THREE.CircleGeometry(.06,20), M.knot.clone()); k.position.set(x,y,.0012); k.scale.y=.6; fixed(k); });
+    add(0, span(-1.5,0.9,.0015,-1.15,1.15,.002,M.oil,NE),{until:1, drop:0});
+    add(0, span(-1.03,0.2,.0015,-0.97,2.2,.003,M.efflo,NE),{until:1, drop:0});     // 接縫溢膠
+    const CRACK=[[0.4,1.8],[0.55,1.6],[0.5,1.4],[0.65,1.2]];
+    for (let i=0;i<CRACK.length-1;i++){ const [a,b]=CRACK[i], [c,d]=CRACK[i+1];
+      const L=Math.hypot(c-a,d-b), m=box(L,.008,.002,M.crack,NE); m.position.set((a+c)/2,(b+d)/2,.001); m.rotation.z=Math.atan2(d-b,c-a); fixed(m); }
+    add(0, span(1.3,0.15,.001,1.8,0.45,.002,M.efflo,NE),{until:1, drop:0});          // 白華
+    [[1.6,2.1],[1.75,2.0],[1.5,1.95]].forEach(([x,y])=> add(0, span(x-.05,y-.04,.001,x+.05,y+.04,.002,M.mold,NE),{until:1, drop:0}));
+    fixed(span(1.2,0.95,-.001,1.3,1.05,.0008,M.hole,NE));                                // 孔洞
+
+    /* ① 含水率檢查 */
+    add(1, group(span(-1.0,1.0,.02,-0.86,1.22,.05,M.meter), span(-0.98,1.12,.05,-0.88,1.19,.052,M.dark,NE)),{delay:0, drop:-.2, until:1});
+    add(1, group(span(0.9,0.6,.02,1.04,0.82,.05,M.meter), span(0.92,0.72,.05,1.02,0.79,.052,M.dark,NE)),{delay:.2, drop:-.2, until:1});
+    add(1, label('木材含水率合格',-1.0,2.42,0.2,1.2),{delay:.4, drop:0, until:1, glow:false});
+    add(1, label('泥作養護・乾燥',1.0,2.42,0.2,1.2),{delay:.6, drop:0, until:1, glow:false});
+
+    /* ② 清潔表面（油污、溢膠、白華、霉斑消失） */
+    add(2, group(span(1.4,0.5,.03,1.6,0.56,.07,M.brush), span(1.48,0.56,.04,1.52,0.75,.06,M.brush)),{delay:0, drop:-.2, until:2});
+    add(2, label('清除油污・溢膠・白華・霉斑',0,2.42,0.2,1.9),{delay:.3, drop:0, until:2, glow:false});
+
+    /* ③ 節疤封閉（蟲膠漆） */
+    KNOTS.forEach(([x,y],i)=>{ const k=new THREE.Mesh(new THREE.CircleGeometry(.085,20), M.shell.clone()); k.position.set(x,y,.0025); k.scale.y=.65;
+      add(3, k, {delay:.2+i*.3, drop:0}); });
+    add(3, label('節疤塗蟲膠漆',-0.95,2.0,0.15,0.9),{delay:.4, drop:0, until:3, glow:false});
+
+    /* ④ 補土（木作釘孔、接縫；泥作裂縫、孔洞） */
+    NAILS.forEach(([x,y],i)=> add(4, span(x-.03,y-.03,0,x+.03,y+.03,.004,M.putty,NE),{delay:i*.06, drop:0}));
+    add(4, span(-1.05,0.2,0,-0.95,2.2,.004,M.putty,NE),{delay:.4, drop:0});
+    for (let i=0;i<CRACK.length-1;i++){ const [a,b]=CRACK[i], [c,d]=CRACK[i+1];
+      const L=Math.hypot(c-a,d-b), m=box(L+.03,.05,.004,M.putty,NE); m.position.set((a+c)/2,(b+d)/2,.002); m.rotation.z=Math.atan2(d-b,c-a);
+      add(4, m, {delay:.6+i*.1, drop:0}); }
+    add(4, span(1.19,0.94,0,1.31,1.06,.004,M.putty,NE),{delay:.9, drop:0});
+
+    /* ⑤ 研磨 */
+    add(5, span(0.4,1.45,.006,0.58,1.53,.05,M.sand),{delay:0, drop:-.2, until:5});
+    add(5, span(-1.7,1.25,.006,-1.52,1.33,.05,M.sand),{delay:.2, drop:-.2, until:5});
+    for (let i=0;i<16;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.008,6,6), M.dust.clone());
+      d.position.set((i%2?0.45:-1.65)+((i*0.07)%0.12), 1.2+((i*0.13)%0.3), .03+((i*0.11)%0.05));
+      add(5, d, {delay:.3+i*.03, drop:.1, until:5, glow:false}); }
+
+    /* ⑥ 泥作抗鹼封底 */
+    add(6, span(0.02,0,.005,2.2,2.6,.006,M.alk,NE),{delay:.2, drop:0});
+    add(6, label('抗鹼封底漆',1.1,2.42,0.2,1.0),{delay:.4, drop:0, until:6, glow:false});
+
+    /* ⑦ 遮蔽保護 */
+    add(7, span(-2.0,0.002,0.02,2.0,0.006,1.4,M.sheet,NE),{delay:0, drop:0});
+    add(7, span(-1.85,0,.004,2.2,.03,.007,M.tape,NE),{delay:.3, drop:0});              // 牆腳膠帶
+    add(7, span(0.88,1.12,.008,1.04,1.32,.012,M.tape,NE),{delay:.5, drop:0});           // 開關面板
+    add(7, span(-0.03,0,.004,0.03,2.6,.007,M.tape,NE),{delay:.7, drop:0});             // 木作與泥作交界
+    add(7, label('遮蔽保護完成 → 可塗裝',0,2.42,0.2,1.6),{delay:.9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

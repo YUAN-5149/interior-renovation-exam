@@ -14,7 +14,7 @@
 </head>
 <body>
 <script type="module">
-import { createAnim, THREE } from './engine.js?v=2026111804';
+import { createAnim, THREE } from './engine.js?v=2026111805';
 
 const STEPS = [
   {t:'施工前', d:'櫃體已組好，門片放在工作台上，要安裝西德鉸鍊（全蓋式）。',
@@ -43,6 +43,7 @@ createAnim({
   title: '櫥櫃西德鉸鍊安裝程序',
   steps: STEPS,
   groundY: 0,
+  minDist: 0.8,
   sun: [3, 8, 6],
   views: {
     def:{dir:[0.2,0.45,0.87],  dist:3.4, target:[-0.35,0.6,0.1]},
