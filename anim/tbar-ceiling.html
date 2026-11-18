@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>輕鋼架天花板施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：輕鋼架（明架）防火礦纖天花板 9 步驟施工順序 3D 互動動畫，可逐步播放、旋轉視角、看剖面。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111802';
+
+const STEPS = [
+  {t:'施工前', d:'房間上方是 RC 樓板，要做一片明架輕鋼架天花板（60×60 cm 防火礦纖板）。',
+   tip:'術科考過「輕鋼架天花板防火礦纖天花板之主要施工步驟」：放樣 → L 型收邊條 → 吊筋 → 主架 → 副架 → 校正水平方正 → 設備開口補強 → 放礦纖板 → 清潔檢查。'},
+  {t:'放樣', d:'在四周牆面彈出天花板完成高度水平線，並在樓板標出吊筋位置。',
+   tip:'燈具、空調、消防設備的位置也要在放樣時一起標出，避免之後和格子位置衝突。'},
+  {t:'安裝周邊 L 型收邊條', d:'沿著水平線，在四周牆面固定 L 型收邊條。',
+   tip:'L 型收邊條（邊料）是天花板周邊的支撐，也決定完成面高度。'},
+  {t:'安裝吊筋', d:'吊筋以擊釘或壁虎固定於樓板，往下垂吊。',
+   tip:'吊筋間距約 90～120 cm，要垂直並固定在結構體上。'},
+  {t:'安裝主架', d:'主架（主 T）掛上吊筋，用吊筋調整器調整高度與水平。',
+   tip:'主架是承重骨架，兩端擱在 L 型收邊條上，靠吊筋調整器調到同一高度。'},
+  {t:'安裝副架（T-bar）', d:'副架卡入主架的孔位，組成 60×60 cm 的格子。',
+   tip:'格子常見 60×60 cm 或 60×120 cm。'},
+  {t:'校正水平與方正', d:'用雷射水平儀校正整體水平，並量對角線確認格子方正。',
+   tip:'兩條對角線等長，代表格子方正；不方正的話，板材放不進去或縫隙大小不一。'},
+  {t:'設備開口補強', d:'配合燈具、空調出風口、消防撒水頭位置開口並補強。',
+   tip:'重型燈具要設獨立吊筋，不可只靠天花板骨架承重；撒水頭、偵煙器不可被遮擋。'},
+  {t:'放置礦纖板', d:'把防火礦纖天花板從下方斜放進格子，平擱在 T-bar 上。',
+   tip:'放板前要核對耐燃等級證明；手要乾淨，避免在板面留下手印。'},
+  {t:'清潔與檢查', d:'清潔板面，檢查水平、縫隙與設備位置，完成輕鋼架天花板。',
+   tip:'檢查板材是否平整到位、T-bar 是否平直、設備開口是否吻合，並清除髒污手印。'},
+];
+
+createAnim({
+  title: '輕鋼架天花板施工順序',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.95,
+  views: {
+    def:{dir:[0.58,-0.38,0.72], dist:6.0, target:[0,2.75,0]},
+    1:  {dir:[0.6,-0.2,0.78],   dist:6.2, target:[0,2.6,0]},
+    3:  {dir:[0.55,-0.1,0.83],  dist:6.0, target:[0,2.8,0]},
+    6:  {dir:[0.25,-0.9,0.36],  dist:5.4, target:[0,2.6,0]},
+    7:  {dir:[0.45,-0.55,0.7],  dist:4.2, target:[-0.2,2.7,0]},
+  },
+  cut: {
+    tile:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.0)],
+  },
+  cutLabel: '移除一半礦纖板，看上面的主架、副架與吊筋',
+  note: '模型的 T-bar 斷面有放大，方便看清楚構造。',
+  build({THREE, scene, mat, box, span, pipe, group, arrow, add, fixed}) {
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9);
+    fill.position.set(2, -6, 5); scene.add(fill);
+
+    /* 尺寸（公尺）：3.6 × 2.4 ＝ 6 × 4 格 */
+    const X0=-1.8, X1=1.8, Z0=-1.2, Z1=1.2;
+    const WB=1.7, SB=3.0, FC=2.6;
+    const FW=0.03, FT=0.006;              // T-bar 翼寬、翼厚（放大）
+    const MH=0.05, CH=0.038;              // 主 T、副 T 腹板高
+    const MZ=[-0.6, 0.6];                 // 主架位置（間距 1.2 m）
+    const GX=[-1.2,-0.6,0,0.6,1.2];       // 1.2 m 副架（沿 z）
+    const LIGHT={x0:-0.6,x1:0,z0:-0.6,z1:0}, DIFF={x0:0.6,x1:1.2,z0:0,z1:0.6};
+    const SPR=[-1.5,0.9];                 // 撒水頭
+
+    const M = {
+      slab:  mat('#cfcac4',{roughness:1}),
+      wall:  mat('#f5f4f1',{roughness:.95}),
+      ghost: mat('#ffffff',{transparent:true, opacity:.14, depthWrite:false, roughness:1}),
+      white: mat('#fbfaf7',{roughness:.5}),
+      steel: mat('#b9c1c9',{metalness:.25, roughness:.45}),
+      rod:   mat('#8b939b',{metalness:.3, roughness:.5}),
+      clip:  mat('#d97706',{roughness:.5}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      tile:  mat('#efece5',{roughness:1}),
+      lamp:  mat('#fffbe8',{emissive:'#fff3c4', emissiveIntensity:.7}),
+      diff:  mat('#d4d4d4',{roughness:.6}),
+      duct:  mat('#cbd5e1',{metalness:.2, roughness:.5}),
+      fire:  mat('#dc2626',{roughness:.5}),
+      brass: mat('#ca8a04',{metalness:.4, roughness:.4}),
+      ok:    mat('#16a34a',{emissive:'#16a34a', emissiveIntensity:.5}),
+    };
+    const NE = {edges:false, shadow:false};
+
+    fixed(span(-1.9,SB,-1.3, 1.9,SB+0.15,1.3, M.slab,{shadow:false}));
+    fixed(span(-1.9,WB,-1.3, 1.9,SB,Z0, M.wall));
+    fixed(span(-1.9,WB,Z0, X0,SB,1.3, M.wall));
+    for (const w of [span(X0,WB,Z1, 1.9,SB,1.3, M.ghost,{shadow:false}), span(X1,WB,Z0, 1.9,SB,Z1, M.ghost,{shadow:false})]) {
+      w.receiveShadow=false; w.renderOrder=2; w.children[0].material.opacity=.45; fixed(w);
+    }
+
+    /* ① 放樣 */
+    const HX=[-1.2, 0, 1.2];
+    { const t=.006, h=.006, LA={drop:0, until:2, glow:false};
+      add(1, span(X0,FC-h,Z0,X1,FC+h,Z0+t,M.laser,NE),{...LA,delay:.1});
+      add(1, span(X0,FC-h,Z0,X0+t,FC+h,Z1,M.laser,NE),{...LA,delay:.2});
+      add(1, span(X0,FC-h,Z1-t,X1,FC+h,Z1,M.laser,NE),{...LA,delay:.3});
+      add(1, span(X1-t,FC-h,Z0,X1,FC+h,Z1,M.laser,NE),{...LA,delay:.4});
+      let k=0;
+      MZ.forEach(z=>HX.forEach(x=>{
+        add(1, group(span(x-.06,SB-.004,z-.006,x+.06,SB-.001,z+.006,M.laser,NE),
+                     span(x-.006,SB-.004,z-.06,x+.006,SB-.001,z+.06,M.laser,NE)),{...LA, until:3, delay:.6+(k++)*.06});
+      })); }
+
+    /* ② L 型收邊條 */
+    { const L=0.025, t=FT;
+      const edge=(x0,z0,x1,z1,nx,nz)=>group(
+        span(Math.min(x0,x0+nx*L),FC,Math.min(z0,z0+nz*L),Math.max(x1,x1+nx*L),FC+t,Math.max(z1,z1+nz*L),M.white),   // 水平翼
+        span(Math.min(x0,x0+nx*t),FC,Math.min(z0,z0+nz*t),Math.max(x1,x1+nx*t),FC+L,Math.max(z1,z1+nz*t),M.white)); // 貼牆翼
+      add(2, edge(X0,Z0,X1,Z0,0,1),{delay:0, drop:-.3});
+      add(2, edge(X0,Z0,X0,Z1,1,0),{delay:.15, drop:-.3});
+      add(2, edge(X0,Z1,X1,Z1,0,-1),{delay:.3, drop:-.3});
+      add(2, edge(X1,Z0,X1,Z1,-1,0),{delay:.45, drop:-.3}); }
+
+    /* ③ 吊筋（擊釘固定片＋吊桿＋調整器） */
+    const hangerBottom = FC+FT+MH+0.01;
+    function hanger(x, z, m=M.rod){
+      return group(
+        span(x-.03,SB-.006,z-.025,x+.03,SB,z+.025,M.steel),                 // 固定片
+        pipe([x,SB-.006,z],[x,hangerBottom,z],.006,m),                       // 吊桿
+        span(x-.012,hangerBottom+.05,z-.012,x+.012,hangerBottom+.11,z+.012,M.clip)); // 調整器
+    }
+    { let k=0; MZ.forEach(z=>HX.forEach(x=> add(3, hanger(x,z),{delay:(k++)*.1, drop:.45}))); }
+
+    /* T-bar：倒 T 斷面（白色底翼＋鍍鋅腹板） */
+    function tee(x0,z0,x1,z1,h){
+      const alongX = (x1-x0) > (z1-z0);
+      const w=FW/2, web=0.004;
+      if (alongX) return group(
+        span(x0,FC,z0-w,x1,FC+FT,z0+w,M.white),
+        span(x0,FC+FT,z0-web,x1,FC+FT+h,z0+web,M.steel));
+      return group(
+        span(x0-w,FC,z0,x0+w,FC+FT,z1,M.white),
+        span(x0-web,FC+FT,z0,x0+web,FC+FT+h,z1,M.steel));
+    }
+
+    /* ④ 主架 */
+    MZ.forEach((z,i)=> add(4, tee(X0,z,X1,z,MH),{delay:i*.25, drop:-.4}));
+
+    /* ⑤ 副架：1.2 m 副 T（沿 z）→ 0.6 m 副 T（沿 x，z=0） */
+    { let k=0;
+      const zs=[[Z0,MZ[0]],[MZ[0],MZ[1]],[MZ[1],Z1]];
+      zs.forEach(([a,b])=> GX.forEach(x=> add(5, tee(x,a,x,b,CH),{delay:(k++)*.06, drop:-.3})));
+      const xs=[X0,...GX,X1];
+      for(let i=0;i<xs.length-1;i++) add(5, tee(xs[i],0,xs[i+1],0,CH),{delay:1.0+i*.08, drop:-.3}); }
+
+    /* ⑥ 校正：水平線＋對角線 */
+    { const LA={drop:0, until:6, glow:false}, y=FC-0.004, w=.006;
+      const diag=(a,b)=>{ const A=new THREE.Vector3(a[0],y,a[1]), B=new THREE.Vector3(b[0],y,b[1]);
+        const m=box(A.distanceTo(B),.004,w,M.laser,NE); m.position.copy(A).add(B).multiplyScalar(.5);
+        m.rotation.y=-Math.atan2(B.z-A.z,B.x-A.x); return m; };
+      add(6, diag([X0,Z0],[X1,Z1]),{...LA, delay:.2});
+      add(6, diag([X0,Z1],[X1,Z0]),{...LA, delay:.5});
+      for (const z of MZ) add(6, span(X0,FC-.008,z-.004,X1,FC-.004,z+.004,M.laser,NE),{...LA, delay:.9}); }
+
+    /* ⑦ 設備開口：燈具（獨立吊筋）、出風口＋風管、撒水頭 */
+    { const ins=FW/2+.002;
+      const L=LIGHT;
+      add(7, group(
+        span(L.x0+ins,FC+FT,L.z0+ins,L.x1-ins,FC+0.09,L.z1-ins,M.white),
+        span(L.x0+ins+.02,FC+FT-.002,L.z0+ins+.02,L.x1-ins-.02,FC+FT,L.z1-ins-.02,M.lamp,NE)),{delay:0, drop:-.35});
+      [[L.x0+.12,L.z0+.12],[L.x1-.12,L.z0+.12],[L.x0+.12,L.z1-.12],[L.x1-.12,L.z1-.12]].forEach(([x,z],i)=>
+        add(7, pipe([x,SB-.005,z],[x,FC+0.09,z],.005,M.clip),{delay:.4+i*.08, drop:.3}));   // 燈具獨立吊筋
+      const D=DIFF;
+      add(7, group(
+        span(D.x0+ins,FC+FT,D.z0+ins,D.x1-ins,FC+0.04,D.z1-ins,M.diff),
+        ...[0,1,2,3].map(i=>span(D.x0+.1+i*.1-.004,FC+FT-.002,D.z0+.08,D.x0+.1+i*.1+.004,FC+FT,D.z1-.08,M.steel,NE))),{delay:.75, drop:-.3});
+      add(7, pipe([(D.x0+D.x1)/2,FC+0.04,(D.z0+D.z1)/2],[(D.x0+D.x1)/2,SB-0.12,(D.z0+D.z1)/2],.11,M.duct),{delay:.95, drop:.3});
+      add(7, pipe([(D.x0+D.x1)/2,SB-0.12,(D.z0+D.z1)/2],[(D.x0+D.x1)/2,SB-0.12,Z1],.11,M.duct),{delay:1.05, drop:.3});
+      const [sx,sz]=SPR;
+      const head = new THREE.Mesh(new THREE.CylinderGeometry(.035,.02,.02,16), M.brass.clone());
+      head.position.set(sx,FC-.02,sz);                                    // 撒水頭突出板面下方
+      add(7, group(
+        pipe([sx,SB-.05,sz],[sx,FC-.01,sz],.014,M.fire),
+        pipe([sx,SB-.05,sz],[X0,SB-.05,sz],.02,M.fire),
+        head),{delay:1.2, drop:.3}); }
+
+    /* ⑧ 礦纖板（擱在 T-bar 翼上） */
+    { const lines=[X0,...GX,X1], zl=[Z0,MZ[0],0,MZ[1],Z1];
+      const ins=FW/2+.002, y0=FC+FT, y1=y0+0.015;
+      const skip=(c)=> (c.x0===LIGHT.x0&&c.z0===LIGHT.z0) || (c.x0===DIFF.x0&&c.z0===DIFF.z0);
+      let k=0;
+      for(let j=0;j<zl.length-1;j++) for(let i=0;i<lines.length-1;i++){
+        const c={x0:lines[i],x1:lines[i+1],z0:zl[j],z1:zl[j+1]};
+        if(skip(c)) continue;
+        const ex0=c.x0===X0?.028:ins, ex1=c.x1===X1?.028:ins, ez0=c.z0===Z0?.028:ins, ez1=c.z1===Z1?.028:ins;
+        add(8, span(c.x0+ex0,y0,c.z0+ez0,c.x1-ex1,y1,c.z1-ez1,M.tile), {delay:(k++)*.06, drop:-.35, cat:'tile'});
+      } }
+
+    /* ⑨ 清潔與檢查：打勾 */
+    { const check=(x,z)=>{
+        const g=new THREE.Group();
+        const a=box(.07,.012,.02,M.ok,NE); a.position.set(-.03,0,0); a.rotation.y=-Math.PI/4;
+        const b=box(.14,.012,.02,M.ok,NE); b.position.set(.04,0,-.02); b.rotation.y=Math.PI/4;
+        g.add(a,b); g.scale.setScalar(2.6); g.position.set(x,FC-.1,z); return g; };
+      [[-0.3,-0.3],[0.9,0.3],[SPR[0],SPR[1]],[1.5,-0.9],[-1.5,-0.9]].forEach(([x,z],i)=>
+        add(9, check(x,z),{delay:.2+i*.18, drop:-.15, until:9, glow:false})); }
+  },
+});
+</script>
+</body>
+</html>
