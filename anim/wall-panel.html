@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>造型木作壁板施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：既有牆面施作造型木作壁板 11 步驟施工順序 3D 互動動畫，可逐步播放、旋轉視角、看剖面。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111803';
+
+const STEPS = [
+  {t:'施工前', d:'既有牆面要加做一片造型木作壁板；原本的開關、插座面板已拆下，線路要配合移位或延長。',
+   tip:'術科考過「既有牆面施作造型木作壁板」的施工步驟（共 11 步）：放樣 → 機電配合 → 基面檢查 → 立角材 → 線路測試 → 封底板 → 貼面材 → 開孔 → 線板收邊 → 塗裝 → 面板復原與通電測試。'},
+  {t:'現場丈量・放樣', d:'現場丈量、核對圖說，在牆面放樣壁板範圍與分割線。',
+   tip:'分割線要一併考慮板材尺寸與開關插座位置，避免溝縫剛好切過出線盒。'},
+  {t:'機電配合', d:'開關線路移位、插座出線盒延長，預留到壁板完成面。',
+   tip:'出線盒要延長到壁板完成面，面板才鎖得平；移位的線路要在封板前完成。'},
+  {t:'基面檢查・防潮', d:'用靠尺檢查牆面平整，必要時做防潮處理。',
+   tip:'牆面潮濕會讓角材、夾板發霉變形；靠浴室或外牆的牆面尤其要做防潮。'},
+  {t:'立角材骨架', d:'角材以鋼釘或壁虎固定於牆面，調整垂直與平整。',
+   tip:'角材間距 @30～45 cm，要做防腐防蟲處理；出線盒周圍要留好位置。'},
+  {t:'線路測試', d:'封板前先測試線路，確認無誤。',
+   tip:'封板後就看不到線路，有問題就得拆板，所以封板前一定要先測試。'},
+  {t:'封底板', d:'在角材骨架上封夾板底板，以釘槍加膠固定。',
+   tip:'底板接縫要落在角材上；出線盒的位置要先記下來，之後才能準確開孔。'},
+  {t:'貼造型面材', d:'在底板上貼造型面材（木皮板、造型板），以 F 型釘加膠固定。',
+   tip:'F 型釘釘頭小、不明顯，搭配膠合固定面材。'},
+  {t:'依機電位置開孔', d:'依出線盒位置，在壁板上開孔。',
+   tip:'開孔尺寸要剛好，之後裝回的面板才蓋得住孔邊。'},
+  {t:'線板收邊', d:'以線板收壁板四周邊緣，下方裝踢腳板。',
+   tip:'線板把壁板與牆面、地面的交界收整齊，也蓋住板材的切口。'},
+  {t:'表面處理（塗裝）', d:'補釘孔、研磨後，壁板表面塗裝。',
+   tip:'機電面板要等塗裝完成後才裝回，避免沾到漆。'},
+  {t:'面板復原・通電測試', d:'裝回開關、插座面板並通電測試，完成造型木作壁板。',
+   tip:'最後要通電測試，確認開關、插座都正常運作。'},
+];
+
+createAnim({
+  title: '造型木作壁板施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.38,0.22,0.9], dist:6.4, target:[0,1.2,0]},
+    2:  {dir:[0.45,0.15,0.88], dist:3.6, target:[0.4,0.9,0]},
+    5:  {dir:[0.3,0.2,0.93],  dist:2.6, target:[-0.6,0.45,0]},
+    8:  {dir:[0.3,0.12,0.95], dist:3.4, target:[0.2,0.85,0]},
+    11: {dir:[0.3,0.12,0.95], dist:3.4, target:[0.2,0.85,0]},
+  },
+  cut: {
+    face:[new THREE.Plane(new THREE.Vector3(-1,0,0), -0.4)],
+    ply: [new THREE.Plane(new THREE.Vector3(-1,0,0), 0.4)],
+  },
+  cutLabel: '切開面材與底板，看裡面的角材骨架與線路',
+  note: '模型的角材、板材厚度有誇大，方便看清楚各層構造。',
+  build({THREE, mat, box, span, pipe, group, arrow, add, fixed}) {
+    /* 尺寸（公尺）：牆面在 z=0，壁板往 +z 長出來 */
+    const PX0=-1.5, PX1=1.5, PY0=0, PY1=2.4;          // 壁板範圍
+    const S=0.04, PLY=0.012, VEN=0.008;               // 角材厚、底板、面材
+    const ZP=S, ZV=S+PLY, FF=S+PLY+VEN;               // 各層表面
+    const OUT={x:-0.9, y:0.3}, SW={x:0.9, y:1.2}, SW0={x:1.3, y:1.2};
+    const BW=0.08, BH=0.12;                           // 出線盒
+
+    const M = {
+      slab:  mat('#d3cec8',{roughness:1}),
+      wall:  mat('#eeece7',{roughness:.95}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      ebox:  mat('#1d4ed8',{roughness:.6}),
+      elec:  mat('#f97316',{roughness:.5}),
+      damp:  mat('#93c5fd',{transparent:true, opacity:.45, depthWrite:false}),
+      dev:   mat('#facc15',{roughness:.5}),
+      dark:  mat('#44403c',{roughness:.6}),
+      ok:    mat('#16a34a',{emissive:'#16a34a', emissiveIntensity:.5}),
+      wood:  mat('#dcb97f'),
+      nail:  mat('#57534e',{roughness:.5}),
+      ply:   mat('#ead39f',{roughness:.9}),
+      ven:   ['#8b5a3c','#7c4f34','#96633f'].map(c=>mat(c,{roughness:.55})),
+      mark:  mat('#f59e0b',{emissive:'#f59e0b', emissiveIntensity:.6}),
+      mold:  mat('#5b3a26',{roughness:.6}),
+      coat:  mat('#fde68a',{transparent:true, opacity:.16, roughness:.15, depthWrite:false}),
+      plate: mat('#fafaf9',{roughness:.4}),
+    };
+    const NE = {edges:false, shadow:false};
+
+    // 樓板、既有牆、牆內原有出線盒
+    fixed(span(-2.1,-0.15,-0.4, 2.1,0,1.6, M.slab));
+    fixed(span(-2.1,0,-0.2, 2.1,2.7,0, M.wall));
+    fixed(span(OUT.x-BW/2,OUT.y-BH/2,-0.04, OUT.x+BW/2,OUT.y+BH/2,0.001, M.ebox));
+    fixed(span(SW0.x-BW/2,SW0.y-BH/2,-0.04, SW0.x+BW/2,SW0.y+BH/2,0.001, M.ebox));
+
+    /* ① 放樣：範圍框＋分割線 */
+    { const t=.006, z0=.001, z1=.004, LA={drop:0, until:3, glow:false};
+      add(1, span(PX0,PY0,z0,PX1,PY0+t,z1,M.laser,NE),{...LA,delay:.1});
+      add(1, span(PX0,PY1-t,z0,PX1,PY1,z1,M.laser,NE),{...LA,delay:.2});
+      add(1, span(PX0,PY0,z0,PX0+t,PY1,z1,M.laser,NE),{...LA,delay:.3});
+      add(1, span(PX1-t,PY0,z0,PX1,PY1,z1,M.laser,NE),{...LA,delay:.4});
+      [-1.0,-0.5,0,0.5,1.0].forEach((x,i)=>
+        add(1, span(x-.002,PY0,z0,x+.002,PY1,z1,M.laser,NE),{...LA, delay:.6+i*.08})); }
+
+    /* ② 機電配合：開關移位、插座延長到完成面 */
+    const newBox = (p)=> span(p.x-BW/2,p.y-BH/2,0.002, p.x+BW/2,p.y+BH/2,FF+0.001, M.ebox);
+    add(2, pipe([SW0.x,SW0.y,0.014],[SW.x,SW.y,0.014],.012,M.elec),{delay:0, drop:.2});
+    add(2, newBox(SW),{delay:.35, drop:.25});
+    add(2, newBox(OUT),{delay:.6, drop:.25});
+    add(2, arrow([SW0.x,SW0.y+0.25,0.08],[SW.x+0.06,SW.y+0.12,0.08],M.mark),{delay:.2, drop:0, until:2, glow:false});
+
+    /* ③ 基面檢查（靠尺）＋防潮處理 */
+    add(3, span(-0.75,0.3,0.004,-0.69,2.1,0.03,M.dev),{delay:0, drop:.3, until:3});
+    add(3, span(PX0,PY0,0.003,PX1,PY1,0.005,M.damp,NE),{delay:.6, drop:0});
+
+    /* ④ 角材骨架（直料＋橫料，鋼釘固定） */
+    const SXS=[-1.5,-1.125,-0.75,-0.375,0,0.375,0.75,1.125,1.5];
+    const RYS=[0,0.45,0.9,1.4,1.95,PY1-S];
+    { let k=0;
+      SXS.forEach((x,i)=>{
+        const xa = i===0 ? PX0 : i===SXS.length-1 ? PX1-S : x-S/2;
+        const g = group(span(xa,PY0,0.005,xa+S,PY1,ZP,M.wood));
+        for (let y=0.25; y<PY1; y+=0.5) { const n=pipe([xa+S/2,y,ZP],[xa+S/2,y,ZP+.003],.007,M.nail); g.add(n); }
+        add(4, g, {delay:(k++)*.08, drop:.4});
+      });
+      for (let i=0;i<SXS.length-1;i++) RYS.forEach(y=>{
+        const xa = (i===0 ? PX0+S : SXS[i]+S/2), xb = (i===SXS.length-2 ? PX1-S : SXS[i+1]-S/2);
+        add(4, span(xa,y,0.005,xb,y+S,ZP,M.wood),{delay:.8+(k++)*.012, drop:.3});
+      }); }
+
+    /* ⑤ 線路測試 */
+    { const tester = group(span(-0.62,0.18,0.12,-0.48,0.42,0.16,M.dev),
+                           span(-0.6,0.33,0.159,-0.5,0.39,0.162,M.dark,NE));
+      add(5, tester, {delay:0, drop:.2, until:5});
+      add(5, pipe([-0.6,0.22,0.14],[OUT.x+0.02,OUT.y-0.02,FF],.004,M.laser),{delay:.3, drop:0, until:5, glow:false});
+      add(5, pipe([-0.5,0.22,0.14],[OUT.x+0.03,OUT.y+0.02,FF],.004,M.dark),{delay:.35, drop:0, until:5, glow:false});
+      const chk = new THREE.Group();
+      const a=box(.07,.02,.012,M.ok,NE); a.position.set(-.03,-.02,0); a.rotation.z=-Math.PI/4;
+      const b=box(.15,.02,.012,M.ok,NE); b.position.set(.04,.01,0); b.rotation.z=Math.PI/4;
+      chk.add(a,b); chk.scale.setScalar(1.6); chk.position.set(-0.55,0.62,0.15);
+      add(5, chk, {delay:.9, drop:.15, until:5, glow:false}); }
+
+    /* 板材（避開出線盒開孔），開孔處先用補片蓋住，第 8 步才拿掉 */
+    const holes=[OUT, SW];
+    function sheet(xa,xb,ya,yb,z0,z1,m,step,opt){
+      const gap=.003;
+      const hs = holes.filter(h=>h.x>xa && h.x<xb && h.y>ya && h.y<yb);
+      const g = group();
+      if (!hs.length) g.add(span(xa+gap,ya,z0,xb-gap,yb,z1,m));
+      else {
+        // 以開孔切成上下兩塊＋左右兩小塊（只處理一個孔即可）
+        const h=hs[0], hx0=h.x-BW/2, hx1=h.x+BW/2, hy0=h.y-BH/2, hy1=h.y+BH/2;
+        const full=span(xa+gap,ya,z0,xb-gap,yb,z1,m), outline=full.children[0];
+        outline.position.copy(full.position); g.add(outline);           // 只留整片外框線，孔邊不畫接縫
+        g.add(span(xa+gap,ya,z0,xb-gap,hy0,z1,m,NE));
+        g.add(span(xa+gap,hy1,z0,xb-gap,yb,z1,m,NE));
+        g.add(span(xa+gap,hy0,z0,hx0,hy1,z1,m,NE));
+        g.add(span(hx1,hy0,z0,xb-gap,hy1,z1,m,NE));
+        add(step, span(hx0,hy0,z0,hx1,hy1,z1,m,NE), {...opt, until:7});   // 補片
+      }
+      add(step, g, opt);
+    }
+
+    /* ⑥ 封底板：接縫落在角材上 */
+    [[PX0,-0.375],[-0.375,0.75],[0.75,PX1]].forEach(([a,b],i)=>
+      sheet(a,b,PY0,PY1,ZP,ZV,M.ply,6,{delay:i*.3, drop:.5, cat:'ply'}));
+
+    /* ⑦ 造型面材：直向條板，溝縫分割 */
+    { const W=0.5; let i=0;
+      for (let x=PX0; x<PX1-1e-3; x+=W, i++)
+        sheet(x,x+W,PY0,PY1,ZV,FF,M.ven[i%3],7,{delay:i*.15, drop:.35, cat:'face'}); }
+
+    /* ⑧ 開孔：補片消失，孔邊亮框 */
+    holes.forEach((h,i)=>{
+      const t=.008, x0=h.x-BW/2-t, x1=h.x+BW/2+t, y0=h.y-BH/2-t, y1=h.y+BH/2+t, z0=FF, z1=FF+.003;
+      add(8, group(span(x0,y0,z0,x1,y0+t,z1,M.mark,NE), span(x0,y1-t,z0,x1,y1,z1,M.mark,NE),
+                   span(x0,y0,z0,x0+t,y1,z1,M.mark,NE), span(x1-t,y0,z0,x1,y1,z1,M.mark,NE)),
+          {delay:.2+i*.2, drop:0, until:8, glow:false});
+    });
+
+    /* ⑨ 線板收邊＋踢腳板 */
+    { const w=.06, d=.03, z1=FF+d;
+      add(9, span(PX0-w,PY1,0.002,PX1+w,PY1+w,z1,M.mold),{delay:0, drop:.3});
+      add(9, span(PX0-w,PY0,0.002,PX0,PY1,z1,M.mold),{delay:.2, drop:.3});
+      add(9, span(PX1,PY0,0.002,PX1+w,PY1,z1,M.mold),{delay:.35, drop:.3});
+      add(9, span(PX0,PY0,FF,PX1,0.1,FF+.015,M.mold),{delay:.55, drop:.3}); }
+
+    /* ⑩ 塗裝 */
+    { let i=0; for (let x=PX0; x<PX1-1e-3; x+=0.5, i++)
+        add(10, span(x+.002,0.1,FF+.001,x+0.498,PY1,FF+.002,M.coat,NE),{delay:i*.15, drop:0, cat:'face'}); }
+
+    /* ⑪ 面板復原・通電測試 */
+    holes.forEach((h,i)=>{
+      const p = group(span(h.x-.06,h.y-.085,FF+.001,h.x+.06,h.y+.085,FF+.009,M.plate));
+      if (h===SW) p.add(span(h.x-.018,h.y-.03,FF+.009,h.x+.018,h.y+.03,FF+.014,M.plate));
+      else { p.add(span(h.x-.025,h.y+.01,FF+.009,h.x-.012,h.y+.04,FF+.0095,M.dark,NE));
+             p.add(span(h.x+.012,h.y+.01,FF+.009,h.x+.025,h.y+.04,FF+.0095,M.dark,NE)); }
+      add(11, p, {delay:i*.25, drop:.2});
+      add(11, span(h.x+.04,h.y+.05,FF+.009,h.x+.052,h.y+.062,FF+.013,M.ok,NE),{delay:.8+i*.2, drop:0, glow:false});   // 通電指示燈
+    });
+  },
+});
+</script>
+</body>
+</html>

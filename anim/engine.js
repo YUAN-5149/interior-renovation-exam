@@ -167,7 +167,11 @@ export function createAnim(cfg) {
     const e=ease(p);
     it.obj.position.y = it.baseY + (1-e)*it.drop;
     const o=Math.min(1,p*1.6);
-    it.mats.forEach(m=>m.opacity=m.userData.base*o);
+    it.mats.forEach(m=>{
+      m.opacity=m.userData.base*o;
+      // 不透明材質淡入完成後改回不透明，避免和半透明層（塗裝、PE 布）排序錯亂
+      if (m.userData.base>=1) { const t = o<1; if (m.transparent!==t) { m.transparent=t; m.needsUpdate=true; } }
+    });
   }
   function setGlow(it,g){
     it.mats.forEach(m=>{ if(m.emissive && m.userData.glowable!==false){

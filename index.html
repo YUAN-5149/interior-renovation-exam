@@ -144,7 +144,7 @@ function renderHome(){
    <div class="card"><div class="mut">待加強</div><div class="stat" style="color:var(--mid)">${m}</div></div>
    <div class="card"><div class="mut">不會</div><div class="stat" style="color:var(--bad)">${b}</div><div class="mut">尚未標記：${tot-g-m-b}</div></div>
   </div>
-  <a class="card animcard" href="anim/"><span class="ic">🧱</span><span><b>3D 工法動畫｜高架木地板・石膏板輕隔間・木作天花板・輕鋼架天花板</b><br><span class="mut">施工順序逐步播放，可旋轉視角、看剖面，每步附考點。</span></span></a>
+  <a class="card animcard" href="anim/"><span class="ic">🧱</span><span><b>3D 工法動畫｜高架木地板・輕隔間・木作天花板・輕鋼架天花板・木作壁板</b><br><span class="mut">施工順序逐步播放，可旋轉視角、看剖面，每步附考點。</span></span></a>
   <div class="card"><h2>考試時程</h2>
    <table><tr><th>卷別</th><th>時間</th><th>範圍</th><th>備註</th></tr>
    ${SCHEDULE.map(s=>`<tr><td><span class="paper">${s.p}</span></td><td>${s.t}（1 小時 40 分）</td><td>${s.scope}</td><td>${s.note}</td></tr>`).join("")}</table>
