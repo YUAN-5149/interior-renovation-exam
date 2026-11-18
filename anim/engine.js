@@ -65,7 +65,8 @@ export function createAnim(cfg) {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.minDistance = 2.5; controls.maxDistance = 22;
-  controls.maxPolarAngle = Math.PI * 0.49;
+  controls.maxPolarAngle = Math.PI * (cfg.maxPolar ?? 0.49);   // 天花板類要能從下往上看
+  if (cfg.minPolar) controls.minPolarAngle = Math.PI * cfg.minPolar;
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0xcfc8c0, 1.5));
   const sun = new THREE.DirectionalLight(0xffffff, 2.2);

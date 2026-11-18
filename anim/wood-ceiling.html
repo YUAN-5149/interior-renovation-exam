@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>木作企口天花板施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：平頂企口木天花板（以角材為吊筋）10 步驟施工順序 3D 互動動畫，可逐步播放、旋轉視角、看剖面。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111802';
+
+const STEPS = [
+  {t:'施工前', d:'房間上方是 RC 樓板，要在樓板下做一片平頂企口木天花板（以角材為吊筋）。',
+   tip:'術科考過「平頂企口天花板（以角材為吊筋）施工程序」：放樣 → 周邊角材 → 吊筋 → 骨架 → 校正起拱 → 開口補強 → 鋪企口板 → 接頭錯開 → 收邊 → 表面處理。'},
+  {t:'放樣', d:'在四周牆面彈出天花板完成面的水平線，並在樓板標出吊筋位置。',
+   tip:'完成面高度往上加板材厚度，才是角材底的高度；燈具、出風口、檢修口位置也要一起放樣。'},
+  {t:'釘周邊角材', d:'沿牆面水平線，把邊框角材釘在四周牆面。',
+   tip:'周邊角材是整片天花骨架的水平基準與支撐。'},
+  {t:'安裝吊筋', d:'以角材作吊筋，上端先釘固定木塊，再用擊釘或鋼釘固定於樓板。',
+   tip:'吊筋間距約 90 cm，要垂直牢固並固定在結構體上，不可固定在管線上。'},
+  {t:'組立骨架', d:'主角材與吊筋釘接並調整水平，副角材交叉成格架。',
+   tip:'副角材間距 @30～45 cm；角材要注意含水率，並做防腐防蟲處理。'},
+  {t:'校正水平・中央起拱', d:'校正整體水平，天花板中央略為起拱。',
+   tip:'中央略微起拱，是為了抵銷日後自重造成的下垂。（動畫中的起拱弧線有放大）'},
+  {t:'開口補強', d:'配合燈具、出風口位置，在開口四周加角材補強，並完成管線。',
+   tip:'天花板內的水電、空調、消防管線要先完成並測試，才能封板。'},
+  {t:'鋪企口板', d:'從一側開始鋪企口板，母榫靠牆，在公榫處以 F 型釘斜打固定在角材上。',
+   tip:'企口板用暗釘：F 型釘從公榫斜打進角材，下一片的母榫蓋住釘頭，表面看不到釘孔。'},
+  {t:'接頭錯開', d:'繼續鋪滿企口板，板端接頭錯開，且接頭都落在角材上。',
+   tip:'接頭錯開、落在角材上，天花板才不會在接頭處下垂或開裂。'},
+  {t:'收邊', d:'以線板沿牆面收邊，板材與牆面之間預留伸縮縫。',
+   tip:'伸縮縫讓木材熱脹冷縮有空間，線板同時把縫蓋住。'},
+  {t:'表面處理', d:'補土、研磨後塗裝，完成企口木天花板。',
+   tip:'釘孔、縫隙先補土、研磨，再上漆；燈具等設備在塗裝後才安裝。'},
+];
+
+createAnim({
+  title: '木作企口天花板施工順序',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.93,
+  views: {
+    def:{dir:[0.58,-0.38,0.72], dist:6.2, target:[0,2.75,0]},
+    1:  {dir:[0.6,-0.2,0.78],   dist:6.4, target:[0,2.6,0]},
+    3:  {dir:[0.55,-0.12,0.83], dist:6.8, target:[0,2.85,0]},
+    5:  {dir:[0.1,-0.12,1],     dist:6.2, target:[0,2.7,0]},
+    6:  {dir:[0.45,-0.6,0.66],  dist:3.6, target:[0.675,2.7,0.45]},
+    7:  {dir:[0.45,-0.55,0.7],  dist:6.0, target:[0,2.7,-0.6]},
+  },
+  cut: {
+    board:[new THREE.Plane(new THREE.Vector3(-1,0,0), 0.0)],
+  },
+  cutLabel: '切開企口板，看上面的角材骨架與吊筋',
+  note: '模型的角材、板材厚度與起拱弧度有誇大，方便看清楚構造。',
+  build({THREE, scene, mat, box, span, pipe, group, arrow, add, fixed}) {
+    // 從下方補光（天花板底面朝下）
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9);
+    fill.position.set(2, -6, 5); scene.add(fill);
+
+    /* 尺寸（公尺） */
+    const X0=-1.8, X1=1.8, Z0=-1.4, Z1=1.4;
+    const WB=1.7, SB=3.0;                 // 牆剖切底、樓板底
+    const FC=2.6, BT=0.015, S=0.05;       // 完成面、板厚、角材斷面
+    const J0=FC+BT, J1=J0+S;              // 角材底、頂
+    const HOLE={x0:0.475, x1:0.875, z0:0.275, z1:0.625};   // 燈具開口
+
+    const M = {
+      slab:  mat('#cfcac4',{roughness:1}),
+      wall:  mat('#f5f4f1',{roughness:.95}),
+      ghost: mat('#ffffff',{transparent:true, opacity:.14, depthWrite:false, roughness:1}),
+      wood:  mat('#dcb97f'),
+      hang:  mat('#c99e5f'),
+      block: mat('#b8894f'),
+      rein:  mat('#b07a3c'),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      arc:   mat('#ea580c',{emissive:'#ea580c', emissiveIntensity:.5}),
+      dev:   mat('#facc15',{roughness:.5}),
+      elec:  mat('#f97316',{roughness:.5}),
+      ebox:  mat('#1d4ed8',{roughness:.6}),
+      nail:  mat('#7f1d1d',{roughness:.5}),
+      mold:  mat('#f1e9da',{roughness:.7}),
+      coat:  mat('#b8732f',{transparent:true, opacity:.22, roughness:.3, depthWrite:false}),
+      boards:['#e3c48f','#d8b47a','#ecd2a3'].map(c=>mat(c,{roughness:.7})),
+    };
+    const NE = {edges:false, shadow:false};
+
+    // RC 樓板、後牆與左牆（上半部剖切）、前牆與右牆半透明
+    fixed(span(-1.9,SB,-1.5, 1.9,SB+0.15,1.5, M.slab,{shadow:false}));
+    fixed(span(-1.9,WB,-1.5, 1.9,SB,Z0, M.wall));
+    fixed(span(-1.9,WB,Z0, X0,SB,1.5, M.wall));
+    for (const w of [span(X0,WB,Z1, 1.9,SB,1.5, M.ghost,{shadow:false}), span(X1,WB,Z0, 1.9,SB,Z1, M.ghost,{shadow:false})]) {
+      w.receiveShadow=false; w.renderOrder=2; w.children[0].material.opacity=.45; fixed(w);
+    }
+
+    /* ① 放樣：牆面完成線＋樓板吊筋記號 */
+    const MZ=[-0.9, 0, 0.9], HX=[-1.125,-0.225,0.225,1.125];
+    { const t=.006, h=.006, LA={drop:0, until:2, glow:false};
+      add(1, span(X0,FC-h,Z0,X1,FC+h,Z0+t,M.laser,NE),{...LA,delay:.1});
+      add(1, span(X0,FC-h,Z0,X0+t,FC+h,Z1,M.laser,NE),{...LA,delay:.2});
+      add(1, span(X0,FC-h,Z1-t,X1,FC+h,Z1,M.laser,NE),{...LA,delay:.3});
+      add(1, span(X1-t,FC-h,Z0,X1,FC+h,Z1,M.laser,NE),{...LA,delay:.4});
+      let k=0;
+      MZ.forEach(z=>HX.forEach(x=>{
+        const g=group(span(x-.06,SB-.004,z+S-.006,x+.06,SB-.001,z+S+.006,M.laser,NE),
+                      span(x-.006,SB-.004,z+S-.06,x+.006,SB-.001,z+S+.06,M.laser,NE));
+        add(1, g, {...LA, until:3, delay:.6+(k++)*.04});
+      })); }
+
+    /* ② 周邊角材 */
+    add(2, span(X0,J0,Z0,X1,J1,Z0+S,M.wood),{delay:0, drop:-.4});
+    add(2, span(X0,J0,Z0+S,X0+S,J1,Z1-S,M.wood),{delay:.15, drop:-.4});
+    add(2, span(X0,J0,Z1-S,X1,J1,Z1,M.wood),{delay:.3, drop:-.4});
+    add(2, span(X1-S,J0,Z0+S,X1,J1,Z1-S,M.wood),{delay:.45, drop:-.4});
+
+    /* ③ 吊筋（角材）＋固定木塊 */
+    { let k=0;
+      MZ.forEach(z=>HX.forEach(x=>{
+        const zc=z+S;                                     // 吊筋在主角材旁邊
+        const g=group(span(x-S/2,J0,zc-S/2,x+S/2,SB-0.03,zc+S/2,M.hang),
+                      span(x-.07,SB-.03,zc-.06,x+.07,SB,zc+.06,M.block));
+        add(3, g, {delay:(k++)*.07, drop:.5});
+      })); }
+
+    /* ④ 骨架：主角材 → 副角材 */
+    MZ.forEach((z,i)=> add(4, span(X0+S,J0,z-S/2,X1-S,J1,z+S/2,M.wood),{delay:i*.2, drop:-.45}));
+    const SX=[-1.35,-0.9,-0.45,0,0.45,0.9,1.35];
+    { const segs=[[Z0+S,MZ[0]-S/2],[MZ[0]+S/2,MZ[1]-S/2],[MZ[1]+S/2,MZ[2]-S/2],[MZ[2]+S/2,Z1-S]];
+      let k=0;
+      segs.forEach(([a,b])=> SX.forEach(x=>
+        add(4, span(x-S/2,J0,a,x+S/2,J1,b,M.wood),{delay:.7+(k++)*.025, drop:-.35}))); }
+
+    /* ⑤ 校正水平・起拱（放大示意） */
+    { const pts=[]; const rise=0.08;
+      for(let i=0;i<=40;i++){ const x=X0+S+(X1-X0-2*S)*i/40; const u=(x/(X1-S)); pts.push(new THREE.Vector3(x, J0-0.03+rise*(1-u*u), 0.0)); }
+      const tube=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),60,.01,8), M.arc.clone());
+      add(5, tube, {delay:.4, drop:0, until:5, glow:false});
+      add(5, span(X0+S,J0-0.034,-0.004,X1-S,J0-0.026,0.004,M.laser,NE),{delay:0, drop:0, until:5, glow:false});   // 水平線
+      add(5, arrow([0,J0-0.45,0],[0,J0-0.06,0],M.arc),{delay:.8, drop:.15, until:5, glow:false});
+      add(5, span(-1.2,J0-0.04,-0.45-0.03,-0.6,J0,-0.45+0.03,M.dev),{delay:.2, drop:-.2, until:5}); }   // 水平尺
+
+    /* ⑥ 開口補強＋管線 */
+    add(6, span(0.45+S/2,J0,0.25-S/2,0.9-S/2,J1,0.25+S/2,M.rein),{delay:0, drop:-.3});
+    add(6, span(0.45+S/2,J0,0.65-S/2,0.9-S/2,J1,0.65+S/2,M.rein),{delay:.15, drop:-.3});
+    add(6, span(0.45-S/2-S,J0,0.25-S/2,0.45-S/2,J1,0.65+S/2,M.rein),{delay:.3, drop:-.3});
+    add(6, span(0.9+S/2,J0,0.25-S/2,0.9+S/2+S,J1,0.65+S/2,M.rein),{delay:.4, drop:-.3});
+    add(6, span(0.62,J1,0.4,0.73,J1+0.06,0.5,M.ebox),{delay:.6, drop:.2});
+    add(6, pipe([0.675,J1+0.03,0.5],[0.675,J1+0.03,Z1-0.06],.012,M.elec),{delay:.75, drop:.2});
+    add(6, pipe([0.675,J1+0.03,Z1-0.06],[0.675,SB-0.02,Z1-0.06],.012,M.elec),{delay:.85, drop:.2});
+
+    /* ⑦⑧ 企口板（沿 x 向鋪，接頭落在副角材上並錯開） */
+    { const BX0=X0+0.01, BX1=X1-0.01, BZ0=Z0+0.01, BZ1=Z1-0.01;   // 四周留伸縮縫
+      const N=28, W=(BZ1-BZ0)/N, gap=.003, FIRST=10;
+      for(let r=0;r<N;r++){
+        const za=BZ0+r*W, zb=za+W;
+        const off=(r%3)*0.45;
+        const cuts=[BX0];
+        for(let x=-1.35+off-1.35*2; x<BX1; x+=1.35) if(x>BX0+0.05 && x<BX1-0.05) cuts.push(x);
+        cuts.push(BX1);
+        const hitHole = zb>HOLE.z0 && za<HOLE.z1;
+        const step = r<FIRST ? 7 : 8;
+        let c=0;
+        for(let i=0;i<cuts.length-1;i++){
+          const parts = [];
+          let a=cuts[i], b=cuts[i+1];
+          if(hitHole && b>HOLE.x0 && a<HOLE.x1){ if(HOLE.x0-a>.02) parts.push([a,HOLE.x0]); if(b-HOLE.x1>.02) parts.push([HOLE.x1,b]); }
+          else parts.push([a,b]);
+          parts.forEach(([pa,pb])=>{
+            const delay = step===7 ? r*.12+c*.04 : (r-FIRST)*.07+c*.03;
+            add(step, span(pa+gap/2,FC,za+gap/2,pb-gap/2,FC+BT,zb-gap/2,M.boards[(r+c)%3]),{delay, drop:-.25, cat:'board'});
+            add(10, span(pa+gap/2,FC-0.003,za+gap/2,pb-gap/2,FC-0.001,zb-gap/2,M.coat,NE),{delay:r*.04, drop:0, cat:'board'});
+            c++;
+          });
+        }
+        // 第 7 步：最後一排公榫邊的 F 型釘（斜打）
+        if(r===FIRST-1) SX.forEach((x,i)=>{
+          if(x>HOLE.x0-0.05 && x<HOLE.x1+0.05 && hitHole) return;
+          add(7, pipe([x,FC+BT*0.5,zb+0.004],[x,J0+0.035,zb-0.03],.006,M.nail),{delay:FIRST*.12+.3+i*.05, drop:0, until:7, glow:false});
+        });
+      } }
+
+    /* ⑨ 線板收邊 */
+    { const a=.03, b=.06, F=FC;
+      const mold=(x0,z0,x1,z1,nx,nz)=>{
+        // 兩段階梯斷面，貼牆、貼天花
+        const g=group();
+        const s1=[Math.min(x0,x0+nx*b),Math.min(z0,z0+nz*b),Math.max(x1,x1+nx*b),Math.max(z1,z1+nz*b)];
+        const s2=[Math.min(x0,x0+nx*a),Math.min(z0,z0+nz*a),Math.max(x1,x1+nx*a),Math.max(z1,z1+nz*a)];
+        g.add(span(s1[0],F-a,s1[1],s1[2],F,s1[3],M.mold));
+        g.add(span(s2[0],F-b,s2[1],s2[2],F-a,s2[3],M.mold));
+        return g;
+      };
+      add(9, mold(X0,Z0,X1,Z0,0,1),{delay:0, drop:-.25});
+      add(9, mold(X0,Z0,X0,Z1,1,0),{delay:.15, drop:-.25});
+      add(9, mold(X0,Z1,X1,Z1,0,-1),{delay:.3, drop:-.25});
+      add(9, mold(X1,Z0,X1,Z1,-1,0),{delay:.45, drop:-.25}); }
+  },
+});
+</script>
+</body>
+</html>
