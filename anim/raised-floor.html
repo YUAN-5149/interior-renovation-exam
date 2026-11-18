@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>高架木地板施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：高架木地板 10 步驟施工順序 3D 互動動畫，可逐步播放、旋轉視角、看剖面。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1c1917;--mut:#78716c;--line:#e7e5e4;--acc:#b45309;--acc2:#fef3c7;--view:#eef0f1}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.top{background:#292524;color:#fafaf9;padding:12px 18px;display:flex;align-items:center;gap:12px;font-size:14px}
+.top a{color:#fde68a;text-decoration:none}
+.top span{color:#d6d3d1}
+.wrap{max-width:1180px;margin:0 auto;padding:16px;display:grid;gap:16px}
+@media(min-width:960px){.wrap{grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);align-items:start}.panel{position:sticky;top:16px}}
+.stage,.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.titles{text-align:center;padding:16px 12px 4px}
+.kicker{color:var(--mut);font-size:14px;letter-spacing:1px}
+.sub{color:var(--acc);font-weight:700;font-size:15px;margin-top:2px}
+h1{margin:2px 0 0;font-size:26px;letter-spacing:1px;min-height:1.5em}
+h1 .no{display:inline-block;min-width:1.6em;height:1.6em;line-height:1.6em;border-radius:99px;background:var(--ink);color:#fff;font-size:.72em;margin-right:8px;vertical-align:3px;padding:0 .4em}
+#view{position:relative;height:min(62vh,560px);min-height:340px;background:var(--view);margin:10px 12px 0;border-radius:10px;overflow:hidden;touch-action:none}
+#view canvas{display:block;width:100%;height:100%}
+.hint{position:absolute;right:10px;bottom:8px;font-size:12px;color:#a8a29e;pointer-events:none}
+#desc{text-align:center;font-size:17px;margin:12px 18px 4px;min-height:3.2em}
+.prog{height:4px;background:var(--line);margin:8px 18px 0;border-radius:4px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--acc);transition:width .4s}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px 12px 16px}
+.btn{font-family:inherit;font-size:15px;padding:9px 16px;border-radius:9px;border:1px solid #d6d3d1;background:#fff;color:var(--ink);cursor:pointer}
+.btn:hover{filter:brightness(.96)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700;min-width:96px}
+.btn.on{background:var(--acc2);border-color:#f59e0b}
+.btn:disabled{opacity:.4;cursor:default}
+.tip{margin:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;font-size:15px}
+.tip b{display:block;color:var(--acc);margin-bottom:2px}
+.panel h2{font-size:16px;margin:4px 16px 6px}
+ol{list-style:none;margin:0 0 12px;padding:0 10px}
+ol li{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:9px;cursor:pointer;font-size:15px;color:var(--mut)}
+ol li:hover{background:#fafaf9}
+ol li .n{flex:0 0 26px;height:26px;border-radius:99px;border:1px solid #d6d3d1;text-align:center;line-height:24px;font-size:13px;font-weight:700}
+ol li.done{color:var(--ink)}
+ol li.done .n{background:#e7e5e4;border-color:#e7e5e4}
+ol li.cur{background:var(--acc2);color:var(--ink);font-weight:700}
+ol li.cur .n{background:var(--acc);border-color:var(--acc);color:#fff}
+.foot{font-size:12px;color:var(--mut);padding:0 16px 14px}
+#err{display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--mut)}
+@media(max-width:600px){h1{font-size:22px}#view{height:48vh;min-height:300px}#desc{font-size:16px}.btn{padding:9px 12px}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="top"><a href="../">← 室裝乙級學習站</a><span>3D 工法動畫</span></div>
+<main class="wrap">
+  <section class="stage">
+    <div class="titles">
+      <div class="kicker">室內裝修工程管理</div>
+      <div class="sub">高架木地板施工順序</div>
+      <h1 id="title"></h1>
+    </div>
+    <div id="view"><div class="hint">拖曳旋轉・滾輪／雙指縮放</div><div id="err">3D 載入失敗，請確認網路連線後重新整理。</div></div>
+    <div class="prog"><i id="bar"></i></div>
+    <p id="desc"></p>
+    <div class="ctrl">
+      <button class="btn" id="prev">◀ 上一步</button>
+      <button class="btn pri" id="play">▶ 播放</button>
+      <button class="btn" id="next">下一步 ▶</button>
+      <button class="btn" id="cut" title="切開面板與夾板，看裡面的骨架">剖面</button>
+      <button class="btn" id="reset">重看視角</button>
+    </div>
+  </section>
+  <aside class="panel">
+    <div class="tip"><b>考點</b><span id="tip"></span></div>
+    <h2>10 步驟（點選跳到該步）</h2>
+    <ol id="list"></ol>
+    <div class="foot">鍵盤：← → 切換步驟，空白鍵播放／暫停。模型比例有誇大，方便看清楚各層構造。</div>
+  </aside>
+</main>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- 步驟內容 ---------- */
+const STEPS = [
+  {t:'施工前', d:'一間準備做高架木地板的房間。按「播放」或「下一步」開始。',
+   tip:'高架木地板是用角材把地板架高，底下可走管線、隔絕濕氣。術科常考施工順序：先骨架、再底板、最後面材與收邊。'},
+  {t:'確認管線位置', d:'在地坪上確認既有水電管線與出線口的位置，並做好記號。',
+   tip:'後面固定筋要釘進地坪，先確認管線位置，才不會打穿水管或電管。'},
+  {t:'定水平基準線', d:'用雷射水平儀在四周牆面放出水平基準線。',
+   tip:'基準線由完成面高度往下扣除面板、夾板厚度而來；之後所有角材都以這條線為準。'},
+  {t:'釘壁面四周角材', d:'沿著基準線，把角材固定在牆面四周。',
+   tip:'四周角材是之後主支架兩端的支撐點。'},
+  {t:'鋪設 PE 防潮布', d:'在地坪鋪上 PE 防潮布，接縫要重疊，四周往牆面反折。',
+   tip:'阻隔地坪濕氣，避免角材與木地板受潮變形、發霉。'},
+  {t:'釘中間橫向角材（主支架）', d:'橫向角材兩端架在四周角材上，依間距排好，這就是主支架。',
+   tip:'主支架先定位排好，下一步才用固定筋把它撐住、調水平。'},
+  {t:'釘固定筋', d:'在主支架旁釘固定筋，往下撐到地坪固定，同時把角材面調到水平。',
+   tip:'固定筋往下撐在地坪，方向和天花板的吊筋（往上吊在樓板）相反。'},
+  {t:'釘中間縱向角材（副支架）', d:'在主支架之間補上縱向角材，形成格狀骨架。',
+   tip:'格狀骨架讓上面的夾板四邊都有角材可以下釘。'},
+  {t:'釘 12 mm 夾板', d:'在角材骨架上鋪 12 mm 夾板並釘牢，板與板的接縫錯開。',
+   tip:'夾板是底板，讓面板受力均勻、踩起來不會軟。'},
+  {t:'釘面板', d:'在夾板上鋪木地板面板，面板以 45 度角斜釘入角材。',
+   tip:'面板以 45 度角釘入角材；溢出的膠要馬上擦掉，乾了很難處理。'},
+  {t:'牆面收邊', d:'沿牆面裝上踢腳板收邊，完成高架木地板。',
+   tip:'地板與牆面之間通常留伸縮縫，再用踢腳板蓋住，兼具收邊與美觀。'},
+];
+const CIRC = ['','①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+
+/* ---------- 場景 ---------- */
+const view = document.getElementById('view');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({antialias:true});
+} catch (e) { document.getElementById('err').style.display='flex'; throw e; }
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled = true;
+view.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#eef0f1');
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.minDistance = 2.5; controls.maxDistance = 20;
+controls.maxPolarAngle = Math.PI * 0.49;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcfc8c0, 1.5));
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.position.set(4, 8, 5);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, {left:-4, right:4, top:4, bottom:-4, near:1, far:20});
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({opacity:.12}));
+ground.rotation.x = -Math.PI/2; ground.position.y = -0.2; ground.receiveShadow = true;
+scene.add(ground);
+
+/* ---------- 尺寸（公尺，構造厚度刻意放大方便看） ---------- */
+const X0=-1.9, X1=1.9, Z0=-1.4, Z1=1.4;   // 室內淨範圍
+const S=0.06;          // 角材斷面
+const H=0.30;          // 角材面高度
+const PLY=0.03;        // 夾板
+const FIN=0.025;       // 面板
+const FF=H+PLY+FIN;    // 完成面
+
+const M = {
+  wall:  new THREE.MeshStandardMaterial({color:'#f5f4f1', roughness:.95}),
+  slab:  new THREE.MeshStandardMaterial({color:'#d3cec8', roughness:1}),
+  wood:  new THREE.MeshStandardMaterial({color:'#dcb97f', roughness:.8}),
+  leg:   new THREE.MeshStandardMaterial({color:'#c99e5f', roughness:.8}),
+  ply:   new THREE.MeshStandardMaterial({color:'#ead39f', roughness:.9}),
+  pe:    new THREE.MeshStandardMaterial({color:'#dbeafe', roughness:.4, transparent:true, opacity:.6, side:THREE.DoubleSide, depthWrite:false}),
+  water: new THREE.MeshStandardMaterial({color:'#3b82f6', roughness:.5}),
+  elec:  new THREE.MeshStandardMaterial({color:'#f97316', roughness:.5}),
+  box:   new THREE.MeshStandardMaterial({color:'#1d4ed8', roughness:.6}),
+  laser: new THREE.MeshStandardMaterial({color:'#ef4444', emissive:'#ef4444', emissiveIntensity:.8}),
+  dev:   new THREE.MeshStandardMaterial({color:'#facc15', roughness:.5}),
+  dark:  new THREE.MeshStandardMaterial({color:'#44403c', roughness:.6}),
+  arrow: new THREE.MeshStandardMaterial({color:'#ea580c', emissive:'#ea580c', emissiveIntensity:.35}),
+  skirt: new THREE.MeshStandardMaterial({color:'#6b3f22', roughness:.7}),
+  planks:['#a5653b','#94572f','#b3744a','#9c5e35'].map(c=>new THREE.MeshStandardMaterial({color:c, roughness:.55})),
+};
+const EDGE = new THREE.LineBasicMaterial({color:'#3f3a36', transparent:true, opacity:.35});
+
+function box(w, h, d, mat, {edges=true, shadow=true}={}) {
+  const g = new THREE.BoxGeometry(w, h, d);
+  const m = new THREE.Mesh(g, mat.clone());
+  m.castShadow = shadow; m.receiveShadow = true;
+  if (edges) m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), EDGE.clone()));
+  return m;
+}
+// 以「最小角、最大角」放一個方塊
+function span(x0,y0,z0,x1,y1,z1,mat,opt){
+  const m = box(x1-x0, y1-y0, z1-z0, mat, opt);
+  m.position.set((x0+x1)/2, (y0+y1)/2, (z0+z1)/2);
+  return m;
+}
+function pipe(a, b, r, mat){
+  const A=new THREE.Vector3(...a), B=new THREE.Vector3(...b);
+  const len=A.distanceTo(B);
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,16), mat.clone());
+  m.position.copy(A).add(B).multiplyScalar(.5);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), B.clone().sub(A).normalize());
+  m.castShadow=true;
+  return m;
+}
+
+/* ---------- 動畫項目 ---------- */
+const items = [];
+const DUR = 0.55;
+function add(step, obj, {delay=0, drop=0.45, until=99, cat=''}={}) {
+  const mats=[];
+  obj.traverse(o=>{ if(o.material){ const m=o.material; m.transparent=true; m.userData.base=m.opacity; mats.push(m);} });
+  items.push({step, obj, delay, drop, until, cat, mats, baseY:obj.position.y, t0:-1, glow:0});
+  obj.visible = false;
+  scene.add(obj);
+}
+// 靜態物件（永遠顯示）
+function fixed(obj){ scene.add(obj); }
+
+// 樓板、牆
+fixed(span(-2,-0.2,-1.5, 2,0,1.5, M.slab));
+fixed(span(-2,0,-1.5, 2,1.6,Z0, M.wall));        // 後牆
+fixed(span(-2,0,Z0, X0,1.6,1.5, M.wall));        // 左牆
+// 前、右牆做成半透明，方便看到地板各層構造
+const ghost = new THREE.MeshStandardMaterial({color:'#ffffff', transparent:true, opacity:.18, depthWrite:false, roughness:1});
+for (const w of [span(X0,0,Z1, 2,0.6,1.5, ghost,{shadow:false}), span(X1,0,Z0, 2,0.6,Z1, ghost,{shadow:false})]) {
+  w.receiveShadow=false; w.renderOrder=2; w.children[0].material.opacity=.5; fixed(w);
+}
+
+/* ① 管線 */
+{
+  let d=0;
+  add(1, pipe([-1.2,0.01,Z0+0.05],[-1.2,0.01,1.1],0.03,M.water),{delay:d+=0.0,drop:.3});
+  add(1, pipe([-1.2,0.01,1.1],[0.4,0.01,1.1],0.03,M.water),{delay:d+=.15,drop:.3});
+  add(1, pipe([X0+0.05,0.01,-0.6],[1.3,0.01,-0.6],0.025,M.elec),{delay:d+=.15,drop:.3});
+  add(1, pipe([1.3,0.01,-0.6],[1.3,0.01,Z0+0.04],0.025,M.elec),{delay:d+=.1,drop:.3});
+  add(1, pipe([1.3,0.01,Z0+0.04],[1.3,0.5,Z0+0.04],0.025,M.elec),{delay:d+=.1,drop:.3,until:8});
+  [-0.9, 0.3, 1.3].forEach((x,i)=> add(1, span(x-0.06,0.5,Z0,x+0.06,0.62,Z0+0.03,M.box),{delay:.6+i*.12,drop:.2}));
+  add(1, span(X0,0.5,0.5,X0+0.03,0.62,0.62,M.box),{delay:.95,drop:.2});
+}
+
+/* ② 水平基準線 */
+{
+  const t=0.012, h=0.008;
+  add(2, span(X0,FF-h,Z0,X1,FF+h,Z0+t,M.laser,{edges:false,shadow:false}),{delay:.35,drop:0,until:8});
+  add(2, span(X0,FF-h,Z0,X0+t,FF+h,Z1,M.laser,{edges:false,shadow:false}),{delay:.45,drop:0,until:8});
+  add(2, span(X0,FF-h,Z1-t,X1,FF+h,Z1,M.laser,{edges:false,shadow:false}),{delay:.55,drop:0,until:8});
+  add(2, span(X1-t,FF-h,Z0,X1,FF+h,Z1,M.laser,{edges:false,shadow:false}),{delay:.65,drop:0,until:8});
+  // 雷射水平儀（腳架）
+  const dev = new THREE.Group();
+  const head = box(.16,.12,.16,M.dev); head.position.y = FF; dev.add(head);
+  const lens = box(.06,.05,.17,M.dark,{edges:false}); lens.position.y = FF; dev.add(lens);
+  for (let a=0;a<3;a++){
+    const ang=a*Math.PI*2/3;
+    dev.add(pipe([0,FF-0.06,0],[Math.cos(ang)*.18,0,Math.sin(ang)*.18],.012,M.dark));
+  }
+  dev.position.set(0.2,0,0.2);
+  add(2, dev, {delay:0, drop:.5, until:3});
+}
+
+/* ③ 四周角材 */
+{
+  const y0=H-S, y1=H;
+  add(3, span(X0,y0,Z0,X1,y1,Z0+S,M.wood),{delay:0});
+  add(3, span(X0,y0,Z0+S,X0+S,y1,Z1-S,M.wood),{delay:.15});
+  add(3, span(X0,y0,Z1-S,X1,y1,Z1,M.wood),{delay:.3});
+  add(3, span(X1-S,y0,Z0+S,X1,y1,Z1-S,M.wood),{delay:.45});
+}
+
+/* ④ PE 防潮布 */
+{
+  const y=0.035, up=0.14;
+  const sheet = new THREE.Group();
+  const mk=(...a)=>{const m=span(...a,M.pe,{edges:false,shadow:false}); m.receiveShadow=true; sheet.add(m);};
+  mk(X0,y,Z0,X1,y+.004,Z1);
+  mk(X0,y,Z0,X1,y+up,Z0+.004); mk(X0,y,Z0,X0+.004,y+up,Z1);
+  mk(X0,y,Z1-.004,X1,y+up,Z1); mk(X1-.004,y,Z0,X1,y+up,Z1);
+  add(4, sheet, {delay:0, drop:.6});
+  // 接縫重疊示意線
+  add(4, span(-0.1,y+.005,Z0,0.1,y+.007,Z1,new THREE.MeshStandardMaterial({color:'#93c5fd',transparent:true,opacity:.7}),{edges:false,shadow:false}),{delay:.35,drop:.3});
+}
+
+/* ⑤ 主支架（橫向） */
+const JZ = [-0.9,-0.3,0.3,0.9];
+JZ.forEach((z,i)=> add(5, span(X0+S,H-S,z-S/2,X1-S,H,z+S/2,M.wood),{delay:i*.18, drop:.6}));
+
+/* ⑥ 固定筋 */
+const LX = [-1.75,-1.25,-0.75,-0.25,0.25,0.75,1.25,1.75];
+JZ.forEach((z,i)=> LX.forEach((x,j)=>
+  add(6, span(x-S/2,0,z+S/2,x+S/2,H,z+S*1.5,M.leg),{delay:i*.15+j*.04, drop:.35, cat:'leg'})
+));
+// 向下箭頭（只在這一步出現）
+[-1.25,-0.25,0.75].forEach((x,i)=>{
+  const g=new THREE.Group();
+  const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.28,12),M.arrow.clone()); shaft.position.y=.2;
+  const tip=new THREE.Mesh(new THREE.ConeGeometry(.055,.12,16),M.arrow.clone()); tip.rotation.x=Math.PI; tip.position.y=.02;
+  g.add(shaft,tip); g.position.set(x,H+.12,-0.3+S);
+  add(6,g,{delay:.9+i*.1,drop:.25,until:6});
+});
+
+/* ⑦ 副支架（縱向） */
+{
+  const rails=[Z0+S, ...JZ, Z1-S];           // 各支撐中心
+  const edgesZ=[Z0+S, ...JZ.flatMap(z=>[z-S/2,z+S/2]), Z1-S];
+  const SX=[-1.5,-1.0,-0.5,0,0.5,1.0,1.5];
+  let k=0;
+  for(let r=0;r<rails.length-1;r++){
+    const za = r===0 ? Z0+S : JZ[r-1]+S/2 + (r>=1?S:0); // 讓開固定筋
+    const zb = r===rails.length-2 ? Z1-S : JZ[r]-S/2;
+    SX.forEach(x=> add(7, span(x-S/2,H-S,za,x+S/2,H,zb,M.wood),{delay:(k++)*.025, drop:.4}));
+  }
+}
+
+/* ⑧ 12mm 夾板 */
+{
+  const W=1.22, D=0.92, gap=.008; let k=0;
+  for(let row=0, z=Z0; z<Z1-1e-3; row++, z+=D){
+    const za=z, zb=Math.min(z+D,Z1);
+    for(let x=X0-(row%2?W/2:0); x<X1-1e-3; x+=W){
+      const xa=Math.max(x,X0), xb=Math.min(x+W,X1);
+      if(xb-xa<.05) continue;
+      add(8, span(xa+gap/2,H,za+gap/2,xb-gap/2,H+PLY,zb-gap/2,M.ply),{delay:(k++)*.09, drop:.5, cat:'ply'});
+    }
+  }
+}
+
+/* ⑨ 面板 */
+{
+  const PW=0.14, PL=1.2, gap=.004; let r=0;
+  for(let z=Z0; z<Z1-1e-3; z+=PW, r++){
+    const za=z, zb=Math.min(z+PW,Z1);
+    const off=((r*0.47)%PL);
+    let c=0;
+    for(let x=X0-off; x<X1-1e-3; x+=PL, c++){
+      const xa=Math.max(x,X0), xb=Math.min(x+PL,X1);
+      if(xb-xa<.04) continue;
+      const mat=M.planks[(r*3+c)%M.planks.length];
+      add(9, span(xa+gap/2,H+PLY,za+gap/2,xb-gap/2,FF,zb-gap/2,mat),{delay:r*.07+c*.03, drop:.3, cat:'plank'});
+    }
+  }
+}
+
+/* ⑩ 踢腳板收邊 */
+{
+  const t=.018, h=.085;
+  add(10, span(X0,FF,Z0,X1,FF+h,Z0+t,M.skirt),{delay:0,drop:.25});
+  add(10, span(X0,FF,Z0+t,X0+t,FF+h,Z1,M.skirt),{delay:.2,drop:.25});
+  add(10, span(X0+t,FF,Z1-t,X1,FF+h,Z1,M.skirt),{delay:.4,drop:.25});
+  add(10, span(X1-t,FF,Z0+t,X1,FF+h,Z1-t,M.skirt),{delay:.6,drop:.25});
+}
+
+/* ---------- 剖面（切開面板／夾板） ---------- */
+const clipPlank = [new THREE.Plane(new THREE.Vector3(-1,0,0), 0.55)];
+const clipPly   = [new THREE.Plane(new THREE.Vector3(-1,0,0), 1.15)];
+let cut=false;
+function applyCut(){
+  items.forEach(it=>{
+    const planes = !cut ? null : it.cat==='plank' ? clipPlank : it.cat==='ply' ? clipPly : null;
+    if(it.cat==='plank'||it.cat==='ply') it.mats.forEach(m=>{ m.clippingPlanes = planes; m.needsUpdate = true; });
+  });
+  document.getElementById('cut').classList.toggle('on', cut);
+}
+
+/* ---------- 鏡頭 ---------- */
+const VIEWS = {
+  def:{dir:[0.62,0.55,0.70], dist:8.2, target:[0,0.15,0]},
+  6:  {dir:[0.55,0.42,0.78], dist:5.0, target:[0.3,0.12,0.1]},
+  7:  {dir:[0.55,0.62,0.62], dist:6.6, target:[0,0.2,0]},
+};
+let fly=null;
+function fitScale(){ const a=camera.aspect; return a<1.2 ? Math.min(1.9, 1.2/a) : 1; }
+function goal(k){
+  const v = VIEWS[k] || VIEWS.def;
+  const dir = new THREE.Vector3(...v.dir).normalize();
+  const tgt = new THREE.Vector3(...v.target);
+  return {pos: tgt.clone().add(dir.multiplyScalar(v.dist*fitScale())), tgt};
+}
+function flyTo(k, instant=false){
+  const g=goal(k);
+  if(instant){ camera.position.copy(g.pos); controls.target.copy(g.tgt); fly=null; controls.update(); return; }
+  fly=g;
+}
+controls.addEventListener('start', ()=>{ fly=null; });
+
+/* ---------- 步驟控制 ---------- */
+let cur=0, playing=false, autoTimer=null;
+const ease=p=>1-Math.pow(1-p,3);
+function setP(it,p){
+  const e=ease(p);
+  it.obj.position.y = it.baseY + (1-e)*it.drop;
+  const o=Math.min(1,p*1.6);
+  it.mats.forEach(m=>m.opacity=m.userData.base*o);
+}
+function stepLength(k){
+  let m=0; items.forEach(it=>{ if(it.step===k) m=Math.max(m,it.delay); });
+  return m+DUR;
+}
+function goTo(k, anim=true){
+  cur=Math.max(0,Math.min(STEPS.length-1,k));
+  const now=performance.now()/1000;
+  items.forEach(it=>{
+    const vis = it.step<=cur && cur<=it.until;
+    if(!vis){ it.obj.visible=false; it.t0=-1; it.glow=0; setGlow(it,0); return; }
+    if(it.step===cur && anim){ it.obj.visible=true; it.t0=now+it.delay; setP(it,0); }
+    else if(!it.obj.visible || it.t0>0){ it.obj.visible=true; it.t0=-1; setP(it,1); }
+  });
+  updateUI();
+  if(anim) flyTo(cur);
+  if(playing) schedule();
+}
+function setGlow(it,g){
+  it.mats.forEach(m=>{ if(m.emissive && m.userData.glowable!==false){
+    if(m.userData.e0===undefined){ m.userData.e0=m.emissive.clone(); m.userData.ei0=m.emissiveIntensity; }
+    if(g>0){ m.emissive.set('#f59e0b'); m.emissiveIntensity=.55*g; }
+    else { m.emissive.copy(m.userData.e0); m.emissiveIntensity=m.userData.ei0; }
+  }});
+}
+function schedule(){
+  clearTimeout(autoTimer);
+  if(cur>=STEPS.length-1){ setPlaying(false); return; }
+  autoTimer=setTimeout(()=>goTo(cur+1), (stepLength(cur)+2.6)*1000);
+}
+function setPlaying(p){
+  playing=p;
+  document.getElementById('play').textContent = p ? '❚❚ 暫停' : (cur>=STEPS.length-1 ? '↻ 重播' : '▶ 播放');
+  if(!p) clearTimeout(autoTimer);
+}
+
+/* ---------- UI ---------- */
+const $=id=>document.getElementById(id);
+const list=$('list');
+STEPS.slice(1).forEach((s,i)=>{
+  const li=document.createElement('li');
+  li.innerHTML=`<span class="n">${i+1}</span><span>${s.t}</span>`;
+  li.onclick=()=>{ setPlaying(false); goTo(i+1); };
+  list.appendChild(li);
+});
+function updateUI(){
+  const s=STEPS[cur];
+  $('title').innerHTML = cur ? `<span class="no">${cur}</span>${s.t}` : '施工前';
+  $('desc').textContent=s.d;
+  $('tip').textContent=s.tip;
+  $('bar').style.width=(cur/(STEPS.length-1)*100)+'%';
+  $('prev').disabled = cur===0;
+  $('next').disabled = cur===STEPS.length-1;
+  [...list.children].forEach((li,i)=>{ li.classList.toggle('cur',i+1===cur); li.classList.toggle('done',i+1<cur); });
+  if(!playing) setPlaying(false);
+  document.title = (cur?`${CIRC[cur]} ${s.t}｜`:'')+'高架木地板施工順序｜3D 工法動畫';
+}
+$('prev').onclick=()=>{ setPlaying(false); goTo(cur-1); };
+$('next').onclick=()=>{ setPlaying(false); goTo(cur+1); };
+$('play').onclick=()=>{
+  if(playing){ setPlaying(false); return; }
+  setPlaying(true);
+  if(cur>=STEPS.length-1){ goTo(0,false); flyTo(0); schedule(); }
+  else goTo(cur+1);
+};
+$('cut').onclick=()=>{ cut=!cut; applyCut(); };
+$('reset').onclick=()=>flyTo(cur);
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'){ setPlaying(false); goTo(cur+1); }
+  else if(e.key==='ArrowLeft'){ setPlaying(false); goTo(cur-1); }
+  else if(e.key===' '){ e.preventDefault(); $('play').click(); }
+});
+
+/* ---------- 迴圈 ---------- */
+function resize(){
+  const w=view.clientWidth, h=view.clientHeight;
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(()=>{ resize(); }).observe(view);
+resize();
+
+renderer.setAnimationLoop(()=>{
+  const now=performance.now()/1000;
+  for(const it of items){
+    if(it.t0>0){
+      const p=(now-it.t0)/DUR;
+      if(p>=1){ setP(it,1); it.t0=-1; it.glow=now; }
+      else setP(it,Math.max(0,p));
+    }
+    if(it.glow>0){
+      const g=1-(now-it.glow)/1.4;
+      if(g<=0){ it.glow=0; setGlow(it,0); } else setGlow(it,g);
+    }
+  }
+  if(fly){
+    camera.position.lerp(fly.pos,.06);
+    controls.target.lerp(fly.tgt,.06);
+    if(camera.position.distanceTo(fly.pos)<.01) fly=null;
+  }
+  controls.update();
+  renderer.render(scene,camera);
+});
+
+// 只讓「角材／板材」發光，雷射與箭頭保持原色
+M.laser.userData.glowable=false;
+items.forEach(it=>it.mats.forEach(m=>{ if(m.color && (m.color.getHexString()==='ef4444'||m.color.getHexString()==='ea580c')) m.userData.glowable=false; }));
+
+const start = parseInt(new URLSearchParams(location.search).get('step')) || 0;
+flyTo(start, true);
+goTo(start, false);
+</script>
+</body>
+</html>
