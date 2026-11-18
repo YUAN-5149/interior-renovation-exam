@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>油漆塗裝施工注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：裝修塗裝施工技術注意事項 8 項，含不得施工的環境條件 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工中樣貌', d:'牆面正在上漆：左半邊已塗好，牆上有色樣，地面與插座已遮蔽，旁邊有滾筒與漆盤。',
+   tip:'題目：「裝修塗裝施工技術應注意事項至少 5 項。」另一題問「在何情況下不得施工」：低溫、高濕、結露、底材未乾、粉塵大、通風不良、陽光直射。'},
+  {t:'底材處理', d:'清潔、去油，批土研磨，含水率要合格。', tip:'底材沒處理好，油漆再好也會脫落。'},
+  {t:'環境條件', d:'溫度、濕度符合規定，不在結露時施工。', tip:'一般室溫低於約 5～10°C、相對濕度高於約 85%、牆面結露時不得施工（依製造商規定）。'},
+  {t:'稀釋比例・重塗間隔', d:'依廠商規定的稀釋比例與重塗間隔時間施作。', tip:'間隔太短，下層還沒乾就塗上層，會起皺或咬底。'},
+  {t:'薄塗多次', d:'每道塗膜要薄塗、均勻，薄塗多次優於一次厚塗。', tip:'一次塗太厚容易流掛，乾燥也慢。'},
+  {t:'通風・嚴禁煙火', d:'保持通風，嚴禁煙火。', tip:'溶劑型塗料揮發的氣體易燃又有毒。'},
+  {t:'遮蔽保護', d:'周邊不需塗裝的部分要遮蔽保護。', tip:'遮蔽膠帶要在漆面未完全乾時撕除，邊緣才整齊。'},
+  {t:'先做色樣', d:'先做色樣，經確認後再大面積施工。', tip:'色卡和實際塗在牆上的顏色常有差異，要先試塗確認。'},
+  {t:'完成檢查', d:'完成後檢查有無流掛、刷痕、針孔、色差。', tip:'斜照燈光最容易看出流掛與刷痕。'},
+];
+
+createAnim({
+  title: '油漆塗裝施工注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.4,0.25,0.88], dist:5.0, target:[0,1.0,0.3]},
+    4:  {dir:[0.35,0.15,0.92], dist:3.2, target:[-0.5,1.7,0]},
+    7:  {dir:[0.3,0.12,0.95], dist:2.2, target:[0.9,1.6,0]},
+    8:  {dir:[0.3,0.12,0.95], dist:2.4, target:[-1.0,1.0,0]},
+  },
+  note: '缺陷與塗膜為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#d6d1c6',{roughness:.95}), paint: mat('#c7e0d4',{roughness:.6}),
+      tape: mat('#3b82f6',{roughness:.6}), sheet: mat('#e0f2fe',{transparent:true, opacity:.6, depthWrite:false}),
+      plate: mat('#fafaf9'), roller: mat('#f1f5f9'), handle: mat('#7c2d12'), tray: mat('#64748b'),
+      s1: mat('#a7d3c0'), s2: mat('#c7e0d4'), s3: mat('#e3efe8'), putty: mat('#ffffff'),
+      meter: mat('#facc15'), dark: mat('#292524'), no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}),
+      drip: mat('#9fc7b5',{roughness:.5}), fan: mat('#64748b'), sand: mat('#ca8a04'), thin: mat('#60a5fa'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.15,-0.3,2,0,1.6,M.slab));
+    fixed(span(-2,0,-0.2,2,2.6,0,M.wall));
+    fixed(span(-2,0.05,.001,0.0,2.55,.004,M.paint,NE));
+    fixed(span(-2,0.002,0.02,2,0.006,1.5,M.sheet,NE)); fixed(span(-2,0,.004,2,.04,.007,M.tape,NE));
+    fixed(span(1.2,1.1,0,1.32,1.28,.008,M.plate)); fixed(span(1.18,1.08,.008,1.34,1.3,.011,M.tape,NE));
+    fixed(span(0.4,0.006,0.6,0.8,0.06,0.9,M.tray)); fixed(group(pipe([0.3,0.3,0.75],[0.55,0.3,0.75],.04,M.roller), span(0.42,0.3,0.75,0.44,0.9,0.77,M.handle)));
+    [[0.7,1.6,M.s1],[0.95,1.6,M.s2],[1.2,1.6,M.s3]].forEach(([x,y,m])=> fixed(span(x-.1,y-.1,.001,x+.1,y+.1,.004,m,NE)));
+
+    add(1, group(span(1.4,0.6,0,1.5,0.7,.004,M.putty,NE), span(1.55,0.6,.01,1.7,0.68,.05,M.sand)),{until:1, drop:0});
+    mark(1, 1.45,0.65,.01,{r:.15, text:'清潔・批土研磨・含水率合格', ty:1.0, tw:1.7});
+    add(2, group(span(-1.5,1.3,.006,-1.36,1.5,.04,M.meter), span(-1.48,1.4,.04,-1.38,1.47,.042,M.dark,NE)),{until:2, drop:-.2});
+    add(2, label('低溫・高濕・結露 → 不得施工',-1.0,2.3,0.2,1.8,'bad'),{until:2, drop:0, glow:false});
+    add(3, pipe([0.9,0,0.7],[0.9,0.25,0.7],.05,M.thin),{until:3, drop:.2});
+    add(3, label('依規定稀釋比例・重塗間隔',0.9,0.6,0.7,1.6),{until:3, drop:0, glow:false});
+    add(4, group(span(-0.6,1.5,.004,-0.55,1.9,.006,M.drip,NE), span(-0.4,1.4,.004,-0.36,1.75,.006,M.drip,NE)),{until:4, drop:0});
+    add(4, label('薄塗多次 ✓　一次厚塗 → 流掛 ✗',-0.5,2.15,0.15,2.0),{until:4, drop:0, glow:false});
+    add(5, span(1.6,0,0.9,1.9,0.5,1.1,M.fan),{until:5, drop:.2});
+    add(5, group(...[0,1].map(i=>{ const b=box(.3,.03,.02,M.no,NE); b.position.set(0.0,1.9,.3); b.rotation.z=i?.78:-.78; return b; })),{until:5, drop:0, glow:false});
+    add(5, label('保持通風・嚴禁煙火',0.6,2.3,0.3,1.3),{until:5, drop:0, glow:false});
+    mark(6, 1.26,1.19,.012,{r:.15, text:'插座・地面・踢腳遮蔽', ty:0.75, tw:1.4});
+    mark(7, 0.95,1.6,.005,{r:.3, text:'先做色樣・確認後施工', ty:2.0, tw:1.4});
+    mark(8, -1.0,1.0,.005,{r:.4, text:'流掛・刷痕・針孔・色差', ty:1.6, tw:1.5});
+  },
+});
+</script>
+</body>
+</html>

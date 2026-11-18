@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>仿石質複層塗料施工要求｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：仿石質複層塗料受漆面施工前準備、底漆噴塗與貼溝縫膠帶要求 10 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前牆面', d:'水泥粉刷牆面要做仿石質複層塗料（俗稱石頭漆），牆上有窗。',
+   tip:'合併兩題：「受漆面施工前應準備（檢查）工作 4 項」與「施工綱要：底漆噴塗、貼溝縫膠帶的要求事項」。'},
+  {t:'含水率', d:'檢查底材含水率，乾燥程度須符合規定。', tip:'底材太濕，塗膜會起泡、白華。'},
+  {t:'平整度・修補', d:'檢查平整度，裂縫、孔洞須先修補。', tip:'石頭漆很厚重，底材的裂縫會反映到表面。'},
+  {t:'清除粉塵油污白華', d:'清除粉塵、油污、白華、脫模劑。', tip:'表面污染物會讓底漆附著不良。'},
+  {t:'批土研磨・處理鹼性', d:'批土研磨，檢查並處理表面鹼性。', tip:'鹼性太強會讓塗料變色、粉化。'},
+  {t:'放樣分割線', d:'依分割圖放樣分割線。', tip:'分割線就是之後溝縫膠帶的位置。'},
+  {t:'遮蔽保護', d:'周邊門窗、地面等做遮蔽保護。', tip:'噴塗的漆霧會飄散，周邊都要遮好。'},
+  {t:'確認環境', d:'確認施工環境的溫度、濕度與天候。', tip:'下雨、高濕、低溫都不宜噴塗。'},
+  {t:'底漆噴塗', d:'底漆依規定稀釋比例均勻噴塗或滾塗，不得漏塗；依規定塗佈量，乾燥後才進行下一道。', tip:'底漆是石頭漆附著的關鍵，漏塗處日後會剝落。'},
+  {t:'貼溝縫膠帶', d:'底漆乾燥後，膠帶沿墨線貼直，寬度一致，交接處貼平壓實。', tip:'交接處壓實，主材才不會滲進去，溝縫才會乾淨。'},
+  {t:'未乾前撕除膠帶', d:'主材噴塗後、未完全乾燥前撕除膠帶，保持溝縫邊緣整齊。', tip:'完全乾了再撕，膠帶會把塗膜一起扯下來。'},
+];
+
+createAnim({
+  title: '仿石質複層塗料施工要求',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.38,0.2,0.9],  dist:5.2, target:[0,1.2,0]},
+    10: {dir:[0.3,0.12,0.95], dist:2.6, target:[0.3,1.0,0]},
+  },
+  note: '塗層厚度與膠帶寬度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    function stoneTex(){
+      const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+      g.fillStyle='#d6cfc2'; g.fillRect(0,0,128,128); let s=3; const r=()=>(s=(s*16807)%2147483647)/2147483647;
+      for (let i=0;i<700;i++){ g.fillStyle=['#a8a29e','#e7e5e4','#78716c','#c4b8a5'][(r()*4)|0]; g.fillRect(r()*128,r()*128,1.5,1.5); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2,2); return t; }
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#c9c4bb',{roughness:1}), crack: mat('#44403c'), white: mat('#ffffff'),
+      oil: mat('#57534e',{transparent:true, opacity:.4, depthWrite:false}), efflo: mat('#ffffff'), putty: mat('#f5f5f4'),
+      meter: mat('#facc15'), dark: mat('#292524'), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      frame: mat('#d1d5db',{metalness:.6, roughness:.3}), glass: mat('#bae6fd',{transparent:true, opacity:.35, depthWrite:false}),
+      film: mat('#60a5fa',{transparent:true, opacity:.55, depthWrite:false}), sheet: mat('#e0f2fe',{transparent:true, opacity:.6, depthWrite:false}),
+      primer: mat('#e8e3d8',{roughness:.8}), tape: mat('#fde68a',{roughness:.6}), stone: mat('#ffffff',{map:stoneTex(), roughness:1}),
+      gun: mat('#1f2937'), cloud: mat('#93c5fd',{transparent:true, opacity:.5, depthWrite:false}), sun: mat('#fbbf24',{emissive:'#fbbf24', emissiveIntensity:.6}),
+    };
+    const NE={edges:false, shadow:false};
+    const X0=-1.8, X1=1.8, Y1=2.5, WX0=-1.4, WX1=-0.5, WY0=1.0, WY1=2.0;
+    fixed(span(-2.2,-0.15,-0.3,2.2,0,1.6,M.slab));
+    fixed(span(-2.2,0,-0.25,2.2,2.7,0,M.wall));
+    fixed(group(span(WX0,WY0,-.02,WX1,WY0+.05,.03,M.frame), span(WX0,WY1-.05,-.02,WX1,WY1,.03,M.frame), span(WX0,WY0,-.02,WX0+.05,WY1,.03,M.frame), span(WX1-.05,WY0,-.02,WX1,WY1,.03,M.frame), span(WX0+.05,WY0+.05,0,WX1-.05,WY1-.05,.005,M.glass,NE)));
+    // 缺陷
+    add(0, group(span(0.4,1.6,.001,0.42,2.1,.002,M.crack,NE), span(0.42,1.35,.001,0.44,1.6,.002,M.crack,NE)),{until:2, drop:0});
+    add(0, span(1.0,0.3,.001,1.6,0.6,.002,M.oil,NE),{until:3, drop:0});
+    add(0, span(-0.3,0.15,.001,0.2,0.4,.002,M.efflo,NE),{until:3, drop:0});
+    const XS=[-0.3,0.3,0.9,1.5], YS=[0.6,1.2,1.8];
+
+    add(1, group(span(0.7,1.0,.004,0.84,1.2,.03,M.meter), span(0.72,1.1,.03,0.82,1.17,.032,M.dark,NE)),{until:1, drop:-.2});
+    add(1, label('含水率合格',0.8,1.45,0.2,0.9),{until:1, drop:0, glow:false});
+    add(2, group(span(0.38,1.35,0,0.46,2.1,.004,M.putty,NE)),{until:2, drop:0, delay:.3});
+    mark(2, 0.42,1.7,.01,{r:.3, text:'裂縫・孔洞先修補', ty:2.2, tw:1.2});
+    mark(3, 1.3,0.45,.01,{r:.35, text:'清除油污・白華・粉塵', ty:0.95, tw:1.4});
+    mark(3, -0.05,0.27,.01,{r:.22});
+    mark(4, 0.4,0.9,.01,{r:.35, text:'批土研磨・處理鹼性', ty:1.4, tw:1.3});
+    add(5, group(...XS.map(x=>span(x-.002,0.05,.002,x+.002,Y1,.004,M.laser,NE)), ...YS.map(y=>span(-0.45,y-.002,.002,X1,y+.002,.004,M.laser,NE))),{until:9, drop:0, glow:false});
+    add(5, label('依分割圖放樣',0.6,2.65,0.2,1.0),{until:5, drop:0, glow:false});
+    add(6, group(span(WX0-.02,WY0-.02,.031,WX1+.02,WY1+.02,.034,M.film,NE), span(-2.2,0.002,0.02,2.2,0.006,1.5,M.sheet,NE)),{until:11, drop:0});
+    mark(6, (WX0+WX1)/2,(WY0+WY1)/2,.04,{r:.4, text:'門窗・地面遮蔽', ty:2.3, tw:1.1});
+    add(7, group(span(1.3,2.0,.01,1.44,2.2,.04,M.meter), span(1.32,2.1,.04,1.42,2.17,.042,M.dark,NE)),{until:7, drop:-.2});
+    add(7, label('溫度・濕度・天候（不在雨天）',0.8,2.55,0.2,1.8),{until:7, drop:0, glow:false});
+    add(8, span(-0.45,0.05,.002,X1,Y1,.004,M.primer,NE),{delay:.2, drop:0});
+    add(8, group(span(0.9,1.3,0.3,1.1,1.42,0.38,M.gun), span(0.95,1.1,0.32,0.99,1.3,0.36,M.gun)),{until:8, drop:-.2});
+    add(8, span(0.5,1.0,0.05,1.0,1.6,0.25,M.cloud,NE),{until:8, drop:0, glow:false});
+    add(8, label('均勻不漏塗・依膜厚・等乾燥',0.6,2.3,0.3,1.8),{until:8, drop:0, glow:false});
+    { const g=group(); XS.forEach(x=> g.add(span(x-.012,0.05,.004,x+.012,Y1,.007,M.tape,NE))); YS.forEach(y=> g.add(span(-0.45,y-.012,.004,X1,y+.012,.0072,M.tape,NE)));
+      add(9, g, {delay:.2, drop:0, until:9}); }
+    mark(9, 0.3,1.2,.008,{r:.08, text:'沿墨線貼直・交接處壓實', ty:1.45, tw:1.5});
+    add(10, span(-0.45,0.05,.007,X1,Y1,.016,M.stone),{delay:.1, drop:0});
+    add(10, label('主材噴塗 → 未乾前撕膠帶',0.6,1.75,0.3,1.7),{until:10, drop:0, glow:false});
+    { const g=group(); XS.forEach(x=> g.add(span(x-.012,0.05,.0161,x+.012,Y1,.0168,M.primer,NE))); YS.forEach(y=> g.add(span(-0.45,y-.012,.0161,X1,y+.012,.0169,M.primer,NE)));
+      add(10, g, {delay:.9, drop:0}); }
+    mark(10, 0.3,1.2,.017,{r:.08, text:'溝縫邊緣整齊', ty:1.45, tw:1.0});
+  },
+});
+</script>
+</body>
+</html>

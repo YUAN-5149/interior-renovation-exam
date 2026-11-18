@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>移動式施工架檢查重點｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：具煞車腳輪之移動式施工架檢查重點 8 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工架樣貌', d:'室內裝修常用的移動式施工架：底部有煞車腳輪，上方有工作台與護欄。',
+   tip:'題目：「使用具煞車腳輪之移動式施工架，其檢查重點除構架方式依國家標準外，請至少列舉 4 項。」'},
+  {t:'腳輪煞車', d:'腳輪的煞車（制動）功能正常，作業時應鎖定腳輪。', tip:'沒鎖腳輪，人在上面一施力，施工架就會滑走。'},
+  {t:'踏板・護欄・腳趾板', d:'工作台舖滿踏板並固定，設置護欄、中欄杆及腳趾板。', tip:'腳趾板防止工具、材料從工作台邊緣掉落砸到人。'},
+  {t:'安全上下設備', d:'有安全的上下設備（內藏爬梯）。', tip:'不可攀爬斜撐或外框上下。'},
+  {t:'構件與扣件', d:'構件無損傷、變形、銹蝕，連結扣件與插銷牢固。', tip:'插銷沒插好，框架可能在使用中脫開。'},
+  {t:'斜撐・水平架完整', d:'斜撐、水平架完整。', tip:'斜撐是防止施工架左右變形的關鍵，不可拆掉。'},
+  {t:'地面平整・外伸支撐', d:'地面平整，必要時加設外伸支撐（防傾）。', tip:'施工架高、底面窄時容易傾倒，要加外伸支撐。'},
+  {t:'架上有人不得移動', d:'人員在架上時不得移動施工架。', tip:'移動時人一定要先下來，否則容易摔落或翻倒。'},
+  {t:'荷重限制標示', d:'荷重限制明確標示。', tip:'材料不可堆放超過荷重，也不可集中堆在一側。'},
+];
+
+createAnim({
+  title: '移動式施工架檢查重點',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.02,
+  minDist: 1.2,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.6,0.35,0.72], dist:7.0, target:[0,1.4,0]},
+    1:  {dir:[0.6,0.4,0.7],   dist:2.4, target:[0.85,0.15,0.4]},
+    2:  {dir:[0.6,0.5,0.62],  dist:4.0, target:[0,2.2,0]},
+    4:  {dir:[0.6,0.3,0.74],  dist:2.4, target:[0.9,1.0,0.45]},
+    6:  {dir:[0.6,0.45,0.66], dist:5.0, target:[0,0.4,0]},
+  },
+  note: '施工架構件為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const LX=0.9, LZ=0.45, PH=1.8, GH=2.8;
+    const M = {
+      floor: mat('#d6d3d1',{roughness:1}), frame: mat('#2563eb',{metalness:.3, roughness:.5}), brace: mat('#60a5fa',{metalness:.3, roughness:.5}),
+      plank: mat('#a16207',{roughness:.8}), toe: mat('#facc15',{roughness:.6}), wheel: mat('#111827',{roughness:.7}), lock: mat('#dc2626',{roughness:.5}),
+      pin: mat('#f97316',{roughness:.4}), pad: mat('#57534e'), body: mat('#16a34a'), head: mat('#fcd34d'), sign: mat('#fef3c7'),
+      no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}),
+    };
+    fixed(span(-3,-0.02,-2,3,0,2,M.floor));
+    const C=[[-LX,-LZ],[LX,-LZ],[-LX,LZ],[LX,LZ]];
+    C.forEach(([x,z])=>{ fixed(pipe([x,0.2,z],[x,GH,z],.022,M.frame)); fixed(pipe([x,0.06,z-.04],[x,0.06,z+.04],.06,M.wheel)); fixed(span(x-.03,0.12,z-.03,x+.03,0.2,z+.03,M.frame)); fixed(span(x+.04,0.06,z-.02,x+.09,0.1,z+.02,M.lock)); });
+    [0.2,1.0,PH].forEach(y=>{ fixed(pipe([-LX,y,-LZ],[LX,y,-LZ],.016,M.frame)); fixed(pipe([-LX,y,LZ],[LX,y,LZ],.016,M.frame)); fixed(pipe([-LX,y,-LZ],[-LX,y,LZ],.016,M.frame)); fixed(pipe([LX,y,-LZ],[LX,y,LZ],.016,M.frame)); });
+    [[-LZ],[LZ]].forEach(([z])=>{ fixed(pipe([-LX,0.2,z],[LX,1.0,z],.012,M.brace)); fixed(pipe([-LX,1.0,z],[LX,PH,z],.012,M.brace)); });
+    fixed(span(-LX,PH,-LZ,LX,PH+.04,LZ,M.plank));
+    [2.3,GH].forEach(y=>{ fixed(pipe([-LX,y,-LZ],[LX,y,-LZ],.016,M.frame)); fixed(pipe([-LX,y,LZ],[LX,y,LZ],.016,M.frame)); fixed(pipe([-LX,y,-LZ],[-LX,y,LZ],.016,M.frame)); fixed(pipe([LX,y,-LZ],[LX,y,LZ],.016,M.frame)); });
+    fixed(span(-LX,PH+.04,LZ-.01,LX,PH+.19,LZ,M.toe)); fixed(span(-LX,PH+.04,-LZ,LX,PH+.19,-LZ+.01,M.toe));
+    for (let y=0.5;y<PH;y+=0.3) fixed(pipe([-LX+.15,y,-LZ+.05],[-LX+.15,y,LZ-.05],.012,M.frame));        // 內藏爬梯
+    C.forEach(([x,z])=> fixed(span(x-.03,1.0-.04,z-.03,x+.03,1.0+.04,z+.03,M.pin)));                      // 插銷
+    [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>{ fixed(pipe([sx*LX,0.9,sz*LZ],[sx*(LX+0.6),0.02,sz*(LZ+0.6)],.014,M.brace)); fixed(span(sx*(LX+0.6)-.06,0,sz*(LZ+0.6)-.06,sx*(LX+0.6)+.06,.02,sz*(LZ+0.6)+.06,M.pad)); });
+
+    mark(1, LX+.06,0.08,LZ+.06,{face:'y', r:.12, text:'作業時鎖定腳輪', ty:0.5, tw:1.0});
+    mark(2, 0,PH+.12,LZ,{r:.25, text:'踏板舖滿・護欄・中欄杆・腳趾板', ty:3.1, tw:2.0});
+    mark(3, -LX+.15,1.1,0,{face:'x', r:.3, text:'內藏爬梯上下', tx:-1.2, ty:1.7, tz:0.3, tw:1.0});
+    mark(4, LX,1.0,LZ+.03,{r:.1, text:'無損傷銹蝕・插銷牢固', ty:1.35, tw:1.4});
+    mark(5, 0,0.6,LZ+.01,{r:.35, text:'斜撐・水平架完整', ty:1.15, tw:1.2});
+    mark(6, LX+0.6,0.03,LZ+0.6,{face:'y', r:.15, text:'地面平整・外伸支撐防傾', ty:0.45, tw:1.5});
+    { const p=group(pipe([0.2,PH+.04,0],[0.2,PH+.9,0],.12,M.body)); const h=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12), M.head.clone()); h.position.set(0.2,PH+1.05,0); p.add(h);
+      add(7, p, {until:7, drop:0}); add(7, arrow([1.2,0.3,LZ+0.5],[2.0,0.3,LZ+0.5],M.no),{until:7, drop:0, glow:false});
+      add(7, label('架上有人 → 不得移動',1.4,0.7,LZ+0.5,1.3,'bad'),{until:7, drop:0, glow:false}); }
+    add(8, span(0.2,1.3,LZ+.02,0.7,1.6,LZ+.03,M.sign),{until:8, drop:0});
+    add(8, label('荷重限制 ○○ kg',0.45,1.85,LZ+.1,1.1),{until:8, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

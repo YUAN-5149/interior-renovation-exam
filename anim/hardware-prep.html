@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>門窗五金施工前準備｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：門窗五金配件施工前準備應注意事項 8 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'安裝前', d:'木門扇已吊好，地上有一箱待裝的把手、鉸鍊與門鎖。',
+   tip:'題目：「請列舉 5 項門窗五金配件施工前準備應注意事項。」'},
+  {t:'核對五金', d:'核對五金的型號、規格、數量、材質與表面處理，須與圖說及核准樣品相符。', tip:'五金表面處理（髮絲、鏡面、烤漆）不一致，整體質感就會打折。'},
+  {t:'開啟方向與功能', d:'確認門窗開啟方向（左右開、內外開）及使用功能（如防火門、無障礙）。', tip:'鎖和把手有分左右手；防火門、無障礙門的五金另有規定。'},
+  {t:'門厚與鎖心距', d:'確認門扇厚度、鎖心距（Backset）與五金是否適配。', tip:'鎖心距是門邊到鎖心中心的距離，不合就裝不上。'},
+  {t:'放樣位置與高度', d:'依圖說放樣安裝位置與高度（例如把手中心約距地 90～105 cm）。', tip:'同一空間的把手高度要一致。'},
+  {t:'檢查門框門扇', d:'檢查門框與門扇的垂直、水平及間隙，有誤差先修正。', tip:'門扇本身歪了，裝再好的五金也關不順。'},
+  {t:'預留補強材', d:'門框、門扇內須預留補強材，以利鎖固。', tip:'空心門扇在鎖與鉸鍊的位置，內部要有實木補強塊。'},
+  {t:'螺絲材質相容', d:'螺絲材質須與五金相容（例如不鏽鋼五金配不鏽鋼螺絲）。', tip:'不同金屬接觸會電位差腐蝕，生鏽後螺絲就鬆了。'},
+  {t:'保護五金', d:'五金做好保護，避免刮傷，完工後再拆除保護膜。', tip:'五金通常比油漆、清潔早裝，要保護到最後。'},
+];
+
+createAnim({
+  title: '門窗五金施工前準備',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.0,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.45,0.25,0.86], dist:4.4, target:[0,1.1,0.2]},
+    1:  {dir:[0.4,0.6,0.7],    dist:2.2, target:[0.9,0.2,0.8]},
+    2:  {dir:[0.3,0.75,0.6],   dist:4.0, target:[0,0.2,0.4]},
+    3:  {dir:[0.85,0.2,0.48],  dist:1.8, target:[0.42,1.0,0]},
+    6:  {dir:[0.6,0.25,0.76],  dist:2.2, target:[0.3,1.0,0]},
+  },
+  note: '門扇以局部透明表示內部補強材。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const DX=0.45, DH=2.1, DT=0.04;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), frame: mat('#8b5a3c',{roughness:.6}),
+      door: mat('#d6b48a',{roughness:.6}), doorT: mat('#d6b48a',{transparent:true, opacity:.35, depthWrite:false}),
+      block: mat('#92400e',{roughness:.7}), box: mat('#c8a46e',{roughness:.9}), metal: mat('#e5e7eb',{metalness:.7, roughness:.25}),
+      card: mat('#fafaf9'), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), arc: mat('#2563eb',{emissive:'#2563eb', emissiveIntensity:.3}),
+      film: mat('#60a5fa',{transparent:true, opacity:.55, depthWrite:false}), screw: mat('#94a3b8',{metalness:.6}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.15,-0.3,2,0,1.8,M.slab));
+    fixed(span(-2,0,-0.15,-DX-.05,2.6,0,M.wall)); fixed(span(DX+.05,0,-0.15,2,2.6,0,M.wall)); fixed(span(-DX-.05,DH+.05,-0.15,DX+.05,2.6,0,M.wall));
+    fixed(group(span(-DX-.05,0,-0.16,-DX,DH+.05,.01,M.frame), span(DX,0,-0.16,DX+.05,DH+.05,.01,M.frame), span(-DX-.05,DH,-0.16,DX+.05,DH+.05,.01,M.frame)));
+    // 門扇（鎖側局部透明，看得到補強塊）
+    fixed(span(-DX+.003,.01,-0.06,DX-0.2,DH-.003,-0.06+DT,M.door));
+    fixed(span(DX-0.2,.01,-0.06,DX-.003,0.8,-0.06+DT,M.door)); fixed(span(DX-0.2,1.25,-0.06,DX-.003,DH-.003,-0.06+DT,M.door));
+    fixed(span(DX-0.2,0.8,-0.06,DX-.003,1.25,-0.06+DT,M.doorT,{shadow:false}));
+    fixed(span(DX-0.15,0.85,-0.055,DX-.01,1.2,-0.025,M.block));
+    // 五金箱
+    fixed(span(0.7,0,0.6,1.1,0.25,0.95,M.box));
+    fixed(group(span(0.75,0.25,0.65,0.85,0.27,0.9,M.metal), pipe([0.95,0.26,0.7],[0.95,0.26,0.88],.012,M.metal), span(1.0,0.25,0.65,1.06,0.26,0.75,M.card)));
+
+    mark(1, 0.9,0.26,0.78,{face:'y', r:.25, text:'型號・規格・數量・材質・表面處理', ty:0.65, tw:2.0});
+    { const pts=[]; for (let i=0;i<=24;i++){ const a=i/24*Math.PI/2; pts.push(new THREE.Vector3(-DX+Math.cos(a)*0.9-0.0, .01, Math.sin(a)*0.9)); }
+      add(2, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.008,8), M.arc.clone()),{until:2, drop:0, glow:false}); }
+    add(2, label('左右開？內外開？防火門／無障礙？',0,0.55,0.8,2.1),{until:2, drop:0, glow:false});
+    add(3, group(span(DX-.003,0.98,-0.06,DX+.003,1.0,-0.02,M.laser,NE), span(DX-0.07,0.98,-0.022,DX,1.0,-0.018,M.laser,NE)),{until:3, drop:0, glow:false});
+    add(3, label('門厚・鎖心距（Backset）',DX,1.35,0.1,1.4),{until:3, drop:0, glow:false});
+    add(4, group(arrow([DX+0.15,0.02,0.05],[DX+0.15,1.0,0.05],M.laser), arrow([DX+0.15,1.0,0.05],[DX+0.15,0.02,0.05],M.laser)),{until:4, drop:0, glow:false});
+    add(4, label('把手中心距地約 90～105 cm',DX+0.3,1.25,0.2,1.7),{until:4, drop:0, glow:false});
+    add(5, group(span(-0.003,0,.0,0.003,DH,.004,M.laser,NE), span(-DX,1.0,-0.019,DX,1.006,-0.017,M.laser,NE)),{until:5, drop:0, glow:false});
+    add(5, label('垂直・水平・間隙，先修正',0,2.45,0.2,1.6),{until:5, drop:0, glow:false});
+    mark(6, DX-0.08,1.02,-0.02,{r:.14, text:'鎖位內部預留補強材', ty:1.45, tw:1.3});
+    add(7, group(...[0,1,2].map(i=> pipe([0.8+i*0.06,0.27,0.85],[0.8+i*0.06,0.32,0.85],.006,M.screw))),{until:7, drop:.1});
+    add(7, label('不鏽鋼五金 ＋ 不鏽鋼螺絲',0.9,0.7,0.85,1.6),{until:7, drop:0, glow:false});
+    add(8, group(span(DX-0.17,0.98,-0.02,DX-0.03,1.02,0.06,M.metal), span(DX-0.18,0.97,-0.021,DX-0.02,1.03,0.062,M.film,NE)),{drop:.1});
+    mark(8, DX-0.1,1.0,0.06,{r:.08, text:'保護膜完工後才拆', ty:1.3, tw:1.2});
+  },
+});
+</script>
+</body>
+</html>

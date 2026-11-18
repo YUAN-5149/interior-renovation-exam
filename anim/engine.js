@@ -41,7 +41,7 @@ export function createAnim(cfg) {
   </section>
   <aside class="panel">
     <div class="tip"><b>考點</b><span id="tip"></span></div>
-    <h2>${LAST} 步驟（點選跳到該步）</h2>
+    <h2>${cfg.kind==='notes' ? `${LAST} 項注意事項（點選跳到該項）` : `${LAST} 步驟（點選跳到該步）`}</h2>
     <ol class="steps" id="list"></ol>
     <div class="foot">鍵盤：← → 切換步驟，空白鍵播放／暫停。${cfg.note || '模型比例有誇大，方便看清楚各層構造。'}</div>
   </aside>
@@ -117,18 +117,23 @@ export function createAnim(cfg) {
     return g;
   }
 
-  // 文字標籤（永遠面向鏡頭），字太長會自動縮小
-  function label(text, x, y, z, w=1.3){
+  // 文字標籤（永遠面向鏡頭），字太長會自動縮小；tone: 'good' 綠、'bad' 紅
+  const LABELS=[], _wp=new THREE.Vector3();
+  const TONES={ note:['#fffbeb','#d97706','#92400e'], good:['#f0fdf4','#16a34a','#166534'], bad:['#fef2f2','#dc2626','#991b1b'] };
+  function label(text, x, y, z, w=1.3, tone='note'){
+    const [bg,bd,fg]=TONES[tone]||TONES.note;
     const c=document.createElement('canvas'); c.width=512; c.height=128;
     const g=c.getContext('2d');
-    g.fillStyle='#fffbeb'; g.strokeStyle='#d97706'; g.lineWidth=8;
+    g.fillStyle=bg; g.strokeStyle=bd; g.lineWidth=8;
     g.beginPath(); g.roundRect(6,6,500,116,28); g.fill(); g.stroke();
-    g.fillStyle='#92400e';
+    g.fillStyle=fg;
     let fs=54; do { g.font=`bold ${fs}px "Noto Sans TC","Microsoft JhengHei",sans-serif`; fs-=2; } while (g.measureText(text).width>450 && fs>20);
     g.textAlign='center'; g.textBaseline='middle'; g.fillText(text,256,68);
     const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace;
+    // 每幀依鏡頭距離縮放，維持固定螢幕大小（以 5.5 m 觀看時的寬 w 為準），拉近也不會塞滿畫面
     const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex, depthTest:false}));
     s.scale.set(w, w/4, 1); s.position.set(x,y,z); s.renderOrder=10;
+    s.userData.labelW=w; LABELS.push(s);
     return s;
   }
 
@@ -145,7 +150,19 @@ export function createAnim(cfg) {
   }
   const fixed = obj => { scene.add(obj); return obj; };
 
-  cfg.build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed, EDGE});
+  // 注意事項用：在某點畫橘色圈＋指向箭頭，只在該項顯示。face: 'z' 牆面、'y' 地面／天花、'x' 側牆
+  const MARK = new THREE.MeshStandardMaterial({color:'#f97316', emissive:'#f97316', emissiveIntensity:.7});
+  function mark(step, x, y, z, {r=0.12, face='z', text, tone, tw=1.1, tx, ty, tz}={}){
+    const g=new THREE.Group();
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r, Math.max(.008, r*.09), 10, 40), MARK.clone());
+    if (face==='y') ring.rotation.x=Math.PI/2; else if (face==='x') ring.rotation.y=Math.PI/2;
+    g.add(ring); g.position.set(x,y,z);
+    add(step, g, {until:step, drop:0, glow:false});
+    if (text) add(step, label(text, tx??x, ty??(y+r+0.18), tz??(z+0.1), tw, tone), {until:step, drop:0, glow:false, delay:.15});
+    return g;
+  }
+
+  cfg.build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed, mark, EDGE});
 
   /* ---------- 剖面 ---------- */
   let cut=false;
@@ -287,6 +304,9 @@ export function createAnim(cfg) {
       if(camera.position.distanceTo(fly.pos)<.01) fly=null;
     }
     controls.update();
+    for (const s of LABELS){ if(!s.visible && !(s.parent&&s.parent.visible)) continue;
+      s.getWorldPosition(_wp); const f=Math.min(1.5, Math.max(0.42, camera.position.distanceTo(_wp)/5.5*1.2));
+      s.scale.set(s.userData.labelW*f, s.userData.labelW*f/4, 1); }
     renderer.render(scene,camera);
   });
 

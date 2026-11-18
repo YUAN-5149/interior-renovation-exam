@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>地毯接縫接合要求｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：兩塊地毯接縫接合時之施工要求 6 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'接縫前', d:'房間要鋪兩塊滿鋪地毯，中間有一道接縫，門口在右側。',
+   tip:'這題考過兩次（依建築工程施工規範）：「兩塊地毯之接縫接合時，其施工要求為何？」'},
+  {t:'毛向一致', d:'兩塊地毯的毛向（絨毛方向）要一致。', tip:'毛向不同，光線反射不同，兩塊會看起來一深一淺。'},
+  {t:'對花', d:'有花紋者須對花。', tip:'花紋錯開會非常明顯，裁切前就要先對好。'},
+  {t:'接縫平直緊密', d:'接縫平直、緊密，不得有明顯縫隙或重疊。', tip:'兩塊地毯邊緣要一起裁切，接起來才會密合。'},
+  {t:'熱熔接縫帶・塗膠防脫線', d:'以熱熔接縫帶或縫合方式接合，裁切邊塗膠防止脫線。', tip:'熱熔接縫帶放在接縫下方，用熨斗加熱讓膠熔化，把兩邊黏在一起。'},
+  {t:'壓輥壓實', d:'接縫處以壓輥壓實，不得起伏。', tip:'趁膠還熱的時候壓實，冷卻後就固定了。'},
+  {t:'避開動線與門口', d:'接縫位置避開主要通行動線及門口。', tip:'常被踩的地方，接縫容易磨損、翹起。'},
+];
+
+createAnim({
+  title: '地毯接縫接合要求',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 8, 5],
+  views: {
+    def:{dir:[0.3,0.85,0.45], dist:5.6, target:[0,0,0]},
+    3:  {dir:[0.3,0.75,0.6],  dist:2.6, target:[-0.4,0,0]},
+    4:  {dir:[0.45,0.55,0.7], dist:2.2, target:[-0.6,0,0]},
+    5:  {dir:[0.45,0.55,0.7], dist:2.4, target:[0.2,0,0]},
+  },
+  note: '地毯厚度、紋路為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const X0=-1.8, X1=1.8, Z0=-1.4, Z1=1.4, TH=0.02;
+    function carpetTex(flip){
+      const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d');
+      g.fillStyle='#7f1d1d'; g.fillRect(0,0,256,256);
+      g.strokeStyle='#a16207'; g.lineWidth=6;
+      for (let i=0;i<4;i++) for (let j=0;j<4;j++){ g.beginPath(); g.arc(32+i*64,32+j*64,20,0,6.29); g.stroke(); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(3,2.4); return t;
+    }
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}),
+      carpet: mat('#ffffff',{map:carpetTex(), roughness:1}), tape: mat('#fde68a',{roughness:.8}),
+      iron: mat('#475569',{metalness:.4, roughness:.4}), roller: mat('#1f2937',{roughness:.5}), handle: mat('#7c2d12'),
+      arrowA: mat('#2563eb',{emissive:'#2563eb', emissiveIntensity:.4}), path: mat('#16a34a',{transparent:true, opacity:.35, depthWrite:false}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), glue: mat('#f8fafc',{roughness:.5}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.0,-0.15,-1.6,2.0,0,1.6,M.slab));
+    fixed(span(-2.0,0,-1.6,2.0,0.6,Z0,M.wall)); fixed(span(-2.0,0,Z0,X0,0.6,1.6,M.wall));
+    fixed(span(X1,0,Z0,2.0,0.6,0.2,M.wall)); fixed(span(X1,0,1.1,2.0,0.6,1.6,M.wall));   // 右側門口 z 0.2～1.1
+    // 兩塊地毯，接縫在 x=-0.6（避開門口動線）
+    const SX=-0.6;
+    fixed(span(X0,0,Z0,SX,TH,Z1,M.carpet)); fixed(span(SX,0,Z0,X1,TH,Z1,M.carpet));
+
+    // 毛向箭頭
+    const arr=(x,z,m)=> arrow([x,TH+.02,z-0.3],[x,TH+.02,z+0.3],m);
+    add(1, group(arr(-1.3,-0.5,M.arrowA), arr(-1.3,0.5,M.arrowA), arr(0.4,-0.5,M.arrowA), arr(0.4,0.5,M.arrowA)),{until:1, drop:0, glow:false});
+    add(1, label('毛向一致',-0.4,0.5,0,0.9),{until:1, drop:0, glow:false});
+    mark(2, SX,TH+.01,-0.6,{face:'y', r:.3, text:'花紋對齊', ty:0.5, tw:.8});
+    mark(3, SX,TH+.01,0.2,{face:'y', r:.2, text:'平直・緊密・不重疊', ty:0.45, tw:1.2});
+    add(3, span(SX-.003,TH+.002,Z0,SX+.003,TH+.006,Z1,M.laser,NE),{until:3, drop:0, glow:false});
+    add(4, span(SX-.08,0.001,Z0,SX+.08,.006,Z1,M.tape,NE),{until:4, drop:0});
+    add(4, span(SX-.02,TH,-0.2,SX+.02,TH+.005,0.6,M.glue,NE),{until:4, drop:0});
+    add(4, group(span(SX-.1,TH+.01,-0.15,SX+.1,TH+.05,0.15,M.iron), span(SX-.02,TH+.05,-0.05,SX+.02,TH+.15,0.05,M.handle)),{until:4, drop:-.2});
+    add(4, label('熱熔接縫帶＋裁切邊塗膠',SX,0.55,0.1,1.4),{until:4, drop:0, glow:false});
+    add(5, group(pipe([SX-.12,TH+.05,0.3],[SX+.12,TH+.05,0.3],.05,M.roller), span(SX-.01,TH+.05,0.3,SX+.01,0.5,0.6,M.handle)),{until:5, drop:-.2});
+    add(5, label('壓輥壓實・不起伏',SX,0.65,0.3,1.1),{until:5, drop:0, glow:false});
+    add(6, span(0.3,TH+.002,0.2,X1,TH+.004,1.1,M.path,NE),{until:6, drop:0, glow:false});
+    add(6, label('主要動線／門口：不放接縫',1.0,0.45,0.65,1.5,'bad'),{until:6, drop:0, glow:false});
+    mark(6, SX,TH+.01,0,{face:'y', r:.25, text:'接縫在這裡 ✓', tone:'good', ty:0.45, tx:-1.0, tw:.9});
+  },
+});
+</script>
+</body>
+</html>

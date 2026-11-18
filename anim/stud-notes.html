@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>輕隔間立柱安裝要求｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：輕隔間牆輕鋼骨架立柱（間柱）安裝施工要求 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'骨架完成樣貌', d:'輕隔間輕鋼骨架已立好：上下槽鐵、立柱、門洞補強、管線與吊掛補強板。',
+   tip:'題目：「輕隔間牆輕鋼骨架之間柱（立柱）安裝施工，其要求為何？請至少列出 7 項。」'},
+  {t:'上下槽鐵固定', d:'依放樣線先安裝上、下槽鐵，以擊釘或螺栓固定，間距約 60 cm 以內。', tip:'槽鐵是立柱的軌道，固定不牢，整面牆都會晃。'},
+  {t:'立柱長度', d:'立柱長度＝淨高減約 10 mm，插入上下槽鐵。', tip:'預留約 10 mm，讓樓板稍有變形時，立柱不會被頂彎。'},
+  {t:'立柱間距', d:'立柱間距依設計（常見 @40.6、@45、@60.9 cm），須配合板材寬度。', tip:'板材寬約 91 cm，間距要讓板材接縫剛好落在立柱上。'},
+  {t:'立柱垂直', d:'立柱須垂直，以雷射儀或鉛錘校正。', tip:'立柱不垂直，封板後牆面就不平。'},
+  {t:'開口方向一致・穿線孔對齊', d:'立柱開口方向一致，穿線孔對齊，便於配管。', tip:'穿線孔對齊，管線才能一路直直穿過去。'},
+  {t:'門窗開口補強', d:'門窗開口處加設補強立柱（雙立柱或內襯角材），並加橫撐。', tip:'門會反覆開關、撞擊，開口邊要特別加強。'},
+  {t:'立柱接長', d:'立柱需接長時，以重疊方式並用螺絲固定。', tip:'不可只對接，要重疊一段長度再鎖螺絲。'},
+  {t:'吊掛處補強板', d:'需吊掛物品處，預先設置補強板或角材。', tip:'電視、吊櫃、冷氣要鎖在補強板上，不能只鎖在石膏板上。'},
+  {t:'防火時效構造', d:'有防火時效要求者，須依認可的構造工法施作。', tip:'防火隔間的立柱、板材、隔音棉、螺絲間距都要照認可的構造，不能自行更改。'},
+];
+
+createAnim({
+  title: '輕隔間立柱安裝要求',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.45,0.3,0.84], dist:7.0, target:[0,1.15,0]},
+    1:  {dir:[0.45,0.5,0.74], dist:4.0, target:[-0.6,0.1,0]},
+    2:  {dir:[0.45,0.1,0.89], dist:3.2, target:[-0.8,2.3,0]},
+    5:  {dir:[0.5,0.2,0.84],  dist:3.4, target:[-0.6,0.5,0]},
+    7:  {dir:[0.5,0.2,0.84],  dist:3.4, target:[-1.3,1.3,0]},
+    8:  {dir:[0.45,0.2,0.87], dist:3.6, target:[-0.4,1.4,0]},
+  },
+  note: '鋼材厚度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const X0=-1.95, X1=1.95, HC=2.4, SD=0.0375, F=0.035, T=0.006, DX0=0.55, DX1=1.45, DH=2.1;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}),
+      ghost: mat('#ffffff',{transparent:true, opacity:.14, depthWrite:false}),
+      steel: mat('#b9c1c9',{metalness:.25, roughness:.45}), steel2: mat('#8f9aa5',{metalness:.25, roughness:.45}),
+      pin: mat('#292524',{roughness:.5}), elec: mat('#f97316',{roughness:.5}), ply: mat('#ead39f',{roughness:.9}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), hole: mat('#44403c',{roughness:1}),
+      badge: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.4}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.15,-0.15,-1.2,2.15,0,1.2,M.slab));
+    fixed(span(-2.15,0,-1.2,X0,HC,1.2,M.wall));
+    const ce=span(-2.15,HC,-1.2,2.15,HC+.15,1.2,M.ghost,{shadow:false}); ce.children[0].material.opacity=.45; fixed(ce);
+    const runner=(xa,xb,y,up,m=M.steel)=>{ const s=up?1:-1, yf=y+s*0.035;
+      return group(span(xa,Math.min(y,y+s*T),-SD-T,xb,Math.max(y,y+s*T),SD+T,m), span(xa,Math.min(y,yf),SD,xb,Math.max(y,yf),SD+T,m), span(xa,Math.min(y,yf),-SD-T,xb,Math.max(y,yf),-SD,m)); };
+    const stud=(xc,y0=T+.002,y1=HC-.012,m=M.steel)=>{ const xa=xc-F/2, xb=xc+F/2;
+      const g=group(span(xa,y0,-SD,xa+T,y1,SD,m), span(xa,y0,SD-T,xb,y1,SD,m), span(xa,y0,-SD,xb,y1,-SD+T,m));
+      [0.3,1.0].forEach(y=> g.add(span(xa-.001,y-.02,-.012,xa+T+.001,y+.02,.012,M.hole,NE)));   // 穿線孔
+      return g; };
+    fixed(runner(X0,DX0,0,true)); fixed(runner(DX1,X1,0,true)); fixed(runner(X0,X1,HC,false));
+    for (let x=X0+0.15;x<DX0;x+=0.55) fixed(pipe([x,T,0],[x,T+.012,0],.011,M.pin));
+    const STUDS=[X0+F/2,-1.495,-1.04,-0.585,-0.13,0.325,DX0-F/2,DX1+F/2,X1-F/2];
+    STUDS.forEach(x=>{ if (x!==-1.495) fixed(stud(x)); });
+    // 接長的立柱（-1.495）：兩段重疊並鎖螺絲
+    fixed(stud(-1.495,T+.002,1.45)); fixed(stud(-1.495+F*0.7,1.15,HC-.012));
+    [1.2,1.3,1.4].forEach(y=> fixed(pipe([-1.495+.01,y,SD],[-1.495+.01,y,SD+.008],.006,M.pin)));
+    // 開口補強
+    fixed(stud(DX0-F*1.5,T+.002,HC-.012,M.steel2)); fixed(stud(DX1+F*1.5,T+.002,HC-.012,M.steel2));
+    fixed(runner(DX0,DX1,DH,true,M.steel2)); fixed(stud((DX0+DX1)/2,DH+T,HC-.012,M.steel2));
+    fixed(span(X0,1.19,-.008,DX0-F*2,1.21,.008,M.steel2)); fixed(span(DX1+F*2,1.19,-.008,X1,1.21,.008,M.steel2));
+    // 管線穿孔、吊掛補強板
+    fixed(pipe([X0,0.3,0],[0.4,0.3,0],.012,M.elec));
+    fixed(span(-0.585+F/2,1.2,-.02,-0.13-F/2,1.6,.02,M.ply));
+
+    mark(1, -0.9,0.03,SD+.04,{r:.12, text:'擊釘間距 ≤ 60 cm', ty:0.45, tw:1.2});
+    mark(2, -0.8,HC-.01,SD+.03,{r:.08, text:'立柱長＝淨高－約 10 mm', ty:2.05, tw:1.5});
+    add(3, group(arrow([-1.0,0.75,.12],[-0.62,0.75,.12],M.laser), arrow([-0.62,0.75,.12],[-1.0,0.75,.12],M.laser)),{until:3, drop:0, glow:false});
+    add(3, label('@40.6～60.9 cm 配合板寬',-0.8,0.98,0.15,1.6),{until:3, drop:0, glow:false});
+    add(4, span(-0.13-.003,0,.06,-0.13+.003,HC,.066,M.laser,NE),{until:4, drop:0, glow:false});
+    { const bob=new THREE.Mesh(new THREE.ConeGeometry(.03,.08,12), M.pin.clone()); bob.rotation.x=Math.PI; bob.position.set(0,0.31,.15);
+      add(4, group(pipe([0.0,2.3,.15],[0.0,0.35,.15],.002,M.pin), bob),{until:4, drop:0, glow:false}); }
+    add(4, label('雷射儀／鉛錘校正垂直',-0.1,2.0,0.2,1.4),{until:4, drop:0, glow:false, delay:.2});
+    mark(5, -0.6,0.3,SD+.02,{r:.14, text:'開口方向一致・穿線孔對齊', ty:0.62, tw:1.6});
+    mark(6, 1.0,DH,SD+.02,{r:.3, text:'雙立柱＋楣樑＋橫撐', ty:2.55, tw:1.3});
+    mark(7, -1.47,1.3,SD+.02,{r:.18, text:'重疊接長＋螺絲固定', ty:1.7, tw:1.3});
+    mark(8, -0.36,1.4,SD+.03,{r:.22, text:'吊掛處預設補強板', ty:1.8, tw:1.2});
+    add(9, label('🔥 依認可防火構造施作',0,2.75,0.3,1.6,'bad'),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

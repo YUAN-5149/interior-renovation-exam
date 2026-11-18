@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>窗簾尺寸丈量注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：窗簾尺寸丈量應注意事項 7 項 3D 互動圖解，含外掛與內嵌的量法。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'量測前', d:'窗戶上方有窗簾盒，左邊有冷氣、右邊有開關，要量測落地窗簾的尺寸。',
+   tip:'題目：「請列舉 4 種說明窗簾尺寸丈量應注意事項。」'},
+  {t:'確認型式與安裝方式', d:'先確認窗簾型式（落地、半腰）及安裝方式（窗框內嵌或外掛）。', tip:'型式與安裝方式不同，量法就不同。'},
+  {t:'寬度', d:'外掛者左右各加約 10～20 cm 遮光；內嵌者扣除約 1 cm 間隙。', tip:'外掛要比窗戶寬，才擋得住兩側的光；內嵌要留間隙才裝得進去。'},
+  {t:'高度', d:'由軌道或窗簾盒量到地面（落地扣 1～2 cm）或窗台下 10～20 cm。', tip:'落地窗簾若剛好碰地，拉動時會磨損、沾灰。'},
+  {t:'多點量測', d:'上、中、下多點量測，內嵌取最小值。', tip:'窗框不一定方正，內嵌取最小值才保證放得進去。'},
+  {t:'窗簾盒與固定位置', d:'確認窗簾盒的深度、寬度，以及軌道可固定的結構位置。', tip:'窗簾盒太淺，雙層窗簾會裝不下；軌道要鎖在有補強的位置。'},
+  {t:'避開設備與開啟範圍', d:'避開冷氣、開關、門窗把手的開啟範圍。', tip:'窗簾擋住冷氣出風或卡到把手，日後使用很不方便。'},
+  {t:'布料用量', d:'布料用量依打摺倍率（約 2～2.5 倍）計算。', tip:'例如軌道寬 2 m，布寬約需 4～5 m。'},
+];
+
+createAnim({
+  title: '窗簾尺寸丈量注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.3,0.15,0.94], dist:5.8, target:[0,1.6,0]},
+    5:  {dir:[0.6,0.3,0.74],  dist:2.6, target:[0,2.5,0.1]},
+  },
+  note: '尺寸為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const WX=1.0, WY0=0.9, WY1=2.3, BOXY=2.45, BD=0.2;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}),
+      frame: mat('#d1d5db',{metalness:.6, roughness:.3}), glass: mat('#bae6fd',{transparent:true, opacity:.35, depthWrite:false}),
+      box: mat('#f5f5f4',{roughness:.8}), track: mat('#9ca3af',{metalness:.5}), ac: mat('#f8fafc'), plate: mat('#fafaf9'),
+      tape: mat('#facc15',{emissive:'#eab308', emissiveIntensity:.3}), red: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.6}),
+      cloth: mat('#c4b5fd',{transparent:true, opacity:.75, roughness:.9}), sill: mat('#e7e5e4'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.4,-0.15,-0.3,2.4,0,1.6,M.slab));
+    fixed(span(-2.4,0,-0.25,2.4,2.9,0,M.wall));
+    fixed(group(span(-WX,WY0,-.03,WX,WY0+.05,.02,M.frame), span(-WX,WY1-.05,-.03,WX,WY1,.02,M.frame), span(-WX,WY0,-.03,-WX+.05,WY1,.02,M.frame), span(WX-.05,WY0,-.03,WX,WY1,.02,M.frame), span(-.025,WY0,-.03,.025,WY1,.02,M.frame), span(-WX+.05,WY0+.05,-.01,WX-.05,WY1-.05,-.005,M.glass,NE)));
+    fixed(span(-WX-.05,WY0-.03,0,WX+.05,WY0,.12,M.sill));
+    // 窗簾盒（外掛，左右各超出 0.2）
+    fixed(group(span(-WX-0.25,BOXY,0,WX+0.25,BOXY+.02,BD,M.box), span(-WX-0.25,BOXY-0.2,BD-.02,WX+0.25,BOXY+.02,BD,M.box)));
+    fixed(span(-WX-0.2,BOXY-.04,0.06,WX+0.2,BOXY,0.09,M.track));
+    // 冷氣、開關
+    fixed(span(-2.3,2.1,0,-1.4,2.4,0.22,M.ac)); fixed(span(1.6,1.1,0,1.72,1.28,.008,M.plate));
+
+    add(1, label('落地／半腰？內嵌／外掛？',0,2.85,0.2,1.7),{until:1, drop:0, glow:false});
+    mark(1, 0,1.6,.02,{r:.6});
+    { const g=group(span(-WX-0.2,BOXY-0.1,BD+.01,WX+0.2,BOXY-0.08,BD+.02,M.tape,NE));
+      g.add(span(-WX-0.2,BOXY-0.25,BD+.01,-WX-0.19,BOXY-0.05,BD+.02,M.red,NE)); g.add(span(WX+0.19,BOXY-0.25,BD+.01,WX+0.2,BOXY-0.05,BD+.02,M.red,NE));
+      add(2, g, {until:2, drop:0, glow:false}); }
+    add(2, label('外掛：左右各加 10～20 cm',0,2.8,0.3,1.7),{until:2, drop:0, glow:false});
+    add(2, label('內嵌：扣約 1 cm',0,1.6,0.1,1.1),{until:2, drop:0, glow:false});
+    add(3, span(WX+0.12,0.02,BD,WX+0.14,BOXY-.04,BD+.01,M.tape,NE),{until:3, drop:0, glow:false});
+    add(3, label('軌道 → 地面，落地扣 1～2 cm',WX+0.6,1.3,0.3,1.8),{until:3, drop:0, glow:false});
+    [WY1-0.1,(WY0+WY1)/2,WY0+0.1].forEach((y,i)=> add(4, span(-WX+.05,y-.01,.0,WX-.05,y+.01,.012,M.tape,NE),{until:4, drop:0, glow:false, delay:i*.2}));
+    add(4, label('上・中・下量，內嵌取最小值',0,2.75,0.2,1.8),{until:4, drop:0, glow:false});
+    mark(5, 0,BOXY-0.1,BD,{r:.15, text:'盒深・盒寬・軌道固定結構', ty:2.9, tw:1.7});
+    mark(6, -1.85,2.25,0.23,{r:.35, text:'避開冷氣', ty:1.75, tw:.8});
+    mark(6, 1.66,1.19,.01,{r:.15, text:'開關・把手開啟範圍', ty:1.55, tw:1.3});
+    { const g=group(); for (let i=0;i<14;i++) g.add(span(-WX-0.2+i*0.17,0.03,0.1+(i%2)*0.06,-WX-0.2+i*0.17+0.17,BOXY-.06,0.11+(i%2)*0.06,M.cloth));
+      add(7, g, {drop:0}); add(7, label('布寬 ≈ 軌道寬 × 2～2.5 倍',0,2.85,0.4,1.7),{until:7, drop:0, glow:false}); }
+  },
+});
+</script>
+</body>
+</html>

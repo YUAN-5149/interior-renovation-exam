@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>金屬材料運送儲存注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：室內裝修金屬工項（烤漆鋁板、不鏽鋼等）運送、儲存及處理應注意事項 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'材料堆放區', d:'工地的金屬材料堆放區：棧板上的烤漆鋁板、架上的不鏽鋼長料，旁邊有水泥袋。',
+   tip:'這類題考過兩次（金屬工項至少 8 項、烤漆鋁板鋼板）。玻璃另有一題「浮式玻璃的運送儲存」：直立放、下墊木、略傾斜、不得平放。'},
+  {t:'保護膜與緩衝材', d:'運送時加保護膜與緩衝材，避免碰撞、刮傷、變形。', tip:'板與板之間放緩衝墊材，避免烤漆面互相摩擦。'},
+  {t:'吊帶搬運・不拖拉', d:'搬運使用吊帶，不得以鋼索直接接觸表面，也不得拖拉。', tip:'鋼索會在烤漆面壓出刮痕。'},
+  {t:'乾燥通風・墊高離地', d:'儲存在乾燥、通風處，墊高離地，避免受潮生鏽。', tip:'直接放地上，地面濕氣會讓材料受潮生鏽。'},
+  {t:'不同金屬分開存放', d:'不同種類的金屬分開存放，避免接觸造成電位差腐蝕。', tip:'例如鋁與鋼直接接觸、受潮後，鋁會被腐蝕。'},
+  {t:'避免接觸水泥酸鹼', d:'避免接觸水泥砂漿、酸、鹼等物質。', tip:'水泥是鹼性的，會腐蝕鋁材與烤漆面。'},
+  {t:'堆放平整・多點支撐', d:'堆放平整，長料多點支撐，防止彎曲變形。', tip:'長料只撐兩端，中間會下垂變形。'},
+  {t:'保護膜保留到完工', d:'完成表面處理的成品（烤漆、不鏽鋼）保留保護膜到完工。', tip:'太早撕膜，後續施工很容易刮傷。'},
+  {t:'分類標示編號', d:'分類並標示編號，方便取用。', tip:'依安裝位置編號，現場才不會拿錯。'},
+  {t:'進場檢查', d:'進場時檢查規格與有無損傷；受損者修補或更換。', tip:'進場就要檢查，裝上去才發現損傷，責任難釐清。'},
+];
+
+createAnim({
+  title: '金屬材料運送儲存注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.02,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.55,0.55,0.63], dist:5.6, target:[0,0.5,0]},
+    2:  {dir:[0.6,0.35,0.72],  dist:4.0, target:[-1.0,0.9,0.3]},
+    6:  {dir:[0.3,0.4,0.87],   dist:3.4, target:[0.9,0.6,-0.3]},
+  },
+  note: '場景為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const M = {
+      floor: mat('#d6d3d1',{roughness:1}), pallet: mat('#a16207',{roughness:.8}), alu: mat('#94a3b8',{metalness:.5, roughness:.35}),
+      film: mat('#60a5fa',{transparent:true, opacity:.5, depthWrite:false}), pad: mat('#f8fafc',{roughness:1}),
+      sst: mat('#e5e7eb',{metalness:.8, roughness:.2}), steel: mat('#57534e',{metalness:.4, roughness:.5}), rack: mat('#f97316',{roughness:.5}),
+      bag: mat('#d6d3d1',{roughness:1}), sling: mat('#16a34a',{roughness:.6}), wire: mat('#374151',{metalness:.5}),
+      tag: mat('#fef3c7'), roof: mat('#cbd5e1',{transparent:true, opacity:.3, depthWrite:false}), no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}),
+      dent: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.4}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-3,-0.02,-2,3,0,2,M.floor));
+    fixed(span(-2.5,2.2,-1.5,2.5,2.25,1.2,M.roof,NE));
+    // 棧板＋烤漆鋁板（板間緩衝、保護膜）
+    fixed(span(-1.8,0,-0.2,-0.6,0.12,0.6,M.pallet));
+    for (let i=0;i<6;i++){ const y=0.12+i*0.05; fixed(span(-1.75,y,-0.15,-0.65,y+.03,0.55,M.alu)); fixed(span(-1.75,y+.03,-0.15,-0.65,y+.05,0.55,M.pad,NE)); }
+    fixed(span(-1.76,0.12,-0.16,-0.64,0.42,0.56,M.film,NE));
+    // 長料架（多點支撐）：不鏽鋼一層、鋼料一層，分開
+    [-0.2,0.5,1.2,1.9].forEach(x=>{ fixed(span(x-.03,0,-0.9,x+.03,1.2,-0.84,M.rack)); fixed(span(x-.03,0.5,-0.9,x+.03,0.53,-0.3,M.rack)); fixed(span(x-.03,1.0,-0.9,x+.03,1.03,-0.3,M.rack)); });
+    for (let i=0;i<5;i++){ fixed(span(-0.4,0.53+i*.0,-0.85+i*0.1,2.1,0.56,-0.8+i*0.1,M.sst)); fixed(span(-0.4,1.03,-0.85+i*0.1,2.1,1.07,-0.8+i*0.1,M.steel)); }
+    // 水泥袋（錯誤：太近）
+    fixed(span(0.6,0,0.4,1.0,0.15,0.7,M.bag)); fixed(span(0.65,0.15,0.45,1.0,0.28,0.7,M.bag));
+
+    mark(1, -1.2,0.3,0.57,{r:.25, text:'保護膜＋板間緩衝材', ty:0.75, tw:1.3});
+    add(2, group(pipe([-1.5,0.42,0.2],[-1.2,1.6,0.2],.012,M.sling), pipe([-0.9,0.42,0.2],[-1.2,1.6,0.2],.012,M.sling), span(-1.6,0.4,0.15,-0.8,0.43,0.25,M.sling)),{until:2, drop:0});
+    add(2, label('吊帶 ✓　鋼索直接接觸 ✗　拖拉 ✗',-1.2,1.85,0.3,2.0),{until:2, drop:0, glow:false});
+    mark(3, -1.2,0.06,0.62,{r:.2, text:'棧板墊高離地・乾燥通風', ty:0.5, tz:0.9, tw:1.5});
+    mark(4, 0.85,0.8,-0.3,{r:.3, text:'不鏽鋼與鋼料分層存放', ty:1.4, tw:1.4});
+    mark(5, 0.8,0.2,0.72,{r:.25, text:'遠離水泥・酸鹼', tone:'bad', ty:0.65, tw:1.1});
+    mark(6, 0.5,0.52,-0.3,{r:.1, text:'長料多點支撐', ty:0.85, tw:1.0});
+    add(6, group(...[-0.2,0.5,1.2,1.9].map(x=> arrow([x,0.85,-0.25],[x,0.6,-0.25],mat('#16a34a')))),{until:6, drop:0, glow:false});
+    mark(7, -1.2,0.42,0.2,{face:'y', r:.35, text:'保護膜保留到完工', ty:0.85, tw:1.2});
+    add(8, group(span(-1.0,0.25,0.56,-0.8,0.35,0.565,M.tag), span(2.1,0.5,-0.7,2.13,0.6,-0.55,M.tag)),{until:8, drop:0});
+    add(8, label('分類・標示編號',-0.9,0.65,0.7,1.0),{until:8, drop:0, glow:false});
+    add(9, span(-1.0,0.42,0.3,-0.9,0.425,0.4,M.dent,NE),{until:9, drop:0, glow:false});
+    add(9, label('進場檢查規格・損傷 → 修補或更換',-0.9,0.85,0.5,2.0),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

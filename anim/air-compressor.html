@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>空氣壓縮機使用注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：空氣壓縮機管理或使用時應注意事項 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'空壓機', d:'工地用的空氣壓縮機：儲氣槽、馬達、壓力表、安全閥，接著空氣管與釘槍。',
+   tip:'題目：「請列舉 5 種空氣壓縮機管理或使用時應注意事項。」'},
+  {t:'放置位置', d:'放置在通風良好、平坦處，遠離火源與易燃物。', tip:'空壓機運轉會發熱，通風不良容易過熱。'},
+  {t:'每日排水', d:'每日排放儲氣槽內的積水。', tip:'積水會讓儲氣槽從內部生鏽，降低強度。'},
+  {t:'安全閥・壓力表', d:'定期檢查安全閥、壓力表、壓力開關的功能。', tip:'安全閥失效時，壓力過高可能讓儲氣槽爆裂。'},
+  {t:'空氣管・快速接頭', d:'檢查空氣管與快速接頭，無破損、無鬆脫。', tip:'高壓空氣管脫落會像鞭子一樣甩動傷人。'},
+  {t:'不超過額定壓力', d:'使用壓力不得超過工具或設備的額定壓力。', tip:'壓力太高會損壞氣動工具，甚至爆裂。'},
+  {t:'接地・漏電斷路器', d:'電源接地，並使用漏電斷路器。', tip:'工地潮濕，漏電保護很重要。'},
+  {t:'不可對人吹氣', d:'不得以壓縮空氣吹拂身體或對準他人。', tip:'高壓空氣可能打進皮膚、耳朵或眼睛造成嚴重傷害。'},
+  {t:'停用洩壓・轉動部護罩', d:'停用時洩壓並拔除電源；皮帶等轉動部位要有護罩。', tip:'皮帶外露容易捲入衣物或手指。'},
+  {t:'定期檢查', d:'儲氣槽屬第二種壓力容器，須依規定定期檢查。', tip:'依職業安全衛生法規定的定期檢查要做紀錄。'},
+];
+
+createAnim({
+  title: '空氣壓縮機使用注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: 0,
+  minDist: 1.0,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.55,0.4,0.73], dist:3.4, target:[0,0.45,0.2]},
+    2:  {dir:[0.5,0.3,0.81],  dist:1.8, target:[0.1,0.1,0.25]},
+    3:  {dir:[0.5,0.4,0.77],  dist:1.8, target:[-0.25,0.75,0]},
+  },
+  note: '機器造型為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const M = {
+      floor: mat('#d6d3d1',{roughness:1}), tank: mat('#dc2626',{metalness:.3, roughness:.4}), motor: mat('#1f2937',{roughness:.5}),
+      guard: mat('#facc15',{roughness:.5}), gauge: mat('#f8fafc'), needle: mat('#111827'), valve: mat('#ca8a04',{metalness:.5}),
+      hose: mat('#f97316',{roughness:.5}), coup: mat('#9ca3af',{metalness:.6}), gun: mat('#2563eb'), wheel: mat('#111827'),
+      cord: mat('#111827'), box: mat('#e5e7eb'), ground: mat('#16a34a'), water: mat('#38bdf8',{transparent:true, opacity:.7}),
+      fire: mat('#f97316',{emissive:'#ea580c', emissiveIntensity:.6}), body: mat('#1e3a8a'), head: mat('#fcd34d'), no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}),
+      tag: mat('#fef3c7'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.02,-1.5,2,0,1.5,M.floor));
+    const tank=pipe([-0.45,0.25,0],[0.45,0.25,0],.2,M.tank); fixed(tank);
+    [[-0.35,-0.15],[0.35,-0.15],[-0.35,0.15],[0.35,0.15]].forEach(([x,z])=> fixed(pipe([x,0.06,z-.02],[x,0.06,z+.02],.06,M.wheel)));
+    fixed(span(-0.1,0.45,-0.15,0.3,0.7,0.15,M.motor));
+    fixed(span(0.3,0.45,-0.12,0.42,0.75,0.12,M.guard));                 // 皮帶護罩
+    fixed(pipe([-0.25,0.47,0.0],[-0.25,0.55,0.0],.015,M.coup)); fixed(pipe([-0.25,0.6,0.02],[-0.25,0.6,0.0],.05,M.gauge));
+    fixed(pipe([-0.4,0.45,0.0],[-0.4,0.6,0.0],.015,M.valve));           // 安全閥
+    fixed(pipe([0,0.04,0.0],[0,0.0,0.0],.015,M.valve));                 // 排水閥
+    fixed(pipe([-0.25,0.47,0.1],[-0.25,0.5,0.25],.012,M.coup));
+    { const pts=[[-0.25,0.5,0.25],[-0.4,0.05,0.6],[0.2,0.02,0.9],[0.7,0.05,0.8]].map(p=>new THREE.Vector3(...p));
+      fixed(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.012,8), M.hose.clone())); }
+    fixed(span(0.68,0.0,0.75,0.92,0.2,0.85,M.gun));
+    fixed(pipe([0.1,0.55,0.15],[0.8,0.02,0.2],.008,M.cord)); fixed(span(0.8,0,0.15,1.1,0.15,0.3,M.box));
+
+    add(1, group(...[0,1].map(i=>{ const b=box(.4,.03,.02,M.no,NE); b.position.set(-1.2,0.3,0.6); b.rotation.z=i?.78:-.78; return b; }), pipe([-1.2,0,0.5],[-1.2,0.25,0.5],.08,M.fire)),{until:1, drop:0, glow:false});
+    add(1, label('通風・平坦・遠離火源易燃物',0,1.1,0.2,1.8),{until:1, drop:0, glow:false});
+    add(2, group(...[0,1,2].map(i=>{ const d=new THREE.Mesh(new THREE.SphereGeometry(.012,8,8), M.water.clone()); d.position.set(0,0-.0+i*.0,0.0); d.position.y=-0.0+0.0; d.position.set(0.0+i*0.03,0.002,0.03); return d; })),{until:2, drop:0, glow:false});
+    mark(2, 0,0.02,0.0,{face:'y', r:.08, text:'每日排放積水', ty:0.35, tz:0.35, tw:1.0});
+    mark(3, -0.25,0.6,0.05,{r:.07, text:'壓力表・安全閥・壓力開關', ty:0.95, tw:1.5});
+    mark(3, -0.4,0.55,0.0,{r:.05});
+    mark(4, -0.25,0.5,0.25,{r:.06, text:'空氣管・快速接頭無破損鬆脫', ty:0.85, tw:1.7});
+    add(5, label('使用壓力 ≤ 工具額定壓力',0.8,0.6,0.8,1.6),{until:5, drop:0, glow:false});
+    mark(5, 0.8,0.1,0.85,{r:.15});
+    add(6, group(pipe([1.1,0.1,0.3],[1.3,0.02,0.5],.008,M.ground), span(1.25,0,0.45,1.35,0.04,0.55,M.ground)),{until:6, drop:0});
+    mark(6, 0.95,0.08,0.3,{r:.15, text:'接地・漏電斷路器', ty:0.5, tw:1.2});
+    { const p=group(pipe([1.2,0,-0.6],[1.2,1.1,-0.6],.13,M.body)); const h=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12), M.head.clone()); h.position.set(1.2,1.25,-0.6); p.add(h);
+      add(7, p, {until:7, drop:0}); add(7, arrow([0.6,0.9,-0.3],[1.05,1.0,-0.55],M.no),{until:7, drop:0, glow:false});
+      add(7, label('不可對人或身體吹氣',0.9,1.55,-0.4,1.3,'bad'),{until:7, drop:0, glow:false}); }
+    mark(8, 0.36,0.6,0.13,{r:.12, text:'皮帶護罩・停用洩壓拔電', ty:0.95, tw:1.5});
+    add(9, span(0.1,0.3,0.199,0.3,0.4,0.205,M.tag),{until:9, drop:0});
+    add(9, label('第二種壓力容器・定期檢查',0,1.1,0.2,1.7),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

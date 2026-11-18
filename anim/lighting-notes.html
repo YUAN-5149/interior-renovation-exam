@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>照明燈具施工注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：照明燈具安裝施工注意事項 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'完成樣貌', d:'天花板上有嵌燈、一盞較重的吊燈，旁邊有出風口與撒水頭。天花板畫成半透明，可以看到上方構造。',
+   tip:'這題考過三次（107、114 年，以及「應檢查項目」題），答案大同小異：規格 → 位置協調 → 獨立吊筋 → 開孔補強 → 散熱 → 配線 → 斷電 → 測試 → 外觀。'},
+  {t:'規格與圖說相符', d:'燈具的型號、規格、瓦數、色溫與數量，須與圖說及送審資料相符。', tip:'材料進場先核對，裝上去才發現色溫不對，就要全部拆掉重來。'},
+  {t:'放樣・設備協調', d:'依天花板圖放樣燈具位置，並與空調、消防設備協調。', tip:'燈具、出風口、撒水頭、偵煙器都在天花板上，位置要事先協調，避免互相衝突。'},
+  {t:'重型燈具獨立吊筋', d:'重型燈具須設獨立吊筋，不可只靠天花板骨架承重。', tip:'天花板骨架是設計來承受板材的，吊燈的重量要另外由吊筋傳到樓板。'},
+  {t:'開孔尺寸・周邊補強', d:'天花板開孔尺寸要正確，開孔周邊做補強。', tip:'開孔切斷了板材，周圍要用角材補強，嵌燈才鎖得牢、板材不下垂。'},
+  {t:'散熱・保持距離', d:'嵌燈與木作、隔熱材保持安全距離，注意散熱，避免火災。', tip:'嵌燈會發熱，直接埋在隔熱棉裡或貼著木作，容易過熱起火。'},
+  {t:'配線・接線盒・接地', d:'配線使用合格線材；接頭在接線盒內並確實絕緣，且接地。', tip:'接頭裸露在天花板內，是電線走火的主要原因之一。'},
+  {t:'斷電・高處作業安全', d:'安裝前先斷電，高處作業注意安全。', tip:'使用合格的合梯或施工架，不可站在椅子或紙箱上作業。'},
+  {t:'絕緣電阻・點燈測試', d:'完成後做絕緣電阻測試及點燈測試，確認回路與開關正確。', tip:'點燈測試同時確認開關控制的回路是否和設計一致。'},
+  {t:'外觀檢查', d:'燈具外觀清潔、無損傷，燈罩安裝確實。', tip:'驗收前清潔燈具上的指紋與粉塵。'},
+];
+
+createAnim({
+  title: '照明燈具施工注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.93,
+  views: {
+    def:{dir:[0.55,-0.35,0.76], dist:5.4, target:[0,2.55,0]},
+    3:  {dir:[0.6,-0.1,0.8],    dist:3.4, target:[0.6,2.4,0.2]},
+    4:  {dir:[0.45,-0.45,0.77],  dist:2.8, target:[-0.6,2.65,-0.3]},
+    5:  {dir:[0.45,-0.45,0.77],  dist:2.8, target:[-0.8,2.65,-0.4]},
+    6:  {dir:[0.5,-0.45,0.74],   dist:2.8, target:[-1.0,2.7,0.3]},
+    7:  {dir:[0.7,-0.05,0.7],   dist:4.0, target:[-0.8,1.9,0]},
+  },
+  note: '天花板以半透明表示，方便看到上方的吊筋、接線盒與隔熱材。',
+  build({THREE, scene, mat, box, span, pipe, group, label, add, fixed, mark}) {
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9); fill.position.set(2,-6,5); scene.add(fill);
+    const X0=-1.8, X1=1.8, Z0=-1.2, Z1=1.2, SB=3.0, FC=2.6;
+    const M = {
+      slab:  mat('#cfcac4',{roughness:1}),
+      wall:  mat('#f5f4f1',{roughness:.95}),
+      ceil:  mat('#ffffff',{transparent:true, opacity:.45, depthWrite:false, roughness:.9}),
+      wood:  mat('#dcb97f'),
+      rod:   mat('#8b939b',{metalness:.3, roughness:.5}),
+      lamp:  mat('#e5e7eb',{metalness:.5, roughness:.3}),
+      bulbOff: mat('#f1f5f9',{roughness:.4}),
+      bulbOn:  mat('#fff7cc',{emissive:'#ffe58a', emissiveIntensity:1.2}),
+      shade: mat('#1f2937',{metalness:.4, roughness:.4}),
+      wool:  mat('#d6b65e',{roughness:1}),
+      jbox:  mat('#1d4ed8',{roughness:.6}),
+      wire:  mat('#f97316',{roughness:.5}),
+      diff:  mat('#d4d4d4',{roughness:.6}),
+      fire:  mat('#dc2626',{roughness:.5}),
+      panel: mat('#9ca3af',{metalness:.3, roughness:.5}),
+      ladder:mat('#f59e0b',{roughness:.6}),
+    };
+    const NE={edges:false, shadow:false};
+
+    fixed(span(-1.9,SB,-1.3,1.9,SB+.15,1.3,M.slab,{shadow:false}));
+    fixed(span(-1.9,1.2,-1.3,1.9,SB,Z0,M.wall));
+    fixed(span(-1.9,1.2,Z0,X0,SB,1.3,M.wall));
+    const ce=span(X0,FC,Z0,X1,FC+.012,Z1,M.ceil,{shadow:false}); ce.renderOrder=2; fixed(ce);
+    // 天花骨架（簡化）
+    for (let x=-1.5;x<=1.5;x+=0.5) fixed(span(x-.02,FC+.012,Z0,x+.02,FC+.05,Z1,M.wood));
+    // 嵌燈
+    const DL=[[-0.6,-0.3],[0.4,-0.6],[-1.2,0.5],[1.2,0.6]];
+    DL.forEach(([x,z])=>{ fixed(pipe([x,FC-.012,z],[x,FC+.08,z],.07,M.lamp)); fixed(pipe([x,FC-.014,z],[x,FC-.01,z],.055,M.bulbOff)); });
+    // 吊燈（獨立吊筋）
+    const CH=[0.6,0.2];
+    fixed(pipe([CH[0],SB,CH[1]],[CH[0],FC-.02,CH[1]],.008,M.rod));
+    fixed(pipe([CH[0],FC-.02,CH[1]],[CH[0],2.15,CH[1]],.006,M.shade));
+    fixed(new THREE.Mesh(new THREE.ConeGeometry(.22,.22,24,1,true), M.shade.clone())).position.set(CH[0],2.05,CH[1]);
+    fixed(new THREE.Mesh(new THREE.SphereGeometry(.07,16,12), M.bulbOff.clone())).position.set(CH[0],1.97,CH[1]);
+    // 出風口、撒水頭
+    fixed(span(-0.2,FC-.015,0.45,0.25,FC,0.85,M.diff));
+    fixed(pipe([1.0,SB-.05,-0.3],[1.0,FC-.03,-0.3],.012,M.fire));
+    // 隔熱材（避開嵌燈）＋接線盒
+    fixed(span(-1.75,FC+.05,-1.15,-0.85,FC+.12,-0.05,M.wool,{shadow:false}));
+    fixed(span(-1.15,FC+.05,0.2,-0.6,FC+.06,0.3,M.wire,NE));
+    fixed(span(-1.05,FC+.06,0.15,-0.9,FC+.14,0.35,M.jbox));
+    // 開孔補強框
+    const [hx,hz]=DL[0];
+    fixed(group(span(hx-.15,FC+.012,hz-.15,hx+.15,FC+.05,hz-.11,M.wood), span(hx-.15,FC+.012,hz+.11,hx+.15,FC+.05,hz+.15,M.wood)));
+    // 配電盤、合梯
+    fixed(span(-1.9+.1,1.5,-0.6,X0+.02,1.9,-0.3,M.panel));
+    fixed(group(span(-1.2,0,-0.2,-1.15,2.3,-0.15,M.ladder), span(-0.85,0,-0.2,-0.8,2.3,-0.15,M.ladder),
+      ...[0.4,0.8,1.2,1.6,2.0].map(y=>span(-1.15,y,-0.2,-0.85,y+.03,-0.15,M.ladder))));
+
+    /* 各項注意事項 */
+    mark(1, DL[1][0],FC-.02,DL[1][1],{face:'y', r:.13, text:'型號・瓦數・色溫・數量', ty:2.25, tw:1.4});
+    mark(2, 0.02,FC-.02,0.65,{face:'y', r:.28, text:'與出風口、撒水頭協調', ty:2.2, tw:1.4});
+    mark(2, 1.0,FC-.05,-0.3,{face:'y', r:.08});
+    mark(3, CH[0],2.8,CH[1],{face:'y', r:.07, text:'獨立吊筋至樓板 ✓', tone:'good', ty:2.45, tw:1.2});
+    mark(4, hx,FC+.06,hz,{face:'y', r:.2, text:'開孔周邊補強', ty:2.95, tw:1.0});
+    mark(5, -0.85,FC+.1,-0.3,{face:'y', r:.12, text:'隔熱材遠離嵌燈', ty:2.95, tw:1.1});
+    mark(6, -0.97,FC+.1,0.25,{face:'y', r:.13, text:'接頭在接線盒內・接地', ty:3.0, tw:1.4});
+    mark(7, X0+.03,1.7,-0.45,{face:'x', r:.18, text:'先斷電', tone:'bad', tx:-1.5, ty:2.05, tz:-0.45, tw:.7});
+    mark(7, -1.0,1.3,-0.17,{r:.25, text:'合格合梯・高處安全', ty:1.0, tw:1.3});
+    [...DL.map(([x,z])=>[x,FC-.016,z,.055]), [CH[0],1.97,CH[1],.072]].forEach(([x,y,z,r],i)=>{
+      const b = r>.06 ? new THREE.Mesh(new THREE.SphereGeometry(r,16,12), M.bulbOn.clone()) : (()=>{ const m=pipe([x,y-.002,z],[x,y+.002,z],r,M.bulbOn); return m; })();
+      if (r>.06) b.position.set(x,y,z);
+      add(8, b, {delay:.2+i*.15, drop:0, glow:false});
+    });
+    add(8, label('絕緣電阻測試・點燈測試',-0.3,1.55,0.6,1.5),{delay:.3, drop:0, until:8, glow:false});
+    mark(9, CH[0],2.05,CH[1],{face:'y', r:.28, text:'清潔・無損傷・燈罩確實', ty:1.65, tw:1.5});
+  },
+});
+</script>
+</body>
+</html>

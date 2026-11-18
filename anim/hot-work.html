@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>火花作業防火注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：裝修金屬作業熔接、熔切、電焊、研磨等火花作業避免引發火災之預防事項 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'作業現場', d:'室內正在電焊鋼構：旁邊有木料、氣體鋼瓶、電焊機，地上有樓板開口。',
+   tip:'題目：「熔接、熔切、電焊、研磨等會產生火花之作業，請列舉 5 項避免施工引發火災需預防或注意事項。」'},
+  {t:'動火作業許可', d:'實施動火作業許可，作業前先檢查。', tip:'動火許可單上要寫明作業範圍、時間、防護措施與監視人員。'},
+  {t:'清除・覆蓋可燃物', d:'清除作業周圍的可燃物；無法移除的，以防火毯或不燃材料覆蓋。', tip:'木料、泡棉、紙箱都可能被火花點燃。'},
+  {t:'備妥滅火器', d:'作業處備妥滅火器及消防水源。', tip:'火花引燃時，第一時間就要能撲滅。'},
+  {t:'火花擋板・封閉開口', d:'設置火花擋板或防火毯，防止火花飛散、掉落；樓板開口要封閉。', tip:'火花會從樓板開口掉到樓下，引燃看不到的地方。'},
+  {t:'火警監視人員', d:'指派火警監視人員，作業結束後持續監看至少 30 分鐘。', tip:'悶燒常在作業結束後才冒煙，所以收工後還要持續監看。'},
+  {t:'氣體鋼瓶', d:'氣體鋼瓶直立固定、遠離火源，並裝設逆火防止器。', tip:'鋼瓶倒下可能損壞瓶閥；逆火防止器防止火焰回燒進鋼瓶。'},
+  {t:'電焊機接地', d:'電焊機接地，電纜絕緣良好。', tip:'電纜破損會產生火花，也有觸電危險。'},
+  {t:'通風・氣體濃度', d:'保持通風，必要時測定可燃性氣體濃度。', tip:'在有塗料、溶劑揮發的空間動火，可能引發氣爆。'},
+  {t:'穿戴防護具', d:'作業人員穿戴防護具。', tip:'電焊面罩、防護手套、防火衣、安全鞋。'},
+];
+
+createAnim({
+  title: '火花作業防火注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.55,0.4,0.73], dist:6.0, target:[0,0.9,0.3]},
+    4:  {dir:[0.5,0.55,0.67], dist:4.0, target:[0.2,0.5,0.6]},
+    6:  {dir:[0.6,0.3,0.74],  dist:3.0, target:[-1.4,0.6,0.4]},
+  },
+  note: '場景為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), steel: mat('#6b7280',{metalness:.5, roughness:.4}),
+      wood: mat('#d9b98a',{roughness:.7}), hole: mat('#1c1917'), spark: mat('#fbbf24',{emissive:'#f59e0b', emissiveIntensity:1.2}),
+      blanket: mat('#94a3b8',{roughness:1}), ext: mat('#dc2626',{roughness:.4}), shield: mat('#b91c1c',{transparent:true, opacity:.6, depthWrite:false}),
+      o2: mat('#16a34a',{metalness:.3}), ac: mat('#ca8a04',{metalness:.3}), chain: mat('#374151'), arrest: mat('#f97316'),
+      machine: mat('#1d4ed8',{roughness:.5}), cable: mat('#111827'), ground: mat('#16a34a'), fan: mat('#64748b'),
+      body: mat('#1e3a8a'), head: mat('#fcd34d'), mask: mat('#111827'), watch: mat('#16a34a'), paper: mat('#fafaf9'), board: mat('#a16207'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.6,-0.15,-1.2,2.6,0,2.0,M.slab));
+    fixed(span(-2.6,0,-1.2,2.6,2.8,-1.0,M.wall));
+    fixed(span(-0.6,0,-0.95,0.6,2.6,-0.8,M.steel));                 // 鋼柱
+    fixed(span(-0.2,1.0,-0.8,0.2,1.15,-0.3,M.steel));               // 待焊鋼件
+    fixed(span(1.0,-0.001,0.6,1.6,0.001,1.1,M.hole,NE));            // 樓板開口
+    for (let i=0;i<14;i++){ const s=new THREE.Mesh(new THREE.SphereGeometry(.012,6,6), M.spark.clone()); s.position.set(-0.1+((i*0.13)%0.3),0.6+((i*0.29)%0.5),-0.3+((i*0.17)%0.4)); fixed(s); }
+    // 可燃物（木料）
+    add(0, group(span(-1.8,0,0.3,-0.9,0.25,0.8,M.wood)),{until:2, drop:0});
+    // 鋼瓶、電焊機
+    [[1.8,-0.6,M.o2],[2.1,-0.6,M.ac]].forEach(([x,z,m])=> fixed(pipe([x,0,z],[x,1.3,z],.12,m)));
+    fixed(span(-2.2,0,-0.6,-1.6,0.6,-0.2,M.machine));
+    fixed(pipe([-1.6,0.3,-0.4],[-0.2,0.05,-0.2],.012,M.cable));
+    // 焊工
+    { const p=group(pipe([0.5,0,0.2],[0.5,1.2,0.2],.15,M.body)); const h=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12), M.head.clone()); h.position.set(0.5,1.35,0.2); p.add(h); fixed(p); }
+
+    add(1, group(span(-2.5,1.2,-0.99,-1.9,1.7,-0.97,M.board), span(-2.48,1.22,-0.97,-1.92,1.68,-0.965,M.paper,NE)),{until:1, drop:0});
+    add(1, label('動火作業許可・作業前檢查',-2.2,2.0,-0.8,1.6),{until:1, drop:0, glow:false});
+    mark(2, -1.35,0.26,0.55,{face:'y', r:.5, text:'移除可燃物 → 不能移就覆蓋', ty:0.9, tw:1.8});
+    add(2, span(-1.85,0.25,0.25,-0.85,0.27,0.85,M.blanket),{until:2, drop:.2, delay:.3});
+    add(3, group(pipe([-0.9,0,0.9],[-0.9,0.5,0.9],.07,M.ext), span(-0.93,0.5,0.87,-0.87,0.58,0.93,M.chain)),{drop:.2});
+    mark(3, -0.9,0.3,0.98,{r:.15, text:'備妥滅火器・水源', ty:0.75, tw:1.2});
+    add(4, group(span(-0.5,0,0.05,0.5,1.4,0.08,M.shield,NE)),{drop:0});
+    add(4, span(0.95,0.001,0.55,1.65,0.02,1.15,M.blanket),{drop:.2});
+    mark(4, 1.3,0.03,0.85,{face:'y', r:.3, text:'樓板開口封閉', ty:0.45, tw:1.0});
+    add(4, label('火花擋板／防火毯',0,1.65,0.2,1.2),{until:4, drop:0, glow:false});
+    { const p=group(pipe([-1.4,0,0.6],[-1.4,1.2,0.6],.15,M.watch)); const h=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12), M.head.clone()); h.position.set(-1.4,1.35,0.6); p.add(h);
+      add(5, p, {drop:.2}); add(5, label('火警監視・收工後再看 30 分鐘',-1.4,1.75,0.6,1.9),{until:5, drop:0, glow:false}); }
+    add(6, group(span(1.65,0.8,-0.75,2.25,0.83,-0.73,M.chain), span(1.65,0.4,-0.75,2.25,0.43,-0.73,M.chain), span(1.75,1.3,-0.62,1.85,1.38,-0.52,M.arrest), span(2.05,1.3,-0.62,2.15,1.38,-0.52,M.arrest)),{drop:0});
+    mark(6, 1.95,1.0,-0.45,{r:.35, text:'直立固定・逆火防止器', ty:1.65, tw:1.4});
+    add(7, group(pipe([-2.2,0.05,-0.25],[-2.4,0.02,0.2],.01,M.ground), span(-2.45,0,0.15,-2.35,0.04,0.25,M.ground)),{drop:0});
+    mark(7, -1.9,0.3,-0.15,{r:.3, text:'電焊機接地・電纜絕緣', ty:0.85, tw:1.4});
+    add(8, span(2.0,0,0.8,2.3,0.6,1.1,M.fan),{drop:.2});
+    add(8, label('通風・必要時測可燃氣體濃度',1.8,1.0,0.9,1.8),{until:8, drop:0, glow:false});
+    add(9, span(0.38,1.25,0.32,0.62,1.45,0.35,M.mask),{drop:.15});
+    mark(9, 0.5,0.9,0.36,{r:.35, text:'面罩・手套・防火衣・安全鞋', ty:1.75, tw:1.7});
+  },
+});
+</script>
+</body>
+</html>

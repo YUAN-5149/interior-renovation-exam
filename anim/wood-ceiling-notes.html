@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>木作天花板施工注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：木作天花板現場施工注意事項 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工中樣貌', d:'木作天花板骨架完成，左半邊已封矽酸鈣板，右半邊還看得到角材與吊筋。',
+   tip:'題目：「木作天花板現場施工應注意哪些事項？請至少列出 5 項。」寫 5～9 項都可以，先挑最有把握的寫。'},
+  {t:'依圖放樣', d:'放樣天花板完成高度水平線，以及燈具、出風口、檢修口位置。', tip:'水平線是全部角材的基準；設備位置先放樣，才不會之後切斷角材。'},
+  {t:'吊筋間距與固定', d:'吊筋間距約 90 cm，垂直牢固並固定於結構體，不可固定於管線上。', tip:'管線不是結構體，吊在管線上會讓天花板跟著管線振動、下陷。'},
+  {t:'角材間距・含水率・防腐', d:'角材間距 @30～45 cm；注意角材含水率，並做防腐防蟲處理。', tip:'角材太濕，乾燥後會收縮變形，天花板就會出現波浪。'},
+  {t:'管線先完成並測試', d:'天花板內的水電、空調、消防管線須先完成並測試。', tip:'封板後才發現漏水或不通，就得拆板重做。'},
+  {t:'耐燃板材・接縫錯開', d:'板材使用耐燃材料（矽酸鈣板、石膏板），接縫錯開並留縫。', tip:'室內裝修的天花板材料要符合耐燃等級；留縫讓板材伸縮時不擠壓開裂。'},
+  {t:'伸縮縫與檢修口', d:'預留伸縮縫及檢修口。', tip:'檢修口讓日後能進入天花板內檢修管線，不必破壞板材。'},
+  {t:'中央略微起拱', d:'中央略微起拱，防止日後下垂。', tip:'起拱量很小，但能抵銷日後自重造成的下垂。（圖中弧度有放大）'},
+  {t:'不可遮蔽撒水頭・偵煙器', d:'配合撒水頭、偵煙器位置，不可遮蔽。', tip:'撒水頭被遮住就灑不到水，偵煙器被遮住就偵測不到煙。'},
+  {t:'高處作業安全', d:'高處作業使用施工架，注意安全。', tip:'施工架要有護欄，腳輪鎖定後才能上架作業。'},
+];
+
+createAnim({
+  title: '木作天花板施工注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.93,
+  views: {
+    def:{dir:[0.55,-0.38,0.74], dist:5.6, target:[0,2.6,0]},
+    1:  {dir:[0.6,-0.15,0.78],  dist:5.6, target:[0,2.5,0]},
+    2:  {dir:[0.5,-0.12,0.86],  dist:4.6, target:[0.7,2.6,0.3]},
+    7:  {dir:[0.05,-0.1,1],     dist:5.0, target:[0,2.6,0]},
+    9:  {dir:[0.6,-0.05,0.8],   dist:5.6, target:[0.6,1.5,0.4]},
+  },
+  note: '起拱弧度、角材斷面有誇大。',
+  build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9); fill.position.set(2,-6,5); scene.add(fill);
+    const X0=-1.8, X1=1.8, Z0=-1.2, Z1=1.2, SB=3.0, FC=2.6, S=0.05, J0=FC+0.012, J1=J0+S;
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}),
+      wood: mat('#dcb97f'), hang: mat('#c99e5f'), board: mat('#f4f1ea',{roughness:.9}),
+      pipeW: mat('#3b82f6',{roughness:.5}), pipeE: mat('#f97316',{roughness:.5}), duct: mat('#cbd5e1',{metalness:.2, roughness:.5}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), arc: mat('#ea580c',{emissive:'#ea580c', emissiveIntensity:.5}),
+      fire: mat('#dc2626',{roughness:.5}), smoke: mat('#fafafa',{roughness:.5}), hatch: mat('#a8a29e',{roughness:.7}),
+      scaf: mat('#2563eb',{metalness:.3, roughness:.5}), plank: mat('#a16207',{roughness:.8}), no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.9,SB,-1.3,1.9,SB+.15,1.3,M.slab,{shadow:false}));
+    fixed(span(-1.9,1.2,-1.3,1.9,SB,Z0,M.wall)); fixed(span(-1.9,1.2,Z0,X0,SB,1.3,M.wall));
+    // 管線
+    fixed(pipe([X0,2.85,0.6],[X1,2.85,0.6],.035,M.pipeW)); fixed(pipe([X0,2.78,-0.75],[X1,2.78,-0.75],.02,M.pipeE));
+    fixed(span(0.2,2.72,-0.3,1.6,2.92,0.1,M.duct));
+    // 吊筋（避開管線）＋主角材＋副角材
+    const MZ=[-0.9,0,0.9], HX=[-1.35,-0.45,0.45,1.35];
+    MZ.forEach(z=> HX.forEach(x=> fixed(span(x-S/2,J1,z+S/2,x+S/2,SB,z+S*1.5,M.hang))));
+    MZ.forEach(z=> fixed(span(X0,J0,z-S/2,X1,J1,z+S/2,M.wood)));
+    for (let x=-1.8;x<=1.81;x+=0.45) fixed(span(x-S/2,J0,Z0,x+S/2,J1,Z1,M.wood));
+    // 板材（左半）接縫錯開
+    [[X0,-0.9,Z0,0],[-0.9,0,Z0,0],[X0,-1.35,0,Z1],[-1.35,-0.45,0,Z1],[-0.45,0,0,Z1]].forEach(([a,b,c,d])=> fixed(span(a+.003,FC,c+.003,b-.003,FC+.012,d-.003,M.board)));
+    // 檢修口（右半）、撒水頭、偵煙器
+    fixed(group(span(0.45,FC,0.45,0.9,FC+.012,0.48,M.hatch), span(0.45,FC,0.87,0.9,FC+.012,0.9,M.hatch), span(0.45,FC,0.45,0.48,FC+.012,0.9,M.hatch), span(0.87,FC,0.45,0.9,FC+.012,0.9,M.hatch)));
+    fixed(pipe([-1.2,2.85,-0.3],[-1.2,FC-.03,-0.3],.012,M.fire));
+    fixed(pipe([-0.6,FC-.03,0.6],[-0.6,FC,0.6],.06,M.smoke));
+    // 施工架
+    fixed(group(...[[0.6,0.2],[1.6,0.2],[0.6,0.8],[1.6,0.8]].map(([x,z])=>span(x-.02,0,z-.02,x+.02,1.9,z+.02,M.scaf)),
+      span(0.6,1.8,0.2,1.6,1.84,0.8,M.plank), span(0.6,1.86,0.18,1.6,1.9,0.22,M.scaf), span(0.6,1.86,0.78,1.6,1.9,0.82,M.scaf)));
+
+    mark(1, X0+.004,FC,0,{face:'x', r:.15, text:'完成高度水平線', tx:-1.2, ty:2.3, tz:0.2});
+    add(1, group(span(X0,FC-.003,Z0,X0+.004,FC+.003,Z1,M.laser,NE), span(X0,FC-.003,Z0,X1,FC+.003,Z0+.004,M.laser,NE)),{until:1, drop:0, glow:false});
+    mark(2, 0.45,2.9,0.9+S,{face:'z', r:.1, text:'吊筋 @90・固定在樓板 ✓', tone:'good', ty:2.45, tx:0.0, tw:1.2});
+    add(2, span(1.0,2.6+.06,0.6-.012,1.04,2.82,0.6+.012,M.hang),{until:2, drop:0});
+    mark(2, 1.02,2.82,0.6,{face:'z', r:.07, text:'✗ 吊在管線上', tone:'bad', ty:2.15, tx:1.35, tw:0.8});
+    mark(3, 0.225,J0,-0.6,{face:'y', r:.18, text:'角材 @30～45・防腐防蟲', ty:2.3, tw:1.5});
+    mark(4, 0.9,2.82,-0.1,{face:'y', r:.4, text:'管線先完成並測試', ty:2.3, tw:1.2});
+    mark(5, -0.9,FC-.01,0,{face:'y', r:.2, text:'耐燃板材・接縫錯開留縫', ty:2.3, tw:1.5});
+    mark(6, 0.675,FC-.01,0.675,{face:'y', r:.3, text:'預留檢修口・伸縮縫', ty:2.3, tw:1.3});
+    { const pts=[]; for (let i=0;i<=40;i++){ const x=X0+3.6*i/40, u=x/X1; pts.push(new THREE.Vector3(x,FC-.02+0.07*(1-u*u),0)); }
+      add(7, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),60,.01,8), M.arc.clone()),{until:7, drop:0, glow:false});
+      add(7, arrow([0,FC-.45,0],[0,FC-.06,0],M.arc),{until:7, drop:0, glow:false, delay:.3});
+      add(7, label('中央略微起拱',0,2.0,0.2,1.0),{until:7, drop:0, glow:false, delay:.4}); }
+    mark(8, -1.2,FC-.03,-0.3,{face:'y', r:.1, text:'撒水頭不可遮蔽', ty:2.3, tw:1.1});
+    mark(8, -0.6,FC-.03,0.6,{face:'y', r:.12, text:'偵煙器不可遮蔽', ty:2.3, tx:-0.6, tz:0.7, tw:1.1});
+    mark(9, 1.1,1.0,0.82,{r:.5, text:'施工架・護欄・注意安全', ty:2.1, tw:1.5});
+  },
+});
+</script>
+</body>
+</html>

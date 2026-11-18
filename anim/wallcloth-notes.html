@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>塑膠耐燃壁布黏貼注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：黏貼塑膠耐燃壁布施工注意事項 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工中樣貌', d:'牆面已封底，左邊貼好三幅壁布，正在貼第四幅；右邊有開關面板。',
+   tip:'題目：「黏貼塑膠耐燃壁布施工應注意事項為何？請至少列出 5 項。」'},
+  {t:'耐燃合格材料', d:'使用合格耐燃材料（耐燃二級以上），並檢附證明文件。', tip:'室內裝修的壁面材料要符合耐燃等級，壁布也一樣。'},
+  {t:'底材平整乾燥', d:'底材須平整、乾燥、無油污；先批土研磨，含水率要合格。', tip:'壁布很薄，底材的凹凸都會透出來。'},
+  {t:'塗封底劑', d:'底材先塗封底劑，防止過度吸膠及發霉。', tip:'底材吸膠太快，壁布會黏不牢、起泡。'},
+  {t:'膠料調配・均勻塗佈', d:'膠料依廠商規定調配，塗佈均勻。', tip:'膠太多會溢出、太少會起泡脫落。'},
+  {t:'鉛垂線放樣・對花對縫', d:'第一幅以鉛垂線放樣，對花、對縫。', tip:'第一幅歪了，後面每一幅都會跟著歪。'},
+  {t:'由中間向外刮氣泡', d:'刮刀由中間向外刮，排除氣泡。', tip:'從中間往兩側刮，空氣才有路可以跑出去。'},
+  {t:'立即擦拭溢膠', d:'溢出的膠要立即擦拭乾淨。', tip:'膠乾了會留下亮亮的痕跡，很難清除。'},
+  {t:'開關插座精準切割', d:'開關、插座處精準切割，收邊整齊。', tip:'切割前先斷電，切口要被面板蓋住。'},
+  {t:'溫濕度・避免直吹日曬', d:'施工環境溫濕度要適當，避免低溫高濕；完工後避免直吹與日曬，以防收縮。', tip:'乾得太快，壁布收縮會讓接縫裂開。'},
+];
+
+createAnim({
+  title: '塑膠耐燃壁布黏貼注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.35,0.2,0.92], dist:5.2, target:[0,1.2,0]},
+    6:  {dir:[0.35,0.15,0.92], dist:3.0, target:[0.3,1.2,0]},
+    8:  {dir:[0.3,0.12,0.95], dist:2.4, target:[1.2,1.2,0]},
+  },
+  note: '壁布厚度有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const X0=-1.6, W=0.53, H=2.4;
+    function clothTex(){
+      const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+      g.fillStyle='#e9e2d0'; g.fillRect(0,0,128,128); g.strokeStyle='#c4b28a'; g.lineWidth=3;
+      for (let i=0;i<4;i++){ g.beginPath(); g.moveTo(0,i*32+16); g.bezierCurveTo(32,i*32,96,i*32+32,128,i*32+16); g.stroke(); }
+      const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2,9); return t;
+    }
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#d9d4c9',{roughness:.95}), prime: mat('#e0e7ff',{transparent:true, opacity:.35, depthWrite:false}),
+      cloth: mat('#ffffff',{map:clothTex(), roughness:.8}), glue: mat('#f8fafc',{transparent:true, opacity:.7, depthWrite:false}),
+      plate: mat('#fafaf9',{roughness:.4}), steel: mat('#94a3b8',{metalness:.4, roughness:.4}), handle: mat('#7c2d12'),
+      line: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), bob: mat('#292524'), sponge: mat('#facc15'),
+      badge: mat('#16a34a',{emissive:'#16a34a', emissiveIntensity:.4}), roll: mat('#e9e2d0',{roughness:.8}), drop: mat('#cbd5e1'),
+      fan: mat('#64748b'), sun: mat('#fbbf24',{emissive:'#fbbf24', emissiveIntensity:.6}), no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.2,-0.15,-0.3,2.2,0,1.6,M.slab));
+    fixed(span(-2.2,0,-0.2,2.2,2.6,0,M.wall));
+    fixed(span(-2.2,0.05,0,2.2,H+.1,.001,M.prime,NE));
+    for (let i=0;i<3;i++) fixed(span(X0+i*W+.001,0.08,.002,X0+(i+1)*W-.001,H,.004,M.cloth));
+    // 第 4 幅（貼一半）
+    fixed(span(X0+3*W+.001,1.2,.002,X0+4*W-.001,H,.004,M.cloth));
+    fixed(span(X0+3*W,0.08,.001,X0+4*W,1.2,.0015,M.glue,NE));
+    fixed(span(1.15,1.12,0,1.29,1.32,.008,M.plate));
+    // 壁布卷（地上）
+    fixed(pipe([-1.2,0.06,0.7],[-0.2,0.06,0.7],.06,M.roll)); fixed(span(-1.0,0,0.85,-0.4,0.12,1.1,M.roll));
+
+    mark(1, -0.7,0.06,0.97,{face:'y', r:.35, text:'耐燃二級以上・檢附證明', ty:0.55, tw:1.5});
+    add(1, span(-0.75,0.121,0.92,-0.65,0.122,1.02,M.badge,NE),{until:1, drop:0, glow:false});
+    add(2, span(1.6,0.2,.003,1.66,2.3,.03,M.steel),{until:2, drop:-.2});
+    mark(2, 1.6,1.0,.01,{r:.35, text:'平整・乾燥・批土研磨', ty:1.55, tw:1.4});
+    mark(3, 1.3,0.5,.01,{r:.3, text:'先塗封底劑', ty:0.95, tw:.9});
+    mark(4, X0+3.5*W,0.7,.01,{r:.25, text:'膠料依比例・塗佈均勻', ty:1.1, tw:1.4});
+    add(5, group(pipe([X0+.002,2.45,.03],[X0+.002,0.15,.03],.002,M.bob), span(X0-.015,0.08,.02,X0+.02,0.15,.04,M.bob)),{until:5, drop:0, glow:false});
+    add(5, label('第一幅以鉛垂線放樣・對花對縫',X0+0.6,2.6,0.2,1.8),{until:5, drop:0, glow:false});
+    { const g=group(span(X0+3.5*W-.15,1.6,.006,X0+3.5*W+.15,1.66,.02,M.steel));
+      add(6, g, {until:6, drop:0});
+      add(6, group(arrow([X0+3.5*W,1.75,.03],[X0+3*W+.05,1.75,.03],M.line), arrow([X0+3.5*W,1.75,.03],[X0+4*W-.05,1.75,.03],M.line)),{until:6, drop:0, glow:false});
+      add(6, label('由中間向外刮',X0+3.5*W,2.05,0.1,1.0),{until:6, drop:0, glow:false}); }
+    add(7, span(X0+2*W-.02,0.6,.004,X0+2*W+.02,0.7,.008,M.glue,NE),{until:7, drop:0});
+    add(7, span(X0+2*W+.04,0.55,.01,X0+2*W+.2,0.68,.06,M.sponge),{until:7, drop:-.2});
+    mark(7, X0+2*W,0.65,.01,{r:.12, text:'溢膠立即擦拭', ty:1.0, tw:1.0});
+    mark(8, 1.22,1.22,.01,{r:.14, text:'斷電・精準切割・收邊整齊', ty:1.55, tw:1.5});
+    add(9, label('避免低溫高濕・完工後避免直吹日曬',0,2.6,0.3,2.1),{until:9, drop:0, glow:false});
+    add(9, group(span(1.6,0.0,0.8,1.9,0.5,1.0,M.fan)),{until:9, drop:.2});
+    add(9, group(...[0,1].map(i=>{ const b=box(.45,.03,.02,M.no,NE); b.position.set(1.75,0.25,1.05); b.rotation.z=i?.75:-.75; return b; })),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

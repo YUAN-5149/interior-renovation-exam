@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>面磚舖貼注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：牆面面磚舖貼施工作業注意事項 11 項與完成後檢查 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工中樣貌', d:'牆面下半部已貼好磁磚，上半部是養護好的粉刷底層，地上有磁磚箱與黏著材。',
+   tip:'題目：「已完成牆面水泥砂漿粉刷，擬進行面磚舖貼，請列舉注意事項至少 7 項。」另有一題問「完成後應檢查事項」：平整度、縫寬、空鼓、色差破損、溢漿、填縫、伸縮縫、收頭。'},
+  {t:'底層養護・檢查・濕潤', d:'粉刷底層須養護完成，並檢查平整度與垂直度；施工前清潔、濕潤。', tip:'底層不平，磁磚再怎麼調也貼不平。'},
+  {t:'分割計畫・避免碎磚', d:'做磁磚分割計畫並放樣，避免小於 1/3 的碎磚。', tip:'碎磚太小不好貼、容易掉，也很難看。'},
+  {t:'檢查磁磚', d:'檢查磁磚：同一批號（避免色差），檢查尺寸、翹曲、吸水率。', tip:'不同批號的磁磚顏色可能有差，貼上牆才發現就來不及了。'},
+  {t:'黏著材調配與時效', d:'黏著材依廠商規定比例調配，並在可使用時間內用完。', tip:'超過可使用時間的黏著材已開始硬化，黏結力會下降。'},
+  {t:'滿漿・避免空鼓', d:'黏著層滿漿，避免空鼓；必要時牆面與磚背兩面都塗（壓貼法）。', tip:'大尺寸磁磚建議兩面都塗，確保背面沒有空隙。'},
+  {t:'縫寬一致', d:'縫寬一致，可用定位片或拉線控制。', tip:'縫寬不一致，整面牆看起來就會歪。'},
+  {t:'設置伸縮縫', d:'依規定設置伸縮縫。', tip:'大面積磁磚沒有伸縮縫，熱脹冷縮會讓磁磚拱起、脫落。'},
+  {t:'隨時清除溢出黏著材', d:'隨時清除溢出的黏著材。', tip:'乾了才清，容易刮傷磚面，填縫也不飽滿。'},
+  {t:'敲擊檢查空鼓', d:'以敲擊方式檢查有無空鼓。', tip:'敲起來聲音空空的，代表背面沒有黏滿，要拆掉重貼。'},
+  {t:'養護後再填縫', d:'養護 24～48 小時後再填縫。', tip:'黏著材還沒硬化就填縫，磁磚可能被擠動。'},
+  {t:'完成後保護', d:'完成後做好保護，避免碰撞。', tip:'陽角、轉角最容易被撞缺，要加保護。'},
+];
+
+createAnim({
+  title: '面磚舖貼注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.4,0.25,0.88],  dist:5.6, target:[0,1.1,0.2]},
+    2:  {dir:[0.4,0.5,0.77],   dist:2.8, target:[1.1,0.1,0.6]},
+    3:  {dir:[0.45,0.5,0.74],  dist:3.0, target:[-1.1,0.2,0.7]},
+    4:  {dir:[0.45,0.5,0.74],  dist:2.6, target:[0.0,0.25,0.8]},
+    5:  {dir:[0.5,0.3,0.81],   dist:2.4, target:[-0.4,1.7,0.1]},
+    6:  {dir:[0.3,0.15,0.94],  dist:2.4, target:[-0.6,1.2,0]},
+    9:  {dir:[0.35,0.15,0.92], dist:2.6, target:[0.75,0.75,0]},
+  },
+  note: '各層厚度與縫寬有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const X0=-1.8, X1=1.8, T=0.3, J=0.006, TOP=1.5, ZT=0.012;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), plas: mat('#c9c4bb',{roughness:1}), glue: mat('#e7e5e4',{roughness:1}),
+      tiles: ['#eef1f3','#e8ecef','#f3f5f6'].map(c=>mat(c,{roughness:.22})), odd: mat('#dbe3ea',{roughness:.22}),
+      grout: mat('#a8a29e',{roughness:1}), spacer: mat('#f97316',{roughness:.6}), seal: mat('#64748b',{roughness:.5}),
+      box: mat('#c8a46e',{roughness:.9}), tub: mat('#1f2937',{roughness:.6}), alu: mat('#cbd5e1',{metalness:.4, roughness:.35}),
+      blob: mat('#d6d3d1',{roughness:1}), sponge: mat('#facc15',{roughness:1}), rubber: mat('#1c1917',{roughness:.7}),
+      handle: mat('#7c2d12',{roughness:.6}), guard: mat('#3b82f6',{roughness:.6}), drop: mat('#60a5fa',{roughness:.2}), line: mat('#ef4444'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.2,-0.15,-0.3,2.2,0,1.8,M.slab));
+    fixed(span(-2.2,0,-0.25,2.2,2.7,0,M.plas));
+    // 黏著層＋磁磚（下半部，x=0.6 設伸縮縫）
+    fixed(span(X0,0,0,X1,TOP,.004,M.glue,NE));
+    for (let r=0;r<5;r++) for (let c=0;c<12;c++){
+      let x0=X0+c*T, x1=x0+T; if (c===7) x0+=.006; if (c===8) {}
+      const m = (r===2&&c===8) ? M.odd : M.tiles[(r*7+c*3)%3];
+      fixed(span(x0+J/2,r*T+J/2,.004,x1-J/2,r*T+T-J/2,ZT,m));
+    }
+    fixed(span(0.6-.003,0,.004,0.6+.006,TOP,ZT-.001,M.seal,NE));     // 伸縮縫
+    // 地上的磁磚箱、黏著材桶、示範磚
+    [[-1.4,0.6],[-1.0,0.6],[-1.2,0.95]].forEach(([x,z],i)=> fixed(span(x-.17,0,z-.17,x+.17,0.18,z+.17,M.box)));
+    fixed(pipe([0,0,0.8],[0,0.3,0.8],.18,M.tub)); fixed(span(-.14,.28,.66,.14,.29,.94,M.glue,NE));
+    fixed(span(0.95,0,0.5,1.25,0.012,0.8,M.tiles[0])); fixed(span(1.3,0,0.5,1.45,0.012,0.8,M.tiles[0])); fixed(span(1.5,0,0.5,1.54,0.012,0.8,M.tiles[1]));
+
+    add(1, span(-0.9,1.6,.004,-0.84,2.55,.03,M.alu),{until:1, drop:-.2});
+    mark(1, -0.4,2.0,.02,{r:.3, text:'底層養護完成・平整垂直・濕潤', ty:2.5, tw:1.8});
+    mark(2, 1.375,0.02,0.65,{face:'y', r:.12, text:'≥ 1/3 ✓', tone:'good', tx:1.2, ty:0.45, tz:0.75, tw:.6});
+    mark(2, 1.52,0.02,0.65,{face:'y', r:.07, text:'✗ 小於 1/3', tone:'bad', tx:1.75, ty:0.32, tz:0.75, tw:.6});
+    mark(3, -1.2,0.2,0.75,{face:'y', r:.4, text:'同一批號・尺寸・翹曲・吸水率', ty:0.75, tw:1.8});
+    mark(4, 0,0.32,0.8,{face:'y', r:.24, text:'依比例調配・可使用時間內用完', ty:0.75, tw:1.8});
+    { const t=group(span(-0.55,1.6,.06,-0.25,1.9,.068,M.tiles[0]), span(-0.55,1.6,.052,-0.25,1.9,.06,M.glue));
+      add(5, span(-0.6,1.55,.004,-0.2,1.95,.012,M.glue,NE),{until:5, drop:0}); add(5, t, {until:5, drop:0});
+      add(5, label('牆面＋磚背都塗（壓貼法）',-0.4,2.15,0.2,1.3),{until:5, drop:0, glow:false}); }
+    { const g=group(); for (let c=1;c<6;c++) g.add(span(X0+c*T-.012,TOP-.002,ZT,X0+c*T+.012,TOP+.002,ZT+.004,M.spacer,NE));
+      g.add(pipe([X0,TOP+.3,.03],[0.2,TOP+.3,.03],.002,M.line));
+      add(6, g, {until:6, drop:0, glow:false}); add(6, label('定位片・拉線控制縫寬',-0.9,1.95,0.2,1.3),{until:6, drop:0, glow:false}); }
+    mark(7, 0.6,0.75,ZT+.01,{r:.2, text:'伸縮縫', ty:1.15, tw:.7});
+    add(8, span(-0.3,0.9-.005,ZT,-0.2,0.9+.005,ZT+.008,M.blob,NE),{until:8, drop:0});
+    add(8, span(-0.15,0.8,ZT+.01,0.1,0.95,ZT+.07,M.sponge),{until:8, drop:-.2});
+    mark(8, -0.25,0.9,ZT+.02,{r:.1, text:'隨時清除溢漿', ty:1.2, tw:1.0});
+    add(9, group(span(0.85,0.85,ZT+.01,1.0,0.95,ZT+.1,M.rubber), span(0.91,0.95,ZT+.04,0.94,1.3,ZT+.07,M.handle)),{until:9, drop:-.2});
+    mark(9, 0.75,0.75,ZT+.01,{r:.18, text:'敲擊：聲音空 = 空鼓', tone:'bad', ty:1.08, tx:0.45, tw:0.9});
+    add(10, label('養護 24～48 小時 → 再填縫',0,1.95,0.3,1.7),{until:10, drop:0, glow:false});
+    add(11, group(span(X1-.05,0,0,X1+.005,TOP,.06,M.guard)),{until:11, drop:.2});
+    mark(11, X1-.02,0.75,.05,{face:'x', r:.25, text:'完成後保護・避免碰撞', tx:1.2, ty:1.85, tz:.2, tw:1.4});
+  },
+});
+</script>
+</body>
+</html>

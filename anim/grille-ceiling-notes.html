@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>懸吊鋁格柵天花板注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：懸吊鋁格柵天花板施工安裝注意事項 10 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'完成樣貌', d:'鋁格柵（條狀）懸吊在主龍骨下方，格柵之間有燈具、撒水頭，旁邊有獨立吊掛的空調設備。',
+   tip:'題目：「請列舉 8 種懸吊鋁格柵天花板施工安裝時應注意事項。」'},
+  {t:'放樣・周邊收邊條', d:'彈出完成高度水平線，並安裝周邊收邊條。', tip:'收邊條決定格柵兩端的高度，要先依水平線裝好。'},
+  {t:'吊筋間距', d:'吊筋間距約 1.2 m 以內，垂直並固定於結構體。', tip:'鋁格柵比礦纖板重，吊筋間距不可太大。'},
+  {t:'主龍骨調整水平', d:'主龍骨（承載龍骨）調整水平。', tip:'主龍骨不平，掛上去的格柵就會高低不齊，非常明顯。'},
+  {t:'對稱分割・兩側收頭一致', d:'格柵方向與間距依設計；以中心線對稱分割，兩側收頭一致。', tip:'從中心線往兩側排，兩邊剩下的寬度才會一樣。'},
+  {t:'設備協調・撒水頭不得遮擋', d:'配合燈具、空調出風口、撒水頭、偵煙器位置；撒水頭不得被遮擋而影響灑水。', tip:'撒水頭要低於格柵或依規定距離，否則灑水會被格柵擋住。'},
+  {t:'重型設備獨立吊掛', d:'重型設備須獨立吊掛。', tip:'空調室內機等設備不可掛在格柵的龍骨上。'},
+  {t:'接頭平直不扭曲', d:'格柵接頭以連接件接合，保持平直、不扭曲。', tip:'接頭處最容易歪斜，要用連接件對齊。'},
+  {t:'預留檢修口', d:'預留檢修口。', tip:'格柵上方有管線與設備，要能拆下一段進行檢修。'},
+  {t:'保護膜完工後撕除', d:'鋁材保護膜於完工後再撕除，避免刮傷。', tip:'太早撕膜，後續工程很容易刮傷烤漆面。'},
+  {t:'端部收頭整齊', d:'端部收頭整齊。', tip:'端部加裝封頭或收邊，外觀才完整。'},
+];
+
+createAnim({
+  title: '懸吊鋁格柵天花板注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.93,
+  views: {
+    def:{dir:[0.55,-0.35,0.76], dist:5.6, target:[0,2.6,0]},
+    2:  {dir:[0.55,-0.08,0.83], dist:4.6, target:[0,2.85,0]},
+    3:  {dir:[0.55,-0.08,0.83], dist:4.6, target:[0,2.8,0]},
+    4:  {dir:[0.1,-0.95,0.3],   dist:4.8, target:[0,2.55,0]},
+    7:  {dir:[0.5,-0.3,0.8],    dist:2.4, target:[-0.6,2.55,0.6]},
+  },
+  note: '格柵數量與間距為示意。',
+  build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9); fill.position.set(2,-6,5); scene.add(fill);
+    const X0=-1.8, X1=1.8, Z0=-1.2, Z1=1.2, SB=3.0, FC=2.55;
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}),
+      rod: mat('#8b939b',{metalness:.3, roughness:.5}), carrier: mat('#9ca3af',{metalness:.4, roughness:.4}),
+      alu: mat('#e5e7eb',{metalness:.5, roughness:.3}), film: mat('#60a5fa',{transparent:true, opacity:.55, depthWrite:false}),
+      light: mat('#fff7cc',{emissive:'#ffe58a', emissiveIntensity:1}), fire: mat('#dc2626',{roughness:.5}), brass: mat('#ca8a04',{metalness:.4}),
+      ac: mat('#f1f5f9',{roughness:.5}), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      cap: mat('#6b7280',{metalness:.4, roughness:.4}), conn: mat('#f97316',{roughness:.5}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.9,SB,-1.3,1.9,SB+.15,1.3,M.slab,{shadow:false}));
+    fixed(span(-1.9,1.2,-1.3,1.9,SB,Z0,M.wall)); fixed(span(-1.9,1.2,Z0,X0,SB,1.3,M.wall));
+    // 收邊條
+    fixed(span(X0,FC-.005,Z0,X0+.03,FC,Z1,M.cap)); fixed(span(X0,FC-.005,Z0,X1,FC,Z0+.03,M.cap));
+    // 吊筋＋主龍骨（沿 z）
+    const CX=[-1.2,0,1.2];
+    CX.forEach(x=>{ fixed(span(x-.015,FC+.12,Z0,x+.015,FC+.16,Z1,M.carrier));
+      [-0.9,0.3].forEach(z=> fixed(pipe([x,SB,z],[x,FC+.16,z],.006,M.rod))); });
+    // 格柵（沿 x），中心線對稱
+    const GZ=[]; for (let k=-5;k<=5;k++) GZ.push(k*0.2);
+    GZ.forEach((z,i)=>{ const hatch = i>=7 && i<=8;           // 檢修段
+      fixed(span(X0+.03,FC,z-.015,X1,FC+.1,z+.015,M.alu)); });
+    // 接頭（z=-0.6 那條在 x=-0.6 斷開，用連接件）
+    fixed(span(-0.63,FC+.03,-0.6-.017,-0.57,FC+.07,-0.6+.017,M.conn));
+    // 燈具（格柵間）、撒水頭、偵煙器
+    fixed(span(-1.6,FC+.02,0.07,1.6,FC+.06,0.13,M.light));
+    fixed(pipe([0.9,SB-.05,-0.5],[0.9,FC-.04,-0.5],.012,M.fire));
+    { const h=new THREE.Mesh(new THREE.CylinderGeometry(.035,.02,.02,16), M.brass.clone()); h.position.set(0.9,FC-.05,-0.5); fixed(h); }
+    // 空調設備（獨立吊掛）
+    fixed(span(-1.5,2.75,0.5,-0.7,2.9,1.0,M.ac));
+    [[-1.45,0.55],[-0.75,0.55],[-1.45,0.95],[-0.75,0.95]].forEach(([x,z])=> fixed(pipe([x,SB,z],[x,2.9,z],.006,M.conn)));
+    // 端頭封蓋
+    GZ.forEach(z=> fixed(span(X1-.01,FC,z-.016,X1,FC+.1,z+.016,M.cap)));
+    // 保護膜（一部分）
+    GZ.slice(0,4).forEach(z=> add(0, span(0.4,FC-.002,z-.016,1.6,FC+.101,z+.016,M.film,NE),{until:8, drop:0}));
+
+    add(1, group(span(X0,FC-.003,Z0,X0+.004,FC+.003,Z1,M.laser,NE), span(X0,FC-.003,Z0,X1,FC+.003,Z0+.004,M.laser,NE)),{until:1, drop:0, glow:false});
+    mark(1, X0+.03,FC,0,{face:'x', r:.12, text:'水平線＋周邊收邊條', tx:-1.2, ty:2.25, tz:0.3, tw:1.3});
+    mark(2, 0,2.85,-0.9,{face:'z', r:.1, text:'吊筋 ≤ 1.2 m・固定於結構體', ty:2.35, tw:1.6});
+    add(3, span(-0.3,FC+.16,-0.2,0.3,FC+.2,-0.16,mat('#facc15')),{until:3, drop:.2});
+    mark(3, 0,FC+.14,0,{face:'x', r:.12, text:'主龍骨調整水平', ty:2.35, tw:1.1});
+    add(4, span(X0,FC-.01,-.004,X1,FC-.006,.004,M.laser,NE),{until:4, drop:0, glow:false});
+    add(4, label('中心線對稱・兩側收頭一致',0,2.2,0.2,1.6),{until:4, drop:0, glow:false});
+    mark(5, 0.9,FC-.05,-0.5,{face:'y', r:.09, text:'撒水頭不得被格柵遮擋', ty:2.2, tw:1.4});
+    mark(6, -1.1,2.75,0.75,{face:'y', r:.35, text:'重型設備獨立吊掛', ty:2.3, tw:1.2});
+    mark(7, -0.6,FC+.05,-0.6,{face:'y', r:.07, text:'連接件接合・平直', ty:2.3, tw:1.1});
+    mark(8, -0.3,FC,0.5,{face:'y', r:.3, text:'預留檢修口', ty:2.2, tw:.9});
+    mark(9, 1.0,FC,-0.7,{face:'y', r:.3, text:'保護膜完工後再撕', ty:2.2, tw:1.2});
+    mark(10, X1,FC+.05,0,{face:'x', r:.15, text:'端部封頭・收頭整齊', ty:2.25, tx:1.3, tw:1.3});
+  },
+});
+</script>
+</body>
+</html>

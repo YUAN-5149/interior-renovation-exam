@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>木作櫥櫃現場施工注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：木作工程櫥櫃現場施工注意事項 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'完成樣貌', d:'牆面上有一組吊櫃與下櫃，下櫃旁有插座，左邊是靠浴室的潮濕牆面。',
+   tip:'題目：「請列舉 5 種室內裝修木作工程櫥櫃（實木家具）現場施工應注意事項。」'},
+  {t:'丈量・核對圖說', d:'現場丈量並核對圖說，確認牆面垂直、地面水平。', tip:'牆歪、地不平，櫃子做好也裝不進去，或裝了會有縫。'},
+  {t:'控制含水率', d:'控制木材含水率（約 15% 以下），避免日後變形。', tip:'木材太濕，乾燥後會收縮、翹曲，門片就關不緊。'},
+  {t:'確實固定', d:'櫃體固定於牆體或補強角材；吊櫃以壁虎或膨脹螺栓確實固定。', tip:'吊櫃裝滿東西很重，只鎖在石膏板上會掉下來。'},
+  {t:'校正水平垂直', d:'以水平尺校正櫃體水平與垂直。', tip:'櫃體不水平，門片會自己打開或關不齊。'},
+  {t:'門縫均勻・五金順暢', d:'門片、抽屜縫隙均勻，五金調整順暢。', tip:'門縫大小不一，一眼就看得出來施工品質。'},
+  {t:'配合水電開孔', d:'配合水電：插座、管線開孔位置要預先協調。', tip:'櫃子裝好才發現擋住插座，就得在櫃子上挖洞。'},
+  {t:'防潮・櫃腳離地', d:'靠近潮濕牆面的一側做防潮處理，櫃腳離地。', tip:'濕氣會讓櫃體發霉、膨脹，櫃腳離地也方便清潔。'},
+  {t:'封邊與塗裝完整', d:'封邊與塗裝要完整，防霉防蟲。', tip:'板材切口沒封邊，濕氣和蟲就從那裡進去。'},
+  {t:'完成品保護', d:'完成品做好保護，避免後續工程碰撞。', tip:'櫥櫃通常比油漆、清潔早完成，要包好保護。'},
+];
+
+createAnim({
+  title: '木作櫥櫃現場施工注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 8, 6],
+  minDist: 1.2,
+  views: {
+    def:{dir:[0.45,0.25,0.86], dist:4.6, target:[0,1.1,0.2]},
+    3:  {dir:[0.55,0.1,0.83],  dist:2.6, target:[0.2,1.8,0.1]},
+    5:  {dir:[0.3,0.1,0.95],   dist:2.4, target:[0.2,0.5,0.3]},
+    7:  {dir:[0.6,0.3,0.74],   dist:2.6, target:[-0.8,0.3,0.3]},
+  },
+  note: '櫃體尺寸為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const T=0.018;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), wet: mat('#93c5fd',{transparent:true, opacity:.35, depthWrite:false}),
+      body: mat('#e7d7bd',{roughness:.7}), door: mat('#f5efe4',{roughness:.6}), edge: mat('#a16207',{roughness:.6}),
+      metal: mat('#cbd5e1',{metalness:.6, roughness:.3}), anchor: mat('#f97316',{roughness:.5}), level: mat('#facc15',{roughness:.5}),
+      plate: mat('#fafaf9',{roughness:.4}), damp: mat('#60a5fa',{transparent:true, opacity:.5, depthWrite:false}), leg: mat('#44403c'),
+      film: mat('#bae6fd',{transparent:true, opacity:.35, depthWrite:false}), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      meter: mat('#facc15'), dark: mat('#292524'), board: mat('#d9b98a'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.0,-0.15,-0.3,2.0,0,1.6,M.slab));
+    fixed(span(-2.0,0,-0.25,2.0,2.6,0,M.wall));
+    fixed(span(-2.0,0,0,-1.9,2.6,1.4,M.wall)); fixed(span(-1.9,0,0,-1.89,2.6,1.4,M.wet,NE));   // 左側潮濕牆
+    // 下櫃（腳離地）
+    const B={x0:-1.85,x1:0.65,y0:0.1,y1:0.86,z0:0,z1:0.58};
+    [[-1.8,0.05],[0.6,0.05],[-1.8,0.53],[0.6,0.53]].forEach(([x,z])=> fixed(pipe([x,0,z],[x,B.y0,z],.02,M.leg)));
+    fixed(span(B.x0,B.y0,B.z0,B.x1,B.y1,B.z1-.02,M.body));
+    [[-1.85,-1.03],[-1.02,-0.2],[-0.19,0.64]].forEach(([a,b])=>{ fixed(span(a+.002,B.y0+.005,B.z1-.02,b-.002,B.y1-.005,B.z1,M.door)); fixed(span(b-.05,0.6,B.z1,b-.03,0.75,B.z1+.02,M.metal)); });
+    fixed(span(B.x0-.01,B.y1,B.z0,B.x1+.01,B.y1+.03,B.z1+.02,M.board));
+    // 吊櫃
+    const U={x0:-1.85,x1:0.65,y0:1.5,y1:2.2,z0:0,z1:0.35};
+    fixed(span(U.x0,U.y0,U.z0,U.x1,U.y1,U.z1-.02,M.body));
+    [[-1.85,-1.03],[-1.02,-0.2],[-0.19,0.64]].forEach(([a,b])=> fixed(span(a+.002,U.y0+.005,U.z1-.02,b-.002,U.y1-.005,U.z1,M.door)));
+    // 插座（櫃側預留）
+    fixed(span(0.85,0.95,0,0.97,1.1,.008,M.plate));
+
+    add(1, group(span(0.9,0,.002,0.906,2.5,.006,M.laser,NE), span(-2,0.002,0.65,2,0.006,0.656,M.laser,NE)),{until:1, drop:0, glow:false});
+    add(1, label('牆面垂直・地面水平',0.9,2.55,0.3,1.3),{until:1, drop:0, glow:false});
+    add(2, group(span(0.75,0.88,0.1,0.89,0.98,0.2,M.meter), span(0.77,0.94,0.2,0.87,0.97,0.202,M.dark,NE)),{until:2, drop:-.2});
+    add(2, label('含水率約 15% 以下',0.8,1.25,0.3,1.2),{until:2, drop:0, glow:false});
+    [[-1.6,2.05],[0.4,2.05],[-1.6,1.65],[0.4,1.65]].forEach(([x,y],i)=> add(3, pipe([x,y,-0.08],[x,y,0.02],.012,M.anchor),{delay:i*.1, drop:0}));
+    mark(3, 0.4,1.85,U.z1+.02,{r:.25, text:'壁虎／膨脹螺栓確實固定', ty:2.45, tw:1.5});
+    add(4, span(-0.9,B.y1+.03,0.25,-0.3,B.y1+.08,0.3,M.level),{until:4, drop:-.2});
+    add(4, label('水平尺校正',-0.6,1.25,0.4,0.9),{until:4, drop:0, glow:false});
+    mark(5, -0.195,0.48,B.z1+.01,{r:.12, text:'門縫均勻・五金順暢', ty:0.2, tx:-0.2, tz:0.8, tw:1.3});
+    mark(6, 0.91,1.02,.01,{r:.15, text:'插座位置預先協調', ty:1.35, tw:1.2});
+    add(7, span(-1.85,B.y0,0,-1.83,B.y1,B.z1,M.damp,NE),{until:7, drop:0});
+    mark(7, -1.82,0.05,0.3,{face:'x', r:.12, text:'靠濕牆側防潮・櫃腳離地', tx:-1.0, ty:0.55, tz:0.7, tw:1.5});
+    add(8, group(span(0.64,B.y0,B.z1-.005,0.66,B.y1,B.z1+.003,M.edge), span(B.x0,B.y1+.026,B.z1+.015,B.x1,B.y1+.034,B.z1+.023,M.edge)),{until:8, drop:0});
+    mark(8, 0.65,0.5,B.z1,{face:'x', r:.15, text:'封邊・塗裝完整', tx:1.0, ty:0.85, tz:0.7, tw:1.0});
+    add(9, group(span(B.x0-.02,B.y0,B.z1+.001,B.x1+.02,B.y1+.04,B.z1+.004,M.film,NE), span(U.x0-.02,U.y0,U.z1+.001,U.x1+.02,U.y1,U.z1+.004,M.film,NE)),{until:9, drop:0});
+    add(9, label('完成品包覆保護',-0.6,2.45,0.4,1.0),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

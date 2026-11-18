@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>角度切斷機使用前檢查｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：木工角度切斷機使用前應檢查事項 10 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'角度切斷機', d:'放在工作台上的木工角度切斷機（俗稱斜切機）。',
+   tip:'題目：「請列舉 7 項木工角度切斷機使用前應檢查事項。」'},
+  {t:'鋸片', d:'鋸片無裂痕、缺齒、變形，安裝方向正確並鎖緊。', tip:'鋸片裝反或鬆脫，切削時會爆裂或飛出。'},
+  {t:'上護罩・下護罩', d:'上護罩完整，活動下護罩動作靈活、能自動復位。', tip:'下護罩卡住不回彈，鋸片就會一直外露。'},
+  {t:'電源線・接地', d:'電源線與插頭無破損，並有接地或漏電保護。', tip:'電線被鋸過或壓扁是常見的觸電原因。'},
+  {t:'開關', d:'開關功能正常，放開即停止。', tip:'開關卡住無法停止，是非常危險的狀況。'},
+  {t:'角度刻度・鎖定', d:'角度刻度與鎖定桿固定可靠。', tip:'鎖定不牢，切削中角度會跑掉。'},
+  {t:'靠板・工作台・夾具', d:'靠板（導板）與工作台穩固，夾具可用。', tip:'工件要靠緊靠板並用夾具固定，不可用手扶著切短料。'},
+  {t:'轉速相符', d:'鋸片轉速與機器標示相符。', tip:'鋸片的最高轉速要大於機器轉速，否則鋸片可能碎裂。'},
+  {t:'煞車', d:'煞車功能正常。', tip:'放開開關後，鋸片要能很快停下來。'},
+  {t:'集塵', d:'集塵袋或集塵裝置安裝妥當。', tip:'木屑粉塵會傷肺，也容易引起火災。'},
+  {t:'周邊環境・防護具', d:'周邊清潔、照明充足，並備妥護目鏡與耳塞。', tip:'切斷機噪音大、木屑會飛濺。'},
+];
+
+createAnim({
+  title: '角度切斷機使用前檢查',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: 0,
+  minDist: 0.8,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.55,0.45,0.7], dist:3.0, target:[0,1.0,0]},
+    3:  {dir:[0.3,0.5,0.81],  dist:2.6, target:[0.4,0.6,0.2]},
+    5:  {dir:[0.2,0.8,0.56],  dist:1.8, target:[0,0.9,0.15]},
+  },
+  note: '機器造型為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const TY=0.8;
+    const M = {
+      floor: mat('#d6d3d1',{roughness:1}), bench: mat('#a16207',{roughness:.8}), leg: mat('#44403c'),
+      base: mat('#1f2937',{metalness:.3, roughness:.5}), table: mat('#9ca3af',{metalness:.5, roughness:.3}), fence: mat('#cbd5e1',{metalness:.5}),
+      blade: mat('#e5e7eb',{metalness:.8, roughness:.2}), guard: mat('#ef4444',{roughness:.4}), lguard: mat('#fca5a5',{transparent:true, opacity:.7, depthWrite:false}),
+      motor: mat('#0f766e',{roughness:.5}), handle: mat('#111827'), trig: mat('#facc15'), bag: mat('#57534e',{roughness:1}),
+      cord: mat('#111827'), plug: mat('#f8fafc'), scale: mat('#fef3c7'), lock: mat('#f97316'), clamp: mat('#2563eb'),
+      goggles: mat('#38bdf8',{transparent:true, opacity:.7}), ear: mat('#dc2626'), lamp: mat('#fff7cc',{emissive:'#ffe58a', emissiveIntensity:.8}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.02,-1.5,2,0,1.5,M.floor));
+    fixed(span(-1.0,TY-.05,-0.5,1.0,TY,0.5,M.bench));
+    [[-0.9,-0.4],[0.9,-0.4],[-0.9,0.4],[0.9,0.4]].forEach(([x,z])=> fixed(span(x-.04,0,z-.04,x+.04,TY-.05,z+.04,M.leg)));
+    // 底座、轉盤、靠板
+    fixed(span(-0.35,TY,-0.25,0.35,TY+.06,0.25,M.base));
+    fixed(pipe([0,TY+.06,0.02],[0,TY+.08,0.02],.2,M.table));
+    fixed(span(-0.32,TY+.06,-0.12,-0.04,TY+.16,-0.1,M.fence)); fixed(span(0.04,TY+.06,-0.12,0.32,TY+.16,-0.1,M.fence));
+    fixed(span(-0.12,TY+.06,0.2,0.12,TY+.07,0.26,M.scale)); fixed(span(-0.03,TY+.04,0.26,0.03,TY+.08,0.34,M.lock));
+    // 機頭：臂、鋸片、護罩、馬達、把手
+    fixed(span(-0.03,TY+.08,-0.22,0.03,TY+.45,-0.16,M.base));
+    const blade=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.004,40), M.blade.clone()); blade.rotation.z=Math.PI/2; blade.position.set(0,TY+.3,0.0); fixed(blade);
+    { const g=new THREE.Mesh(new THREE.CylinderGeometry(.145,.145,.04,40,1,false,0,Math.PI), M.guard.clone()); g.rotation.z=Math.PI/2; g.position.set(0,TY+.3,0); fixed(g); }
+    { const g=new THREE.Mesh(new THREE.CylinderGeometry(.14,.14,.03,40,1,false,Math.PI,Math.PI*.7), M.lguard.clone()); g.rotation.z=Math.PI/2; g.position.set(0,TY+.3,0); fixed(g); }
+    fixed(pipe([0.03,TY+.32,0],[0.2,TY+.32,0],.06,M.motor));
+    fixed(span(-0.04,TY+.45,0.05,0.04,TY+.5,0.22,M.handle)); fixed(span(-0.015,TY+.42,0.12,0.015,TY+.45,0.17,M.trig));
+    fixed(pipe([-0.05,TY+.38,-0.12],[-0.25,TY+.4,-0.35],.03,M.bag));
+    { const b=new THREE.Mesh(new THREE.SphereGeometry(.09,16,12), M.bag.clone()); b.position.set(-0.28,TY+.42,-0.38); fixed(b); }
+    fixed(pipe([0.2,TY+.32,0],[0.6,TY+.02,0.3],.008,M.cord)); fixed(pipe([0.6,TY+.02,0.3],[0.95,0.02,0.45],.008,M.cord)); fixed(span(0.93,0,0.42,0.99,0.05,0.5,M.plug));
+    fixed(span(0.15,TY+.06,-0.08,0.22,TY+.2,-0.05,M.clamp));
+    fixed(span(0.55,TY,0.15,0.75,TY+.04,0.25,M.goggles)); fixed(pipe([0.7,TY,-0.2],[0.7,TY+.05,-0.2],.05,M.ear));
+
+    mark(1, 0.01,TY+.3,0,{face:'x', r:.16, text:'無裂痕缺齒・方向正確・鎖緊', tx:0.2, ty:TY+.7, tz:0.2, tw:1.8});
+    mark(2, 0.01,TY+.38,0.05,{face:'x', r:.1, text:'下護罩靈活・能自動復位', tx:0.2, ty:TY+.65, tz:0.2, tw:1.5});
+    mark(3, 0.6,TY+.02,0.3,{face:'y', r:.1, text:'電線插頭無破損・接地／漏電保護', ty:TY+.35, tw:2.0});
+    mark(4, 0,TY+.43,0.145,{face:'y', r:.05, text:'開關：放開即停止', ty:TY+.7, tw:1.2});
+    mark(5, 0,TY+.075,0.27,{face:'y', r:.08, text:'角度刻度・鎖定桿可靠', ty:TY+.35, tw:1.4});
+    mark(6, 0.18,TY+.13,-0.1,{r:.12, text:'靠板穩固・夾具可用', ty:TY+.55, tw:1.3});
+    add(7, label('鋸片轉速 ≥ 機器轉速',0.1,TY+.8,0.1,1.4),{until:7, drop:0, glow:false});
+    mark(7, 0.12,TY+.32,0,{face:'x', r:.1});
+    mark(8, 0.12,TY+.32,0,{face:'x', r:.08, text:'煞車功能正常', ty:TY+.65, tw:1.0});
+    mark(9, -0.28,TY+.42,-0.38,{r:.12, text:'集塵袋裝妥', ty:TY+.7, tw:.9});
+    mark(10, 0.65,TY+.03,0.2,{face:'y', r:.12, text:'護目鏡・耳塞', ty:TY+.35, tw:1.0});
+    add(10, label('周邊清潔・照明充足',-0.5,TY+.75,0.2,1.3),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

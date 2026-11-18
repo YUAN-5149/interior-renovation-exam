@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>機械及手工具操作注意事項｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：施工人員使用各類機械及手工具操作應注意事項 10 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'工作台', d:'工作台上有圓鋸機、電鑽、砂輪機，工件用夾具夾著，旁邊有防護具與延長線。',
+   tip:'題目：「機械及手工具操作上應注意哪些事項？請列舉至少 8 項。」'},
+  {t:'使用前檢查', d:'工具完好，電線與插頭無破損，護罩完整。', tip:'每次使用前都要檢查，不能等出事才發現。'},
+  {t:'正確選用・不改裝', d:'依用途正確選用，不超出工具能力，也不擅自改裝。', tip:'用小砂輪機切大料、拆掉把手改裝，都是常見事故原因。'},
+  {t:'接地・漏電斷路器', d:'電動工具須接地或為雙重絕緣，並使用漏電斷路器。', tip:'雙重絕緣工具有「回」字型標誌。'},
+  {t:'防護具・不戴棉紗手套', d:'穿戴護目鏡、耳塞、口罩；操作旋轉機具時不可戴棉紗手套。', tip:'棉紗手套會被旋轉的鋸片、鑽頭捲入，連手一起拉進去。'},
+  {t:'不得拆除護罩', d:'不得拆除安全護罩。', tip:'護罩擋住鋸片與飛屑，拆掉就失去保護。'},
+  {t:'換刀調整先斷電', d:'更換刀具、調整機具前，必須先斷電。', tip:'只關開關不夠，要拔掉插頭，避免誤觸啟動。'},
+  {t:'夾具固定・雙手握持', d:'工件以夾具固定，操作時雙手握持。', tip:'一手扶工件一手操作，工件一轉動就會傷手。'},
+  {t:'整潔・照明・通風', d:'作業區保持整潔，照明與通風充足。', tip:'地上電線、木屑容易絆倒；粉塵要排出。'},
+  {t:'用畢拔電・刃口朝外收納', d:'不使用時拔除電源，妥善收納；刃口朝外放置。', tip:'刃口朝外是避免伸手拿取時被割傷。'},
+  {t:'操作人員資格與狀態', d:'非指定人員不得操作；疲勞或飲酒後不得操作。', tip:'精神不好時反應慢，最容易出意外。'},
+];
+
+createAnim({
+  title: '機械及手工具操作注意事項',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: 0,
+  minDist: 0.9,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.5,0.55,0.67], dist:3.0, target:[0,0.85,0]},
+    4:  {dir:[0.5,0.45,0.74], dist:2.2, target:[0.7,0.85,0.2]},
+    7:  {dir:[0.45,0.5,0.74], dist:1.8, target:[-0.4,0.85,0]},
+  },
+  note: '工具造型為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const TY=0.8;
+    const M = {
+      floor: mat('#d6d3d1',{roughness:1}), bench: mat('#a16207',{roughness:.8}), leg: mat('#44403c'),
+      saw: mat('#0f766e',{roughness:.5}), blade: mat('#e5e7eb',{metalness:.8, roughness:.2}), guard: mat('#ef4444',{roughness:.4}),
+      drill: mat('#2563eb',{roughness:.5}), grinder: mat('#ca8a04',{roughness:.5}), disc: mat('#57534e'),
+      wood: mat('#d9b98a',{roughness:.7}), clamp: mat('#dc2626'), cord: mat('#111827'), plug: mat('#f8fafc'), reel: mat('#f97316'),
+      goggles: mat('#38bdf8',{transparent:true, opacity:.7}), ear: mat('#dc2626'), mask: mat('#f8fafc'), glove: mat('#f5f5f4',{roughness:1}),
+      no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}), lamp: mat('#fff7cc',{emissive:'#ffe58a', emissiveIntensity:.8}),
+      rack: mat('#64748b'), chisel: mat('#9ca3af',{metalness:.6}), dust: mat('#e7e5e4'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.02,-1.5,2,0,1.5,M.floor));
+    fixed(span(-1.2,TY-.05,-0.45,1.2,TY,0.45,M.bench));
+    [[-1.1,-0.35],[1.1,-0.35],[-1.1,0.35],[1.1,0.35]].forEach(([x,z])=> fixed(span(x-.04,0,z-.04,x+.04,TY-.05,z+.04,M.leg)));
+    // 工件＋夾具
+    fixed(span(-0.8,TY,-0.1,0.0,TY+.04,0.1,M.wood));
+    fixed(group(span(-0.65,TY-.08,-0.03,-0.6,TY+.1,0.03,M.clamp), span(-0.25,TY-.08,-0.03,-0.2,TY+.1,0.03,M.clamp)));
+    // 手提圓鋸（含護罩）
+    fixed(span(-0.5,TY+.04,-0.08,-0.2,TY+.06,0.08,M.saw)); fixed(span(-0.42,TY+.06,-0.05,-0.28,TY+.16,0.05,M.saw));
+    { const b=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,.004,32), M.blade.clone()); b.rotation.x=Math.PI/2; b.position.set(-0.35,TY+.06,0.09); fixed(b);
+      const g=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.02,32,1,false,0,Math.PI), M.guard.clone()); g.rotation.x=Math.PI/2; g.position.set(-0.35,TY+.06,0.09); fixed(g); }
+    // 電鑽、砂輪機
+    fixed(group(span(0.3,TY,0.0,0.36,TY+.15,0.06,M.drill), span(0.3,TY+.15,-0.12,0.36,TY+.21,0.06,M.drill), pipe([0.33,TY+.18,-0.12],[0.33,TY+.18,-0.2],.006,M.blade)));
+    { const d=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.008,24), M.disc.clone()); d.rotation.z=Math.PI/2; d.position.set(0.91,TY+.06,0.0);
+      fixed(group(pipe([0.6,TY+.04,0.0],[0.9,TY+.04,0.0],.04,M.grinder), d)); }
+    // 延長線、捲線器
+    fixed(pipe([0.9,TY+.04,0],[1.3,0.02,0.6],.008,M.cord)); fixed(pipe([1.4,0,0.6],[1.4,0.25,0.6],.15,M.reel));
+    // 防護具
+    fixed(span(0.6,TY,0.25,0.75,TY+.04,0.33,M.goggles)); fixed(pipe([0.85,TY,0.3],[0.85,TY+.04,0.3],.04,M.ear)); fixed(span(0.95,TY,0.25,1.05,TY+.04,0.35,M.mask));
+    // 工具架（刃口朝外）
+    fixed(span(-1.6,0.6,-0.5,-1.4,1.4,-0.48,M.rack));
+    [0.8,1.0,1.2].forEach(y=> fixed(span(-1.58,y,-0.48,-1.42,y+.02,-0.38,M.chisel)));
+
+    mark(1, -0.35,TY+.1,0.1,{r:.12, text:'工具完好・電線插頭無破損・護罩完整', ty:TY+.45, tw:2.2});
+    add(2, label('依用途選用・不超出能力・不改裝',0,TY+.75,0.2,2.0),{until:2, drop:0, glow:false});
+    mark(2, 0.75,TY+.04,0,{face:'y', r:.17});
+    mark(3, 1.4,0.15,0.6,{r:.2, text:'接地／雙重絕緣・漏電斷路器', ty:0.6, tw:1.8});
+    add(4, group(span(0.4,TY,0.2,0.5,TY+.03,0.32,M.glove)),{until:4, drop:0});
+    add(4, group(...[0,1].map(i=>{ const b=box(.2,.02,.01,M.no,NE); b.position.set(0.45,TY+.06,0.26); b.rotation.z=i?.78:-.78; return b; })),{until:4, drop:0, glow:false});
+    mark(4, 0.82,TY+.03,0.3,{face:'y', r:.25, text:'護目鏡・耳塞・口罩 ✓', tone:'good', tx:1.05, ty:TY+.45, tz:0.5, tw:1.4});
+    add(4, label('旋轉機具不戴棉紗手套',0.15,TY+.3,0.35,1.4,'bad'),{until:4, drop:0, glow:false});
+    mark(5, -0.35,TY+.06,0.1,{face:'z', r:.1, text:'不得拆除護罩', ty:TY+.35, tw:1.0});
+    mark(6, 1.3,0.03,0.58,{face:'y', r:.1, text:'換刀・調整前先拔電', ty:0.45, tw:1.3});
+    mark(7, -0.42,TY+.02,0,{face:'y', r:.25, text:'夾具固定工件・雙手握持', ty:TY+.35, tw:1.5});
+    add(8, label('整潔・照明・通風充足',0,TY+.75,0.2,1.4),{until:8, drop:0, glow:false});
+    mark(9, -1.5,1.0,-0.4,{r:.25, text:'拔電收納・刃口朝外', ty:1.45, tw:1.3});
+    add(10, label('非指定人員不得操作・疲勞飲酒不得操作',0,TY+.75,0.2,2.3,'bad'),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

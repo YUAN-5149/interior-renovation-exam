@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>混凝土牆面粉刷前檢查處理｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：混凝土牆面水泥砂漿粉刷前之檢查及處理作業 9 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'拆模後的牆面', d:'混凝土牆剛拆模：有浮漿油污、突出的鐵絲、蜂窩孔洞；右邊接著磚牆，左邊有窗框。',
+   tip:'題目：「混凝土牆面粉刷前除應充分潤濕外，尚需檢查及處理作業至少 5 項。」注意「潤濕」題目已經講了，不要再寫。'},
+  {t:'清除浮漿・油污・脫模劑', d:'清除表面浮漿、油污、脫模劑及灰塵。', tip:'脫模劑像一層油膜，不清掉砂漿根本黏不上去。'},
+  {t:'去除突出物・防鏽', d:'去除突出物（混凝土突出、繫結鐵件、鐵絲），鐵件切除後做防鏽處理。', tip:'鐵件沒做防鏽，日後鏽水會從粉刷層滲出黃斑。'},
+  {t:'修補蜂窩孔洞', d:'蜂窩、孔洞、凹陷以水泥砂漿修補填平。', tip:'蜂窩是混凝土沒搗實留下的空洞，要先補實。'},
+  {t:'檢查垂直平整', d:'檢查垂直度與平整度，過凸處打鑿，凹陷過大處分層補平。', tip:'粉刷一次不能太厚，凹陷太深要分層補，否則會下垂、龜裂。'},
+  {t:'光滑面打毛', d:'光滑的混凝土面打毛（鑿毛），或塗刷接著劑增加附著力。', tip:'太光滑的面，砂漿抓不住，容易空鼓剝落。'},
+  {t:'管線・開關盒就位', d:'確認管線、開關盒、預埋件已就位並固定。', tip:'粉刷後才發現出線盒歪掉或漏埋，就要打掉重做。'},
+  {t:'異材交接加鐵絲網', d:'不同材質交接處（如 RC 與磚牆）加釘鐵絲網。', tip:'兩種材料伸縮不同，交接處最容易裂；鐵絲網可以把粉刷層拉住。'},
+  {t:'設置灰誌', d:'設置灰誌（標筋）控制粉刷厚度。', tip:'灰誌是粉刷厚度與平整度的基準。'},
+  {t:'門窗框保護', d:'門窗框做好保護。', tip:'砂漿沾到鋁窗框很難清，還會腐蝕表面。'},
+];
+
+createAnim({
+  title: '混凝土牆面粉刷前檢查處理',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  sun: [3, 7, 7],
+  views: {
+    def:{dir:[0.35,0.22,0.91], dist:5.6, target:[0,1.2,0]},
+    2:  {dir:[0.35,0.15,0.92], dist:3.0, target:[0.0,1.4,0]},
+    4:  {dir:[0.85,0.15,0.5],  dist:3.6, target:[0.0,1.2,0]},
+    7:  {dir:[0.4,0.15,0.9],   dist:3.0, target:[0.9,1.2,0]},
+  },
+  note: '缺陷大小有誇大，方便辨認。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const XB=0.9;   // RC 與磚牆交界
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), rc: mat('#b9b6b0',{roughness:.6}), brick: mat('#b45309',{roughness:.9}), joint: mat('#a8a29e',{roughness:1}),
+      oil: mat('#57534e',{transparent:true, opacity:.4, depthWrite:false}), wire: mat('#78350f',{metalness:.4, roughness:.5}),
+      rust: mat('#b91c1c',{roughness:.6}), hole: mat('#44403c',{roughness:1}), mortar: mat('#a8a29e',{roughness:1}),
+      bump: mat('#a8a49d',{roughness:1}), alu: mat('#cbd5e1',{metalness:.4, roughness:.35}), scr: mat('#6b7280',{roughness:1}),
+      ebox: mat('#1d4ed8',{roughness:.6}), elec: mat('#f97316',{roughness:.5}), mesh: mat('#9ca3af',{metalness:.5, roughness:.4}),
+      dot: mat('#78716c',{roughness:1}), frame: mat('#d1d5db',{metalness:.6, roughness:.3}), film: mat('#60a5fa',{transparent:true, opacity:.55, depthWrite:false}),
+      glass: mat('#bae6fd',{transparent:true, opacity:.35, depthWrite:false}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.2,-0.15,-0.3,2.2,0,1.6,M.slab));
+    fixed(span(-2.2,0,-0.25,XB,2.7,0,M.rc));
+    // 磚牆
+    fixed(span(XB,0,-0.25,2.2,2.7,-0.01,M.joint));
+    for (let r=0;r<43;r++){ const y=r*0.063, off=(r%2)*0.1; for (let x=XB+.005-off;x<2.2;x+=0.21){ const a=Math.max(x,XB+.003), b=Math.min(x+0.2,2.2); if (b-a>.03) fixed(span(a,y+.005,-0.01,b,y+.058,0,M.brick,NE)); } }
+    // 窗框
+    fixed(group(span(-1.6,0.9,-0.02,-0.55,0.95,.03,M.frame), span(-1.6,1.95,-0.02,-0.55,2.0,.03,M.frame),
+      span(-1.6,0.9,-0.02,-1.55,2.0,.03,M.frame), span(-0.6,0.9,-0.02,-0.55,2.0,.03,M.frame), span(-1.55,0.95,0,-0.6,1.95,.005,M.glass,NE)));
+    // 出線盒
+    fixed(span(0.2,0.3,-0.04,0.28,0.42,.001,M.ebox)); fixed(span(0.5,1.15,-0.04,0.58,1.27,.001,M.ebox));
+
+    // 缺陷（到對應步驟消失）
+    [[-0.4,1.9,.5,.3],[0.3,0.9,.4,.25],[-1.2,0.5,.35,.2]].forEach(([x,y,w,h])=> add(0, span(x-w/2,y-h/2,.001,x+w/2,y+h/2,.002,M.oil,NE),{until:1, drop:0}));
+    const WIRES=[[-0.2,1.5],[0.4,2.2],[-1.0,2.3]];
+    WIRES.forEach(([x,y])=> add(0, pipe([x,y,0],[x+.02,y-.03,.09],.004,M.wire),{until:2, drop:0}));
+    const HOLES=[[-0.1,0.55],[0.55,1.8]];
+    HOLES.forEach(([x,y])=>{ const g=group(); for (let i=0;i<9;i++) g.add(span(x-.08+(i%3)*.05,y-.06+((i/3)|0)*.05,-.01,x-.05+(i%3)*.05,y-.03+((i/3)|0)*.05,.001,M.hole,NE)); add(0, g, {until:3, drop:0}); });
+    add(0, span(-0.6,0.15,0,-0.2,0.45,.025,M.bump),{until:4, drop:0});
+
+    mark(1, -0.4,1.9,.01,{r:.28, text:'清除浮漿・油污・脫模劑', ty:2.35, tw:1.5});
+    WIRES.forEach(([x,y],i)=> add(2, span(x-.012,y-.012,0,x+.012,y+.012,.003,M.rust,NE),{delay:.2+i*.1, drop:0}));
+    mark(2, -0.2,1.5,.02,{r:.1, text:'切除鐵件＋防鏽處理', ty:1.85, tw:1.3});
+    HOLES.forEach(([x,y],i)=> add(3, span(x-.1,y-.08,0,x+.1,y+.08,.004,M.mortar,NE),{delay:i*.2, drop:0}));
+    mark(3, -0.1,0.55,.01,{r:.15, text:'蜂窩孔洞以砂漿補平', ty:0.95, tw:1.3});
+    add(4, span(-0.45,0.05,.03,-0.39,2.4,.06,M.alu),{until:4, drop:-.2});
+    mark(4, -0.4,0.3,.03,{r:.2, text:'凸處打鑿・凹處分層補', ty:0.75, tw:1.4});
+    { const g=group(); for (let i=0;i<30;i++){ const s=box(.08,.004,.002,M.scr,NE); s.position.set(-1.3+(i%6)*0.12,0.25+((i/6)|0)*0.1,.002); s.rotation.z=(i%2?.5:-.5); g.add(s); }
+      add(5, g, {until:5, drop:0}); }
+    mark(5, -1.0,0.45,.01,{r:.35, text:'光滑面打毛（或塗接著劑）', ty:0.95, tw:1.6});
+    mark(6, 0.54,1.21,.01,{r:.1, text:'出線盒就位並固定', ty:1.55, tw:1.2});
+    mark(6, 0.24,0.36,.01,{r:.1});
+    { const g=group(); for (let y=0.05;y<2.65;y+=0.05) g.add(span(XB-.15,y,.002,XB+.15,y+.004,.004,M.mesh,NE));
+      for (let x=XB-.15;x<=XB+.15;x+=0.05) g.add(span(x,0.02,.002,x+.004,2.65,.004,M.mesh,NE));
+      add(7, g, {delay:.2, drop:0}); }
+    mark(7, XB,1.3,.01,{r:.25, text:'RC × 磚牆交接加鐵絲網', ty:1.8, tw:1.5});
+    { let k=0; [-1.9,-0.2,1.5].forEach(x=> [0.2,1.3,2.4].forEach(y=> add(8, pipe([x,y,0],[x,y,.02],.03,M.dot),{delay:(k++)*.05, drop:0}))); }
+    add(8, label('設灰誌控制粉刷厚度',0,2.55,0.3,1.3),{until:8, drop:0, glow:false});
+    add(9, span(-1.62,0.88,.031,-0.53,2.02,.034,M.film,NE),{delay:.2, drop:0});
+    mark(9, -1.08,1.45,.05,{r:.4, text:'門窗框保護', ty:2.15, tw:.9});
+  },
+});
+</script>
+</body>
+</html>
