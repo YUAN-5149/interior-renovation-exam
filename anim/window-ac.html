@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>窗型冷暖氣機安裝施作程序｜3D 工法動畫</title>
-<meta name="description" content="室裝乙級：窗型冷暖氣機安裝施作程序 10 步驟 3D 互動動畫，含專用迴路、開口補強框、室外支撐架、外低內高排水、縫隙填塞、試運轉。">
+<meta name="description" content="室裝乙級（課本 6-4-10）：窗型冷暖氣機安裝施作程序 9 項 3D 互動圖解：遮日棚、離地 75 cm 以上（150～200 cm 為適）、背後 30 cm、室外側低 1～2 cm、接地。">
 <link rel="icon" href="../favicon.ico" sizes="any">
 <meta name="theme-color" content="#292524">
 <link rel="stylesheet" href="anim.css?v=2026111801">
@@ -17,88 +17,84 @@
 import { createAnim, THREE } from './engine.js?v=2026111908';
 
 const STEPS = [
-  {t:'施工前', d:'外牆已預留冷氣開口，要安裝窗型冷暖氣機（左側是室內、右側是室外）。',
-   tip:'本動畫依一般安裝實務整理（題庫沒有此題的步驟答案），請對照你的課本確認用詞與順序。'},
-  {t:'確認位置與電源', d:'確認安裝位置、開口尺寸，以及專用迴路電源（電壓、插座型式）。', tip:'冷氣要用專用迴路，不可和其他電器共用插座。'},
-  {t:'開口補強框', d:'開口四周裝設補強框（木框或角鐵框），確認尺寸與水平。', tip:'補強框讓機體重量傳到牆體，也方便之後填縫收邊。'},
-  {t:'室外支撐架', d:'於室外側固定支撐架，以膨脹螺栓鎖固。', tip:'支撐架要能承受機體重量，並注意高處作業安全。'},
-  {t:'機體就位・外低內高', d:'將機體推入開口，放在支撐架上，略向室外傾斜。', tip:'外低內高，冷凝水才會往室外流，不會滴進室內。'},
-  {t:'固定機體', d:'以固定片或螺絲將機體固定在補強框與支撐架上。', tip:'固定不牢，運轉時會震動、產生噪音。'},
-  {t:'縫隙填塞', d:'機體與開口之間的縫隙以泡棉、填縫材填塞。', tip:'填塞可以防水、隔音、防止蚊蟲進入。'},
-  {t:'室外防水', d:'室外側上緣打矽利康、加裝遮雨板。', tip:'雨水最容易從機體上方的縫隙滲入。'},
-  {t:'室內收邊', d:'室內側以收邊框收邊。', tip:'收邊框蓋住填縫材，外觀整齊。'},
-  {t:'排水處理', d:'確認冷凝水排水方向，必要時接排水管引導到排水處。', tip:'排水不可直接滴到樓下或人行道上。'},
-  {t:'接電試運轉', d:'接上專用迴路電源、確認接地，試運轉：冷、暖、排水、噪音與震動。', tip:'試運轉時量出風口溫度，確認冷暖功能正常。'},
+  {t:'安裝完成樣貌', d:'窗型冷暖氣機裝在外牆開口（左側室內、右側室外）。',
+   tip:'依課本 6-4-10「窗型冷暖氣機安裝施作程序」共 9 項。必背數字：離地 ≥ 75 cm（150～200 cm 為適）、背後 ≥ 30 cm、室外側低約 1～2 cm。'},
+  {t:'避免日曬・遮日棚', d:'安裝方向應避免日曬，如有直曬則應裝遮日棚，以增使用年限。', tip:'日曬讓機體溫度升高，散熱變差、耗電、壽命變短。'},
+  {t:'安裝高度', d:'底座離地最小 75 cm 以上，150～200 cm 為適。', tip:'太低會吸入灰塵、冷氣吹出距離太短；太高則不易達到預期的冷房效果。'},
+  {t:'裝於室內時的排熱', d:'窗型冷氣若需裝於室內時，室外壁上應裝抽風機或風管以利熱氣排除，兩側之室外回風部分應做回風管。', tip:'機體後段的熱氣必須排到室外，否則等於在室內加熱。'},
+  {t:'前後通風・背後 30 cm', d:'前後通風不受阻擋，背後若受阻擋時，其最小距離應在 30 cm 以上。', tip:'背後太近，熱氣排不出去又被吸回來。'},
+  {t:'避開電熱器・瓦斯器具', d:'避免接近電熱器或瓦斯器具，以免影響冷氣之分佈效果。', tip:'熱源會干擾溫度感應與冷氣分佈。'},
+  {t:'重量・共振・鎖固', d:'冷氣機有一定的重量，啟動與停止時都會有共振現象，因此應注意安裝場所之鎖固。', tip:'鎖固不牢，運轉時震動、噪音都會變大。'},
+  {t:'排水：室外側低 1～2 cm', d:'台灣冷氣機設計有強力除濕能力，安裝時須特別注意排水，通常室外側要比室內側低約 1～2 cm。', tip:'冷凝水才會往室外流，不會滴進室內。'},
+  {t:'接地工事', d:'需要做好接地工事，以免發生火災及感電事故。', tip:'接地線以綠色標示。'},
+  {t:'不與建築金屬接觸', d:'冷氣機安裝完成不要與建築物的金屬部分接觸。', tip:'例如鐵窗、金屬窗框；接觸會傳導震動，漏電時也有感電危險。'},
 ];
 
 createAnim({
   title: '窗型冷暖氣機安裝施作程序',
+  kind: 'notes',
   steps: STEPS,
   groundY: -0.15,
   minDist: 1.2,
   sun: [5, 8, 4],
   views: {
-    def:{dir:[0.75,0.25,0.62],  dist:4.4, target:[0,1.4,0]},
-    3:  {dir:[0.55,0.15,-0.82], dist:3.6, target:[0,1.2,-0.3]},
-    4:  {dir:[0.98,0.1,0.15],   dist:3.0, target:[0,1.4,-0.1]},
-    7:  {dir:[0.55,0.2,-0.81],  dist:3.0, target:[0,1.45,-0.3]},
-    9:  {dir:[0.6,0.15,-0.78],  dist:3.4, target:[0,1.2,-0.4]},
+    def:{dir:[0.75,0.25,0.62],  dist:4.8, target:[0,1.3,-0.1]},
+    1:  {dir:[0.55,0.25,-0.8],  dist:4.0, target:[0,1.9,-0.4]},
+    2:  {dir:[0.3,0.12,0.95],   dist:4.4, target:[0,1.1,0]},
+    4:  {dir:[0.85,0.35,-0.4],  dist:3.6, target:[0,1.7,-0.6]},
+    7:  {dir:[0.98,0.08,0.15],  dist:2.8, target:[0,1.8,-0.15]},
   },
   note: '機體尺寸與傾斜角度有放大。',
-  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
-    const T=0.2, OX=0.33, OY0=1.2, OY1=1.65;
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const T=0.2, OX=0.33, OY0=1.6, OY1=2.05, fr=.035;
     const M = {
       slab: mat('#d3cec8',{roughness:1}), wall: mat('#c9c4bb',{roughness:1}), out: mat('#a8a29e',{roughness:1}),
-      frame: mat('#6b7280',{metalness:.5, roughness:.4}), bracket: mat('#374151',{metalness:.5}), bolt: mat('#f97316'),
-      unit: mat('#e5e7eb',{roughness:.5}), grille: mat('#cbd5e1',{roughness:.4}), back: mat('#9ca3af',{metalness:.3}),
-      foam: mat('#facc15',{roughness:1}), sil: mat('#f8fafc'), hood: mat('#78716c',{metalness:.3}), trim: mat('#fafaf9'),
-      drain: mat('#94a3b8'), drop: mat('#60a5fa',{roughness:.2}), plug: mat('#f8fafc'), green: mat('#16a34a'), cold: mat('#38bdf8',{transparent:true, opacity:.5, depthWrite:false}),
-      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), level: mat('#facc15'),
+      frame: mat('#6b7280',{metalness:.5}), bracket: mat('#374151',{metalness:.5}), bolt: mat('#f97316'),
+      unit: mat('#e5e7eb',{roughness:.5}), grille: mat('#cbd5e1'), back: mat('#9ca3af',{metalness:.3}), hood: mat('#78716c',{metalness:.3}),
+      sun: mat('#fbbf24',{emissive:'#f59e0b', emissiveIntensity:.8}), meter: mat('#f97316'), heater: mat('#dc2626'), glow: mat('#f97316',{emissive:'#ea580c', emissiveIntensity:.8}),
+      no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}), green: mat('#16a34a'), duct: mat('#cbd5e1',{metalness:.4}), clear: mat('#38bdf8',{transparent:true, opacity:.3, depthWrite:false}),
+      rail: mat('#57534e',{metalness:.6}), drop: mat('#60a5fa',{roughness:.2}), plug: mat('#f8fafc'),
     };
     const NE={edges:false, shadow:false};
-    fixed(span(-1.4,-0.15,-1.4,1.4,0,1.2,M.slab));
-    // 牆（中間開口）；室內面 z=0、室外面 z=-T
-    fixed(span(-1.2,0,-T,-OX,2.6,0,M.wall)); fixed(span(OX,0,-T,1.2,2.6,0,M.wall));
-    fixed(span(-OX,0,-T,OX,OY0,0,M.wall)); fixed(span(-OX,OY1,-T,OX,2.6,0,M.wall));
-    fixed(span(-1.2,0,-T-.004,1.2,2.6,-T,M.out,NE));
+    fixed(span(-1.4,-0.15,-1.6,1.4,0,1.2,M.slab));
+    fixed(span(-1.2,0,-T,-OX,2.8,0,M.wall)); fixed(span(OX,0,-T,1.2,2.8,0,M.wall));
+    fixed(span(-OX,0,-T,OX,OY0,0,M.wall)); fixed(span(-OX,OY1,-T,OX,2.8,0,M.wall));
+    fixed(span(-1.2,0,-T-.004,1.2,2.8,-T,M.out,NE));
+    fixed(group(span(-OX,OY0,-T,OX,OY0+fr,0,M.frame), span(-OX,OY1-fr,-T,OX,OY1,0,M.frame), span(-OX,OY0,-T,-OX+fr,OY1,0,M.frame), span(OX-fr,OY0,-T,OX,OY1,0,M.frame)));
+    fixed(group(...[-0.25,0.25].map(x=>group(span(x-.02,OY0-0.45,-T-.04,x+.02,OY0,-T,M.bracket), span(x-.02,OY0-.04,-T-0.55,x+.02,OY0,-T,M.bracket), pipe([x,OY0-0.4,-T-.02],[x,OY0-.02,-T-0.5],.012,M.bracket)))));
+    const unit=group(span(-OX+fr+.01,OY0+fr+.01,-0.55,OX-fr-.01,OY1-fr-.01,0.12,M.unit), span(-OX+fr+.03,OY0+fr+.05,0.12,OX-fr-.03,OY1-fr-.03,0.125,M.grille,NE), span(-OX+fr+.03,OY0+fr+.03,-0.555,OX-fr-.03,OY1-fr-.03,-0.55,M.back,NE));
+    unit.position.set(0,OY0,-0.2); unit.children.forEach(c=>c.position.add(new THREE.Vector3(0,-OY0,0.2))); unit.rotation.x=-0.05; fixed(unit);
     fixed(span(0.6,0.3,0,0.68,0.42,.01,M.plug));
 
-    /* ① 位置與電源 */
-    add(1, group(span(-OX,OY0-.004,.001,OX,OY0+.004,.004,M.laser,NE), span(-OX,OY1-.004,.001,OX,OY1+.004,.004,M.laser,NE)),{until:2, drop:0, glow:false});
-    add(1, label('開口尺寸・專用迴路電源',0,2.1,0.3,1.6),{until:1, drop:0, glow:false});
-    /* ② 補強框 */
-    const fr=.035;
-    add(2, group(span(-OX,OY0,-T,OX,OY0+fr,0,M.frame), span(-OX,OY1-fr,-T,OX,OY1,0,M.frame), span(-OX,OY0,-T,-OX+fr,OY1,0,M.frame), span(OX-fr,OY0,-T,OX,OY1,0,M.frame)),{drop:.2});
-    add(2, span(-0.2,OY0+fr,-0.1,0.2,OY0+fr+.04,-0.06,M.level),{until:2, drop:-.1});
-    /* ③ 室外支撐架 */
-    add(3, group(...[-0.25,0.25].map(x=>group(span(x-.02,OY0-0.5,-T-.04,x+.02,OY0,-T,M.bracket), span(x-.02,OY0-.04,-T-0.55,x+.02,OY0,-T,M.bracket), pipe([x,OY0-0.45,-T-.02],[x,OY0-.02,-T-0.5],.012,M.bracket))),
-      ...[-0.25,0.25].flatMap(x=>[OY0-0.4,OY0-0.1].map(y=>pipe([x,y,-T-.04],[x,y,-T-.06],.012,M.bolt)))),{drop:.2});
-    add(3, label('支撐架膨脹螺栓固定',0,OY0-0.75,-T-0.3,1.3),{until:3, drop:0, glow:false});
-    /* ④ 機體（外低內高） */
-    const unit=group(span(-OX+fr+.01,OY0+fr+.01,-0.55,OX-fr-.01,OY1-fr-.01,0.12,M.unit), span(-OX+fr+.03,OY0+fr+.05,0.12,OX-fr-.03,OY1-fr-.03,0.125,M.grille,NE), span(-OX+fr+.03,OY0+fr+.03,-0.555,OX-fr-.03,OY1-fr-.03,-0.55,M.back,NE));
-    unit.rotation.x=-0.06;
-    add(4, unit, {drop:0});
-    add(4, group(arrow([0.45,OY1+0.25,0.2],[0.45,OY1+0.15,-0.6],M.laser)),{until:4, drop:0, glow:false});
-    add(4, label('外低內高（排水往室外）',0,2.15,-0.2,1.5),{until:4, drop:0, glow:false});
-    /* ⑤ 固定 */
-    add(5, group(...[[-OX+fr,OY0+0.1],[OX-fr,OY0+0.1],[-OX+fr,OY1-0.1],[OX-fr,OY1-0.1]].map(([x,y])=>span(x-.01,y-.03,0.02,x+.01,y+.03,0.06,M.bolt))),{drop:0, glow:false});
-    add(5, label('固定片鎖固',0,2.1,0.3,0.9),{until:5, drop:0, glow:false});
-    /* ⑥ 填縫 */
-    add(6, group(span(-OX+fr,OY1-fr-.012,-T+.02,OX-fr,OY1-fr,-.01,M.foam), span(-OX+fr,OY0+fr,-T+.02,-OX+fr+.012,OY1-fr,-.01,M.foam), span(OX-fr-.012,OY0+fr,-T+.02,OX-fr,OY1-fr,-.01,M.foam)),{drop:0});
-    add(6, label('縫隙填塞：防水・隔音・防蟲',0,2.1,0.3,1.8),{until:6, drop:0, glow:false});
-    /* ⑦ 室外防水：矽利康＋遮雨板 */
-    add(7, group(span(-OX-.01,OY1-.005,-T-.012,OX+.01,OY1+.008,-T,M.sil), span(-OX-0.08,OY1+.02,-T-0.25,OX+0.08,OY1+.035,-T,M.hood)),{drop:.15});
-    add(7, label('上緣矽利康＋遮雨板',0,OY1+0.4,-T-0.3,1.3),{until:7, drop:0, glow:false});
-    /* ⑧ 室內收邊 */
-    add(8, group(span(-OX-.04,OY0-.04,0,OX+.04,OY0+fr,.015,M.trim), span(-OX-.04,OY1-fr,0,OX+.04,OY1+.04,.015,M.trim), span(-OX-.04,OY0,0,-OX+fr,OY1,.015,M.trim), span(OX-fr,OY0,0,OX+.04,OY1,.015,M.trim)),{drop:.1});
-    /* ⑨ 排水 */
-    add(9, pipe([0.2,OY0+0.02,-0.56],[0.2,0.05,-0.75],.012,M.drain),{drop:0});
-    for (let i=0;i<6;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.015,8,6), M.drop.clone()); d.position.set(0.2,OY0-0.2-i*0.15,-0.6-i*0.025); add(9, d, {delay:.3+i*.1, drop:0, until:9, glow:false}); }
-    add(9, label('冷凝水引到排水處',0.2,OY0-0.4,-0.9,1.2),{until:9, drop:0, glow:false});
-    /* ⑩ 接電・試運轉 */
-    add(10, group(pipe([OX-0.05,OY0+0.05,0.12],[0.64,0.42,0.02],.005,M.plug), pipe([0.64,0.38,0.012],[0.64,0.3,0.05],.004,M.green)),{drop:0, glow:false});
-    add(10, span(-0.25,OY0+0.1,0.13,0.25,OY1-0.08,0.5,M.cold,NE),{delay:.4, drop:0, glow:false});
-    add(10, label('專用迴路・接地・試運轉冷暖排水',0,2.15,0.3,2.0),{until:10, drop:0, glow:false});
+    /* ① 遮日棚 */
+    { const s=new THREE.Mesh(new THREE.SphereGeometry(.18,16,12), M.sun.clone()); s.position.set(0.9,2.7,-1.4); add(1, s, {until:1, drop:0, glow:false}); }
+    add(1, span(-0.5,OY1+0.15,-T-0.7,0.5,OY1+0.17,-T,M.hood),{drop:.2});
+    add(1, label('直曬 → 加裝遮日棚',0,2.55,-0.8,1.2),{until:1, drop:0, glow:false});
+    /* ② 高度 */
+    add(2, group(arrow([0.45,0.02,0.05],[0.45,OY0,0.05],M.meter), arrow([0.45,OY0,0.05],[0.45,0.02,0.05],M.meter)),{until:2, drop:0, glow:false});
+    add(2, label('底座離地 ≥ 75 cm，150～200 cm 為適',0,0.9,0.3,2.2),{until:2, drop:0, glow:false});
+    /* ③ 裝於室內：排熱風管＋回風管 */
+    add(3, group(span(-0.25,OY0+0.08,-0.75,0.25,OY1-0.08,-0.55,M.duct), span(-0.6,OY0+0.05,-0.6,-0.35,OY1-0.05,-0.25,M.duct), span(0.35,OY0+0.05,-0.6,0.6,OY1-0.05,-0.25,M.duct)),{until:3, drop:0});
+    add(3, label('裝於室內：室外壁裝抽風機／風管排熱・兩側回風管',0,2.5,-0.4,2.6),{until:3, drop:0, glow:false});
+    /* ④ 背後 30 cm */
+    add(4, span(-OX,OY0,-0.55-0.3,OX,OY1,-0.56,M.clear,NE),{until:4, drop:0, glow:false});
+    add(4, label('背後受阻擋：最小 30 cm',0,2.45,-0.8,1.5),{until:4, drop:0, glow:false});
+    /* ⑤ 電熱器・瓦斯 */
+    add(5, group(span(-0.9,0,0.4,-0.5,0.5,0.6,M.heater), span(-0.85,0.1,0.6,-0.55,0.45,0.61,M.glow,NE)),{until:5, drop:.1});
+    add(5, group(...[0,1].map(i=>{ const b=box(.5,.03,.02,M.no,NE); b.position.set(-0.7,0.6,0.62); b.rotation.z=i?.78:-.78; return b; })),{until:5, drop:0, glow:false});
+    add(5, label('避開電熱器・瓦斯器具',-0.7,1.05,0.5,1.4,'bad'),{until:5, drop:0, glow:false});
+    /* ⑥ 鎖固 */
+    mark(6, OX-fr,OY0+0.1,0.06,{r:.06}); mark(6, -OX+fr,OY0+0.1,0.06,{r:.06, text:'注意鎖固（重量・共振）', ty:2.45, tx:0, tw:1.5});
+    /* ⑦ 排水：外低 1～2 cm */
+    add(7, arrow([0.42,OY1+0.08,0.1],[0.42,OY1+0.02,-0.6],M.meter),{until:7, drop:0, glow:false});
+    for (let i=0;i<5;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6), M.drop.clone()); d.position.set(0.1,OY0-0.1-i*0.12,-0.58); add(7, d, {delay:.3+i*.1, drop:0, until:7, glow:false}); }
+    add(7, label('室外側比室內側低約 1～2 cm',0,2.45,-0.2,1.8),{until:7, drop:0, glow:false});
+    /* ⑧ 接地 */
+    add(8, group(pipe([OX-0.05,OY0+0.05,0.12],[0.64,0.42,0.02],.005,M.plug), pipe([0.64,0.36,0.012],[0.64,0.0,0.06],.005,M.green)),{until:8, drop:0, glow:false});
+    add(8, label('接地工事：防火災・感電',0.5,1.05,0.3,1.4),{until:8, drop:0, glow:false});
+    /* ⑨ 不接觸建築金屬 */
+    add(9, group(...[-0.5,-0.4,0.4,0.5].map(x=>span(x-.01,OY0-0.1,-T-.02,x+.01,OY1+0.1,-T-.04,M.rail))),{until:9, drop:0});
+    add(9, label('不與鐵窗等建築金屬接觸',0,2.45,-0.5,1.5,'bad'),{until:9, drop:0, glow:false});
   },
 });
 </script>

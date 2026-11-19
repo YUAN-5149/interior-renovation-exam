@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>分離式冷暖氣機室內機安裝｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級（課本 6-4-14）：分離式冷暖氣機室內機安裝 8 步驟 3D 互動動畫：背板水平、銅管做記號、裁切拓喇叭口去毛邊、扭力板手鎖緊、排水軟管、泡綿包覆、電源控制線、試運轉。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'室內牆面已預留穿牆孔，冷媒銅管、排水管、電源線已佈到室內機位置。',
+   tip:'依課本 6-4-14「分離式冷暖氣機室內機安裝」共 8 步驟。'},
+  {t:'背板校正水平', d:'安裝室內機固定背板，用氣泡水準器校正水平。', tip:'室內機內部已有排水設計，安裝時不需要傾斜，吊掛才會精準美觀。'},
+  {t:'檢視尺度・做記號', d:'檢視尺度，並在室內機背後已佈好的銅管做記號。', tip:'先掛上試裝，確認銅管要裁切的位置。'},
+  {t:'裁切・拓喇叭口・去毛邊', d:'將冷氣室內機拿下，於記號處裁切銅管、拓喇叭口、去毛邊。', tip:'毛邊或銅屑會讓喇叭口密合不良而漏冷媒。'},
+  {t:'旋接銅管・扭力板手', d:'再次掛上冷氣，旋接銅管，使用活動板手與扭力板手鎖緊冷媒管。', tip:'活動板手固定、扭力板手鎖緊；扭力過大喇叭口會裂。'},
+  {t:'排水軟管', d:'將室內機體內排水軟管插入硬質塑膠排水管中。', tip:'排水管要有洩水坡度。'},
+  {t:'泡綿・膠帶包覆', d:'冷媒銅管接合處套上泡綿，使用膠帶包覆完整。', tip:'接頭不包覆會結露滴水。'},
+  {t:'電源線・控制線', d:'裝妥室外機與室內機的電源線與控制線。', tip:'電源線供電、控制線傳遙控訊號。'},
+  {t:'隱藏管線・試運轉', d:'隱藏管線，裝妥外蓋，清潔機體，測試運轉，安裝完成。', tip:'試運轉確認出風、排水、噪音正常。'},
+];
+
+createAnim({
+  title: '分離式冷暖氣機室內機安裝',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.0,
+  sun: [4, 8, 6],
+  views: {
+    def:{dir:[0.35,0.15,0.92], dist:3.4, target:[0,1.9,0]},
+    2:  {dir:[0.5,0.2,0.84],   dist:2.4, target:[0.3,1.95,0.1]},
+    3:  {dir:[0.6,0.2,0.77],   dist:1.6, target:[0.45,1.95,0.2]},
+    4:  {dir:[0.6,0.2,0.77],   dist:1.6, target:[0.45,1.95,0.2]},
+    6:  {dir:[0.6,0.2,0.77],   dist:1.6, target:[0.45,1.95,0.2]},
+  },
+  note: '室內側視角；尺寸為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const W={x0:-0.5,x1:0.5,y0:2.0,y1:2.3}, D=0.22, PX=0.35;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), plate: mat('#94a3b8',{metalness:.5}),
+      level: mat('#facc15'), bubble: mat('#22c55e',{emissive:'#22c55e', emissiveIntensity:.6}),
+      unit: mat('#f8fafc',{roughness:.4}), unitG: mat('#f8fafc',{roughness:.4, transparent:true, opacity:.35, depthWrite:false}), vent: mat('#cbd5e1'),
+      cu: mat('#b45309',{metalness:.7, roughness:.3}), mark: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), cut: mat('#dc2626'),
+      flare: mat('#f59e0b',{metalness:.7, roughness:.3}), nut: mat('#ca8a04',{metalness:.7}), wrench: mat('#9ca3af',{metalness:.7}), torque: mat('#2563eb',{metalness:.4}),
+      drain: mat('#e2e8f0'), hard: mat('#94a3b8'), foam: mat('#f1f5f9',{roughness:.9}), tape: mat('#e5e7eb'),
+      power: mat('#111827'), ctrl: mat('#f8fafc'), cover: mat('#f5f5f4'), air: mat('#38bdf8',{transparent:true, opacity:.35, depthWrite:false}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.6,-0.15,-0.3,1.6,0,1.6,M.slab));
+    fixed(span(-1.6,0,-0.3,1.6,2.9,0,M.wall));
+    // 預留管線（從穿牆孔出來）
+    fixed(group(pipe([PX,1.85,-0.05],[PX,1.85,0.06],.04,M.foam)));
+    const cuEnd=(r,dz,len)=>pipe([PX+dz,1.85,0.06],[PX+dz+len,1.85,0.06],r,M.cu);
+    fixed(group(cuEnd(.007,0.0,0.32), pipe([PX,1.82,0.06],[PX+0.32,1.82,0.06],.01,M.cu)));
+    fixed(pipe([PX-.03,1.8,0.06],[PX-.03,1.8,0.1],.016,M.hard));
+
+    /* ① 背板＋水平 */
+    add(1, span(W.x0+0.05,W.y0+0.02,0,W.x1-0.05,W.y1-0.02,0.01,M.plate),{drop:.2});
+    add(1, group(span(-0.25,W.y1+0.02,0.01,0.25,W.y1+0.06,0.05,M.level), (()=>{ const b=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8), M.bubble.clone()); b.position.set(0,W.y1+0.06,0.03); return b; })()),{until:1, drop:.1});
+    add(1, label('氣泡水準器校正水平・不需傾斜',0,2.65,0.2,1.8),{until:1, drop:0, glow:false});
+    /* ② 試掛・做記號 */
+    add(2, span(W.x0,W.y0,0.012,W.x1,W.y1,D,M.unitG,NE),{until:2, drop:0, glow:false});
+    add(2, group(span(PX+0.2,1.80,0.05,PX+0.205,1.88,0.08,M.mark,NE)),{until:3, drop:0, glow:false});
+    add(2, label('在背後銅管做記號',PX+0.2,1.6,0.2,1.2),{until:2, drop:0, glow:false});
+    /* ③ 裁切・拓喇叭口・去毛邊 */
+    add(3, group(span(PX+0.2,1.80,0.03,PX+0.32,1.88,0.09,M.cut,NE)),{until:3, drop:0, glow:false});
+    add(3, group((()=>{ const c=new THREE.Mesh(new THREE.ConeGeometry(.016,.02,14,1,true), M.flare.clone()); c.rotation.z=Math.PI/2; c.position.set(PX+0.21,1.85,0.06); return c; })(), (()=>{ const c=new THREE.Mesh(new THREE.ConeGeometry(.02,.02,14,1,true), M.flare.clone()); c.rotation.z=Math.PI/2; c.position.set(PX+0.21,1.82,0.06); return c; })()),{delay:.3, until:3, drop:0});
+    add(3, label('拿下室內機 → 裁切・拓喇叭口・去毛邊',PX,1.55,0.2,2.1),{until:3, drop:0, glow:false});
+    /* ④ 掛上・旋接・扭力板手 */
+    add(4, span(W.x0,W.y0,0.012,W.x1,W.y1,D,M.unit),{drop:.1});
+    add(4, span(W.x0+0.05,W.y0,D-0.07,W.x1-0.05,W.y0+.02,D-0.01,M.vent,NE),{drop:.1});
+    add(4, group(pipe([PX+0.18,1.85,0.06],[PX+0.21,1.85,0.06],.016,M.nut), pipe([PX+0.18,1.82,0.06],[PX+0.21,1.82,0.06],.02,M.nut)),{drop:0});
+    add(4, group(span(PX+0.17,1.84,0.08,PX+0.19,1.86,0.28,M.wrench), span(PX+0.22,1.81,0.08,PX+0.24,1.83,0.3,M.torque)),{until:4, drop:-.1});
+    add(4, label('活動板手（灰）＋扭力板手（藍）鎖緊',PX,1.55,0.3,2.0),{until:4, drop:0, glow:false});
+    /* ⑤ 排水軟管插入硬管 */
+    add(5, pipe([PX-.03,1.98,0.08],[PX-.03,1.81,0.08],.011,M.drain),{drop:0});
+    add(5, label('機體排水軟管插入硬質塑膠排水管',PX-0.2,1.55,0.2,1.9),{until:5, drop:0, glow:false});
+    /* ⑥ 泡綿・膠帶 */
+    add(6, group(pipe([PX+0.02,1.835,0.06],[PX+0.23,1.835,0.06],.04,M.foam)),{drop:0});
+    for (let i=0;i<5;i++) add(6, pipe([PX+0.03+i*0.045,1.835,0.06],[PX+0.05+i*0.045,1.835,0.06],.042,M.tape),{delay:.3+i*.08, drop:0, glow:false});
+    add(6, label('接合處套泡綿・膠帶包覆完整',PX,1.55,0.3,1.7),{until:6, drop:0, glow:false});
+    /* ⑦ 電源線・控制線 */
+    add(7, group(pipe([PX+0.3,1.9,0.06],[PX+0.3,0.4,0.01],.005,M.power), pipe([PX+0.32,1.9,0.06],[PX+0.32,1.86,0.0],.004,M.ctrl)),{drop:0, glow:false});
+    add(7, label('電源線（黑）・控制線（白）接妥',PX+0.4,1.4,0.2,1.6),{until:7, drop:0, glow:false});
+    /* ⑧ 隱藏管線・外蓋・試運轉 */
+    add(8, span(PX-0.06,0.4,0,PX+0.36,1.95,0.09,M.cover),{drop:0});
+    add(8, (()=>{ const c=new THREE.Mesh(new THREE.ConeGeometry(.5,.8,24,1,true), M.air.clone()); c.rotation.x=-Math.PI*0.65; c.position.set(0,1.75,D+0.35); return c; })(),{drop:0, glow:false});
+    add(8, label('隱藏管線・裝外蓋・清潔・試運轉',0,2.65,0.2,1.9,'good'),{until:8, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>
