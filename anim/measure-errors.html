@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>量距誤差產生原因｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：室內現場裝修距離測量放樣時，量距誤差產生原因 11 項 3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'量距現場', d:'用捲尺量測房間淨寬（正確值 300 cm）。下面逐項看會造成誤差的原因。',
+   tip:'題目：「請列舉 7 項室內現場裝修距離測量放樣時，量距誤差產生原因。」'},
+  {t:'捲尺下垂', d:'捲尺未拉直、鬆弛下垂（垂曲誤差）。', tip:'下垂時尺面比直線長，量出來的距離會偏大。'},
+  {t:'拉力不當', d:'拉力不當，過大或過小。', tip:'拉太緊尺會伸長，太鬆會下垂。'},
+  {t:'溫度變化', d:'溫度變化，造成尺長伸縮。', tip:'鋼捲尺熱脹冷縮，夏天與冬天量出來可能不同。'},
+  {t:'尺不準確', d:'捲尺刻度不準確、未經檢定或已經磨損。', tip:'尤其是前端勾頭鬆動或磨損，會造成固定誤差。'},
+  {t:'尺不平行（傾斜）', d:'尺未與量測方向平行（傾斜誤差）。', tip:'斜量出來的長度比實際大。'},
+  {t:'讀數錯誤・視差', d:'讀數錯誤、視差。', tip:'眼睛要正對刻度讀數。'},
+  {t:'零點對錯', d:'起點（零點）對準錯誤。', tip:'勾頭沒勾好、從 1 cm 開始量忘記扣掉，都是零點錯誤。'},
+  {t:'分段累積誤差', d:'分段量測造成累積誤差。', tip:'一次量完比分好幾段接著量準確。'},
+  {t:'地面不平・障礙物', d:'地面或牆面不平、有障礙物。', tip:'尺被障礙物頂起，量出來就不是直線距離。'},
+  {t:'雷射受干擾', d:'雷射測距儀受反射面或強光干擾。', tip:'玻璃、鏡面或陽光直射都會影響雷射讀數。'},
+  {t:'記錄計算錯誤', d:'記錄或計算錯誤。', tip:'量完立刻記錄，重要尺寸請別人複核。'},
+];
+
+createAnim({
+  title: '量距誤差產生原因',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.0,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.35,0.6,0.72], dist:4.6, target:[0,0.3,0.2]},
+    6:  {dir:[0.3,0.4,0.87],  dist:1.8, target:[0.3,0.4,0.3]},
+    7:  {dir:[0.5,0.5,0.7],   dist:1.8, target:[-1.4,0.1,0.3]},
+  },
+  note: '誤差大小有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const X0=-1.5, X1=1.5, Y=0.4, Z=0.3;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), tape: mat('#facc15',{roughness:.4}), tick: mat('#292524'),
+      body: mat('#f59e0b'), red: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.6}), green: mat('#16a34a',{emissive:'#16a34a', emissiveIntensity:.5}),
+      therm: mat('#f8fafc'), merc: mat('#dc2626'), box: mat('#a16207'), glass: mat('#bae6fd',{transparent:true, opacity:.5, depthWrite:false}),
+      sun: mat('#fbbf24',{emissive:'#f59e0b', emissiveIntensity:.8}), laser: mat('#1f2937'), board: mat('#a16207'), paper: mat('#fafaf9'), eye: mat('#1f2937'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.8,-0.15,-0.6,1.8,0,1.2,M.slab));
+    fixed(span(-1.8,0,-0.6,X0,1.2,1.2,M.wall)); fixed(span(X1,0,-0.6,1.8,1.2,1.2,M.wall));
+    const tapeStraight=(y=Y,z=Z,x0=X0,x1=X1,m=M.tape)=>{ const g=group(span(x0,y,z-.012,x1,y+.002,z+.012,m,NE)); for (let x=x0;x<x1;x+=0.1) g.add(span(x-.001,y+.002,z-.012,x+.001,y+.003,z,M.tick,NE)); return g; };
+    // 正確量法（step 0 顯示）
+    add(0, tapeStraight(),{until:0, drop:0}); add(0, span(X1-.05,Y-.05,Z-.05,X1+.0,Y+.05,Z+.05,M.body),{until:0, drop:0});
+    add(0, label('正確：拉直・水平・貼齊兩端',0,0.8,Z,1.7,'good'),{until:0, drop:0, glow:false});
+    // ① 下垂
+    { const pts=[]; for (let i=0;i<=30;i++){ const u=i/30; pts.push(new THREE.Vector3(X0+(X1-X0)*u, Y-0.2*Math.sin(Math.PI*u), Z)); }
+      add(1, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.008,6), M.tape.clone()),{until:1, drop:0, glow:false});
+      add(1, label('下垂 → 量出偏大',0,0.75,Z,1.2,'bad'),{until:1, drop:0, glow:false}); }
+    // ② 拉力
+    add(2, tapeStraight(),{until:2, drop:0}); add(2, group(arrow([X1-.1,Y+.1,Z],[X1+0.0,Y+.1,Z],M.red), arrow([X0+.1,Y+.1,Z],[X0,Y+.1,Z],M.red)),{until:2, drop:0, glow:false});
+    add(2, label('拉太緊伸長・太鬆下垂',0,0.75,Z,1.4,'bad'),{until:2, drop:0, glow:false});
+    // ③ 溫度
+    add(3, tapeStraight(),{until:3, drop:0}); add(3, group(pipe([0,0.5,Z+.15],[0,0.85,Z+.15],.02,M.therm), pipe([0,0.5,Z+.15],[0,0.78,Z+.15],.012,M.merc)),{until:3, drop:0});
+    add(3, label('熱脹冷縮',0.4,0.9,Z,0.8,'bad'),{until:3, drop:0, glow:false});
+    // ④ 尺不準（勾頭磨損）
+    add(4, tapeStraight(),{until:4, drop:0}); mark(4, X0+.02,Y+.01,Z,{face:'y', r:.06, text:'勾頭鬆動・刻度磨損', ty:0.7, tw:1.3, tone:'bad'});
+    // ⑤ 傾斜
+    { const g=tapeStraight(); g.rotation.z=0.18; add(5, g, {until:5, drop:0}); add(5, label('斜量 → 偏大',0,1.0,Z,0.9,'bad'),{until:5, drop:0, glow:false}); }
+    // ⑥ 視差
+    add(6, tapeStraight(),{until:6, drop:0});
+    { const e=new THREE.Mesh(new THREE.SphereGeometry(.04,12,10), M.eye.clone()); e.position.set(0.5,0.65,Z+0.25); add(6, e, {until:6, drop:0}); add(6, pipe([0.5,0.65,Z+0.25],[0.3,Y+.003,Z],.003,M.red),{until:6, drop:0, glow:false}); }
+    add(6, label('眼睛沒正對刻度',0.4,0.85,Z,1.0,'bad'),{until:6, drop:0, glow:false});
+    // ⑦ 零點
+    add(7, tapeStraight(Y,Z,X0+0.1),{until:7, drop:0}); mark(7, X0+0.05,Y,Z,{face:'y', r:.07, text:'零點沒對齊牆面', ty:0.65, tw:1.1, tone:'bad'});
+    // ⑧ 分段累積
+    add(8, group(tapeStraight(Y,Z,X0,-0.5), tapeStraight(Y,Z,-0.48,0.5), tapeStraight(Y,Z,0.53,X1)),{until:8, drop:0});
+    add(8, group(...[-0.49,0.515].map(x=>span(x-.006,Y-.02,Z-.02,x+.006,Y+.02,Z+.02,M.red,NE))),{until:8, drop:0, glow:false});
+    add(8, label('分 3 段量 → 誤差累積',0,0.75,Z,1.3,'bad'),{until:8, drop:0, glow:false});
+    // ⑨ 障礙物
+    add(9, span(-0.2,0,Z-.15,0.2,0.5,Z+.15,M.box),{until:9, drop:0});
+    { const pts=[[X0,Y,Z],[-0.2,0.52,Z],[0.2,0.52,Z],[X1,Y,Z]].map(p=>new THREE.Vector3(...p)); add(9, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.008,6), M.tape.clone()),{until:9, drop:0, glow:false}); }
+    add(9, label('被障礙物頂起',0,0.85,Z,1.0,'bad'),{until:9, drop:0, glow:false});
+    // ⑩ 雷射干擾
+    add(10, group(span(X0+.02,Y-.04,Z-.03,X0+.12,Y+.04,Z+.03,M.laser), pipe([X0+.12,Y,Z],[X1,Y,Z],.003,M.red), span(X1-.02,0.1,Z-0.3,X1,0.9,Z+0.3,M.glass,NE)),{until:10, drop:0, glow:false});
+    { const s=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12), M.sun.clone()); s.position.set(0.9,1.1,Z+0.3); add(10, s, {until:10, drop:0, glow:false}); }
+    add(10, label('玻璃反射・強光直射',0.3,0.8,Z,1.2,'bad'),{until:10, drop:0, glow:false});
+    // ⑪ 記錄
+    add(11, group(span(-0.25,0.35,Z+.1,0.25,0.36,Z+.4,M.board), span(-0.23,0.36,Z+.12,0.23,0.362,Z+.38,M.paper,NE)),{until:11, drop:.1});
+    add(11, label('寫錯・算錯 → 請人複核',0,0.75,Z,1.4,'bad'),{until:11, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

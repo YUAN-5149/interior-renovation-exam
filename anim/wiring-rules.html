@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>屋內線路裝置規定｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：屋內線路裝置規則與用戶用電設備裝置規則重點 8 項（合格材料、線徑、斷路器、接地、漏電斷路器、導線管、絕緣電阻）3D 互動圖解。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'配電現場', d:'牆上的分電盤、各分路導線管、浴室插座與接地極。',
+   tip:'術科考過三題：「屋內線路裝置應符合何項規定」「屋內配線之導線規定」「接地方式規定」。這裡整合成 8 項。'},
+  {t:'合格材料', d:'使用經檢驗合格的導線、器具與材料。', tip:'有商品檢驗標識的電線、開關、插座、斷路器。'},
+  {t:'合格人員施作', d:'依規則設計並施工，由合格電器承裝業及電匠施作。', tip:'室內裝修的配電工程，不可由沒有證照的人施作。'},
+  {t:'線徑規定', d:'導線線徑須足以承擔負載電流：電燈、插座分路不得小於 1.6 mm；電力分路不得小於 2.0 mm；3.2 mm 以上用絞線。', tip:'屋內配線應使用絕緣導線；只有電氣爐、乾燥室、電動起重機滑接導線得用裸銅線。'},
+  {t:'分路過電流保護', d:'各分路應裝設過電流保護裝置（斷路器）。', tip:'斷路器遇過載、短路時自動跳脫，且本身不受損。'},
+  {t:'接地', d:'用電設備與線路應依規定接地；接地線綠色（或綠／黃），不得裝開關或過電流保護器。', tip:'第三種接地（低壓設備）：對地電壓 150 V 以下 100 Ω 以下；151～300 V 50 Ω 以下；301 V 以上 10 Ω 以下。'},
+  {t:'潮濕場所漏電斷路器', d:'浴室、廚房、屋外等潮濕場所應裝設漏電斷路器。', tip:'潮濕環境人體電阻變低，一旦漏電很容易致命。'},
+  {t:'配線方式・管內無接頭', d:'配線方式依場所條件選用（導線管、電纜等）；導線在導線管內不得有接頭。', tip:'接頭一定要在出線盒或接線盒內。'},
+  {t:'絕緣電阻測試', d:'完工後做絕緣電阻測試，數值須符合規定。', tip:'測試合格才能送電。'},
+];
+
+createAnim({
+  title: '屋內線路裝置規定',
+  kind: 'notes',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.0,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.45,0.25,0.86], dist:4.4, target:[0,1.1,0.3]},
+    4:  {dir:[0.3,0.15,0.94],  dist:2.0, target:[-0.6,1.4,0]},
+    5:  {dir:[0.5,0.3,0.81],   dist:3.0, target:[-0.6,0.4,0.6]},
+  },
+  note: '場景為示意；數值依題庫答案，請以最新法規為準。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const PX=-0.6, PY=1.4;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), tileW: mat('#dbeafe',{roughness:.3}),
+      panel: mat('#9ca3af',{metalness:.4}), brk: mat('#1f2937'), elcb: mat('#2563eb'), main: mat('#dc2626'), bus: mat('#ca8a04',{metalness:.6}),
+      conduit: mat('#f97316',{roughness:.5}), box: mat('#1d4ed8'), plate: mat('#fafaf9'), green: mat('#16a34a'), rod: mat('#b45309',{metalness:.6}),
+      spoolA: mat('#111827'), spoolB: mat('#f8fafc'), badge: mat('#16a34a',{emissive:'#16a34a', emissiveIntensity:.4}), tester: mat('#facc15'), dark: mat('#292524'),
+      person: mat('#1e3a8a'), head: mat('#fcd34d'), card: mat('#fef3c7'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2,-0.15,-0.3,2,0,1.6,M.slab));
+    fixed(span(-2,0,-0.25,2,2.6,0,M.wall));
+    fixed(span(0.6,0,0,2,2.0,.004,M.tileW,NE));    // 右側浴室牆
+    // 分電盤（打開）
+    fixed(span(PX-.3,PY-.4,0,PX+.3,PY+.4,.12,M.panel));
+    fixed(span(PX-.27,PY+.25,.12,PX+.27,PY+.3,.125,M.bus));
+    fixed(span(PX-.08,PY+.3,.12,PX+.08,PY+.38,.16,M.main));
+    for (let i=0;i<5;i++) fixed(span(PX-.25+i*.1,PY-.05,.12,PX-.17+i*.1,PY+.18,.16,M.brk));
+    fixed(span(PX+.25-.08,PY-.32,.12,PX+.25,PY-.1,.16,M.elcb));
+    // 導線管到各處
+    fixed(pipe([PX-.2,PY-.4,.05],[PX-.2,0.3,.05],.015,M.conduit)); fixed(pipe([PX-.2,0.3,.05],[-1.4,0.3,.05],.015,M.conduit));
+    fixed(pipe([PX+.2,PY-.4,.05],[PX+.2,1.1,.05],.015,M.conduit)); fixed(pipe([PX+.2,1.1,.05],[1.2,1.1,.05],.015,M.conduit));
+    fixed(span(-1.46,0.24,0,-1.34,0.36,.012,M.plate)); fixed(span(1.14,1.04,0,1.26,1.16,.012,M.plate));
+    // 接地極
+    fixed(pipe([PX,PY-.4,.08],[PX,0.02,.3],.006,M.green)); fixed(pipe([PX,0.02,.3],[PX,-0.15,.3],.012,M.rod));
+    // 線材、人員
+    fixed(pipe([0.2,0,0.8],[0.2,0.25,0.8],.15,M.spoolA)); fixed(pipe([0.6,0,0.8],[0.6,0.25,0.8],.15,M.spoolB));
+
+    mark(1, 0.4,0.26,0.8,{face:'y', r:.35, text:'檢驗合格的導線・器具・材料', ty:0.7, tw:1.8});
+    add(1, group(span(0.15,0.26,0.75,0.25,0.262,0.85,M.badge,NE), span(0.55,0.26,0.75,0.65,0.262,0.85,M.badge,NE)),{until:1, drop:0, glow:false});
+    { const p=group(pipe([1.2,0,0.6],[1.2,1.2,0.6],.14,M.person)); const h=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12), M.head.clone()); h.position.set(1.2,1.35,0.6); p.add(h); p.add(span(1.1,0.8,0.74,1.3,0.95,0.75,M.card,NE));
+      add(2, p, {until:2, drop:.2}); add(2, label('合格承裝業・電匠施作',1.2,1.75,0.6,1.3),{until:2, drop:0, glow:false}); }
+    add(3, label('燈・插座 ≥ 1.6 mm／電力 ≥ 2.0 mm／3.2 mm 以上用絞線',0.3,0.6,0.9,2.6),{until:3, drop:0, glow:false});
+    mark(3, 0.4,0.13,0.8,{face:'y', r:.35});
+    mark(4, PX,PY+.06,.17,{r:.28, text:'各分路裝斷路器', ty:PY+.6, tw:1.1});
+    mark(5, PX,-0.05,.3,{face:'y', r:.12, text:'接地線綠色・不得裝開關', ty:0.45, tw:1.5});
+    add(5, label('第三種接地：150 V 以下 ≤ 100 Ω',PX,0.8,0.5,1.9),{until:5, drop:0, glow:false});
+    mark(6, PX+.21,PY-.21,.17,{r:.12, text:'浴室分路：漏電斷路器', ty:PY-.65, tw:1.4});
+    add(6, pipe([PX+.21,PY-.32,.14],[PX+.21,1.1,.14],.006,M.elcb),{until:6, drop:0, glow:false});
+    mark(7, 0.3,1.1,.05,{r:.12, text:'導線管內不得有接頭', ty:1.5, tw:1.3});
+    add(8, group(span(-1.2,0.05,0.5,-1.0,0.2,0.65,M.tester), span(-1.17,0.15,0.65,-1.03,0.19,0.652,M.dark,NE), pipe([-1.15,0.1,0.5],[-1.4,0.3,0.013],.003,M.main), pipe([-1.05,0.1,0.5],[-1.36,0.28,0.013],.003,M.dark)),{until:8, drop:.1});
+    add(8, label('絕緣電阻測試合格才送電',-1.1,0.65,0.5,1.5),{until:8, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

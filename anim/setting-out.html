@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>室內裝修放樣流程｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級術科：室內裝修放樣（圖上放樣→實際放樣）10 步驟 3D 互動動畫，含雷射墨線儀、墨斗操作順序、隔間門窗出線口天花放樣與檢核。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'空的室內空間，要放樣隔間牆、門、出線口、櫥櫃與天花板。',
+   tip:'術科考過：實際放樣與圖上放樣的差別、須放樣的工程項目、墨斗操作 4 步驟、各種放樣工具。本動畫把它們串成一個完整流程。'},
+  {t:'圖上放樣', d:'依現場實測尺寸，在圖面（或 CAD）繪製放樣圖、施工圖與分割計畫。', tip:'先做圖上放樣找出問題、確定尺寸，再到現場實際放樣。'},
+  {t:'建立基準', d:'以雷射墨線儀投射水平線（如 FL＋100 cm）、垂直線與地面基準點。', tip:'雷射墨線儀可以單人作業，取代墨斗與水平管。'},
+  {t:'墨斗 ① 定點', d:'依圖量測，找出放樣線的兩端點。', tip:'墨斗操作 4 步驟：定點 → 註記 → 引線 → 彈線。'},
+  {t:'墨斗 ② 註記', d:'在兩端點做記號。', tip:'記號要清楚，彈線時才對得準。'},
+  {t:'墨斗 ③ 引線', d:'墨線一端固定在起點，拉出墨線對準終點。', tip:'墨線要拉緊、貼近地面。'},
+  {t:'墨斗 ④ 彈線', d:'拉緊墨線，垂直提起後放開，彈出墨線。', tip:'要「垂直」提起，斜著彈線條會偏移。'},
+  {t:'隔間・門窗開口', d:'彈出地面與天花的隔間位置線，標出門窗開口。', tip:'隔間要上下對位：地面線用雷射或鉛錘投到天花板。'},
+  {t:'出線口・櫥櫃', d:'標出開關、插座、出線口位置，以及櫥櫃位置與高度。', tip:'水電出線口要和隔間、櫥櫃一起放樣，避免互相衝突。'},
+  {t:'天花高度・設備', d:'放出天花板完成高度水平線，以及燈具、出風口位置。', tip:'天花高度線決定吊筋與角材的位置。'},
+  {t:'檢核', d:'用角尺、對角線、測距儀複核方正與尺寸。', tip:'量距可能有誤差（捲尺下垂、拉力、溫度、讀數…），重要尺寸要複核。'},
+];
+
+createAnim({
+  title: '室內裝修放樣流程',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.5,0.62,0.6], dist:6.2, target:[0,0.6,0.1]},
+    1:  {dir:[0.4,0.7,0.6],  dist:2.6, target:[1.2,0.8,1.0]},
+    3:  {dir:[0.4,0.8,0.45], dist:3.4, target:[-0.4,0,0.2]},
+    4:  {dir:[0.4,0.8,0.45], dist:3.4, target:[-0.4,0,0.2]},
+    5:  {dir:[0.4,0.8,0.45], dist:3.4, target:[-0.4,0,0.2]},
+    6:  {dir:[0.4,0.8,0.45], dist:3.4, target:[-0.4,0,0.2]},
+  },
+  note: '放樣線粗細有誇大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-2.0, X1=2.0, Z0=-1.5, Z1=1.5, HC=2.8, PZ=0.2, DX0=-0.3, DX1=0.6;
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), ghost: mat('#ffffff',{transparent:true, opacity:.12, depthWrite:false}),
+      table: mat('#a16207'), paper: mat('#f8fafc'), ink: mat('#1d4ed8'), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      dev: mat('#facc15'), dark: mat('#292524'), chalk: mat('#2563eb',{emissive:'#2563eb', emissiveIntensity:.5}), mark: mat('#111827'),
+      reel: mat('#dc2626'), green: mat('#16a34a',{emissive:'#16a34a', emissiveIntensity:.5}), orange: mat('#f97316',{emissive:'#f97316', emissiveIntensity:.5}),
+      square: mat('#94a3b8',{metalness:.5}), tape: mat('#facc15'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.2,-0.15,-1.7,2.2,0,1.7,M.slab));
+    fixed(span(-2.2,0,-1.7,2.2,HC,Z0,M.wall)); fixed(span(-2.2,0,Z0,X0,HC,1.7,M.wall));
+    const ce=span(-2.2,HC,-1.7,2.2,HC+.12,1.7,M.ghost,{shadow:false}); ce.children[0].material.opacity=.45; fixed(ce);
+    fixed(span(0.9,0,0.8,1.6,0.75,1.3,M.table));
+
+    /* ① 圖上放樣（桌上圖面） */
+    add(1, group(span(0.95,0.75,0.85,1.55,0.752,1.25,M.paper,NE), span(1.0,0.753,1.0,1.5,0.755,1.005,M.ink,NE), span(1.2,0.753,0.9,1.205,0.755,1.2,M.ink,NE), span(1.0,0.753,1.15,1.15,0.755,1.155,M.ink,NE)),{drop:.1});
+    add(1, label('實測尺寸 → 放樣圖・分割計畫',1.25,1.2,1.05,1.7),{until:1, drop:0, glow:false});
+    /* ② 雷射基準 */
+    add(2, group(span(-0.1,0.95,0.5,0.06,1.05,0.66,M.dev), pipe([-0.02,0.95,0.58],[0.2,0,0.8],.01,M.dark), pipe([-0.02,0.95,0.58],[-0.2,0,0.8],.01,M.dark), pipe([-0.02,0.95,0.58],[-0.02,0,0.3],.01,M.dark)),{until:2, drop:.3});
+    add(2, group(span(X0+.001,1.0-.004,Z0,X0+.004,1.0+.004,Z1,M.laser,NE), span(X0,1.0-.004,Z0+.001,X1,1.0+.004,Z0+.004,M.laser,NE), span(-0.02-.004,0,Z0+.001,-0.02+.004,HC,Z0+.004,M.laser,NE)),{until:7, drop:0, glow:false, delay:.3});
+    add(2, label('FL＋100 cm 水平線・垂直線',0,1.4,-1.2,1.7),{until:2, drop:0, glow:false});
+    /* ③～⑥ 墨斗（隔間線 z=PZ 從 x=-1.9 到 1.9） */
+    const A=[X0+.1,PZ], B=[X1-.1,PZ];
+    add(3, group(...[A,B].map(([x,z])=>pipe([x,0,z],[x,.004,z],.03,M.orange))),{until:3, drop:0, glow:false});
+    add(3, label('找出兩端點',0,0.5,PZ,0.9),{until:3, drop:0, glow:false});
+    add(4, group(...[A,B].map(([x,z])=>group(span(x-.06,.001,z-.003,x+.06,.004,z+.003,M.mark,NE), span(x-.003,.001,z-.06,x+.003,.004,z+.06,M.mark,NE)))),{until:10, drop:0});
+    add(4, label('兩端點做記號',0,0.5,PZ,0.9),{until:4, drop:0, glow:false});
+    add(5, group(pipe([A[0],.01,A[1]],[B[0],.01,B[1]],.003,M.chalk), span(B[0],0,B[1]-.06,B[0]+.15,.08,B[1]+.06,M.reel)),{until:5, drop:0, glow:false});
+    add(5, label('起點固定・拉線對準終點',0,0.5,PZ,1.4),{until:5, drop:0, glow:false});
+    { const pts=[]; for (let i=0;i<=20;i++){ const u=i/20, x=A[0]+(B[0]-A[0])*u; pts.push(new THREE.Vector3(x,.01+0.25*Math.sin(Math.PI*u),A[1])); }
+      add(6, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.003,6), M.chalk.clone()),{until:6, drop:0, glow:false});
+      add(6, arrow([0,0.4,PZ+.15],[0,0.1,PZ+.15],M.orange),{until:6, drop:0, glow:false});
+      add(6, label('垂直提起 → 放開彈線',0,0.75,PZ,1.3),{until:6, drop:0, glow:false}); }
+    /* ⑦ 隔間＋門開口（地面＋天花） */
+    const seg=(y,xa,xb)=>span(xa,y,PZ-.004,xb,y+.003,PZ+.004,M.chalk,NE);
+    add(6, seg(.001,A[0],B[0]),{delay:.8, drop:0, glow:false, until:6});
+    add(7, group(seg(.001,X0,DX0), seg(.001,DX1,X1), seg(HC-.004,X0,X1), span(DX0-.004,.001,PZ-.1,DX0+.004,.004,PZ+.1,M.chalk,NE), span(DX1-.004,.001,PZ-.1,DX1+.004,.004,PZ+.1,M.chalk,NE)),{drop:0, glow:false});
+    add(7, pipe([1.2,HC,PZ],[1.2,0.05,PZ],.002,M.dark),{until:7, drop:0, glow:false});
+    add(7, label('隔間線上下對位・門開口',0,1.6,PZ,1.5),{until:7, drop:0, glow:false});
+    /* ⑧ 出線口・櫥櫃 */
+    add(8, group(span(X0+.001,0.25,-0.8,X0+.004,0.37,-0.72,M.orange,NE), span(X0+.001,1.15,0.0,X0+.004,1.27,0.08,M.orange,NE), span(1.0,0.3,Z0+.001,1.08,0.42,Z0+.004,M.orange,NE)),{drop:0, glow:false});
+    add(8, group(span(-1.0,.001,Z0,0.2,.004,Z0+.006,M.green,NE), span(-1.0,.001,Z0+0.6,0.2,.004,Z0+.606,M.green,NE), span(-1.0,.001,Z0,-0.994,.004,Z0+0.6,M.green,NE), span(0.194,.001,Z0,0.2,.004,Z0+0.6,M.green,NE)),{delay:.3, drop:0, glow:false});
+    add(8, label('開關・插座・出線口・櫥櫃',-0.4,1.4,-0.9,1.6),{until:8, drop:0, glow:false});
+    /* ⑨ 天花高度＋設備 */
+    add(9, group(span(X0+.001,2.5-.004,Z0,X0+.004,2.5+.004,Z1,M.green,NE), span(X0,2.5-.004,Z0+.001,X1,2.5+.004,Z0+.004,M.green,NE)),{drop:0, glow:false});
+    add(9, group(...[[-1.0,-0.6],[0.5,-0.6],[-1.0,0.9],[0.5,0.9]].map(([x,z])=>pipe([x,HC-.004,z],[x,HC-.001,z],.08,M.orange)), span(1.2,HC-.004,-0.9,1.6,HC-.001,-0.6,M.orange,NE)),{delay:.3, drop:0, glow:false});
+    add(9, label('天花完成高度・燈具・出風口',0,2.2,0.3,1.7),{until:9, drop:0, glow:false});
+    /* ⑩ 檢核 */
+    add(10, group(span(X0+.02,.004,Z0+.02,X0+.4,.012,Z0+.06,M.square), span(X0+.02,.004,Z0+.02,X0+.06,.012,Z0+.4,M.square)),{drop:.1});
+    add(10, (()=>{ const L=Math.hypot(X1-X0,PZ-Z0), b=box(L,.004,.008,M.tape,NE); b.position.set(0,.008,(PZ+Z0)/2); b.rotation.y=-Math.atan2(PZ-Z0,X1-X0); return b; })(),{drop:0, glow:false});
+    add(10, label('角尺・對角線・測距儀複核',0,0.7,-0.6,1.6),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

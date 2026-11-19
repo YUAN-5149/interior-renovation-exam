@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>屋內配管配線施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：屋內配管配線 10 步驟施工順序 3D 互動動畫，含出線口放樣、開槽埋管、穿線顏色、分路與漏電斷路器、接地、絕緣電阻測試。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'磚牆粉刷前，要從左牆的配電箱配管配線到插座、開關與天花燈具。',
+   tip:'術科考過「屋內線路裝置規則」「用戶用電設備裝置規則」的導線、接地規定。本動畫步驟依一般施工實務整理，規定數值依題庫答案，請對照課本確認。'},
+  {t:'放樣出線口', d:'依圖放樣插座、開關、燈具出線口位置與高度。', tip:'出線口要和隔間、櫥櫃、家具位置一起確認。'},
+  {t:'牆面開槽', d:'沿配管路徑在牆面開槽。', tip:'開槽以垂直、水平走向為原則，日後才找得到管線；不可斜向亂開。'},
+  {t:'埋設導線管・出線盒', d:'埋設導線管與出線盒，並確實固定。', tip:'導線管轉彎不可太急，否則穿線困難、易刮傷絕緣層。'},
+  {t:'管口整修・穿引線', d:'管口去毛邊，用穿線器（引線）穿過管內。', tip:'管口毛邊會割傷電線絕緣。'},
+  {t:'穿線', d:'依顏色穿入導線：接地線綠色、中性線白色；導線在導線管內不得有接頭。', tip:'電燈、插座分路線徑不得小於 1.6 mm；電力分路不得小於 2.0 mm；3.2 mm 以上應使用絞線。'},
+  {t:'分路・斷路器', d:'各分路裝設斷路器；浴室、廚房等潮濕場所分路裝設漏電斷路器。', tip:'斷路器遇過載、短路會自動跳脫；漏電斷路器防止感電。'},
+  {t:'接地', d:'用電設備與插座依規定接地，接地線以綠色標示。', tip:'接地線不得裝設開關或過電流保護器。'},
+  {t:'隱蔽前檢查・封槽', d:'隱蔽前檢查並拍照，再以水泥砂漿封槽粉刷。', tip:'封槽前拍照留存管線路徑，日後維修才知道管線位置。'},
+  {t:'安裝面板', d:'接線並安裝開關、插座面板與燈具。', tip:'接頭要在出線盒內，並確實絕緣。'},
+  {t:'絕緣電阻・通電測試', d:'完工後做絕緣電阻測試，數值合格後通電測試。', tip:'絕緣電阻太低代表有漏電風險，不可送電。'},
+];
+
+createAnim({
+  title: '屋內配管配線施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.45,0.25,0.86], dist:5.2, target:[0,1.3,0.2]},
+    5:  {dir:[0.45,0.25,0.86], dist:1.8, target:[0.7,0.35,0.05]},
+    6:  {dir:[0.85,0.15,0.5],  dist:2.8, target:[-1.9,1.6,0.4]},
+    7:  {dir:[0.85,0.15,0.5],  dist:2.2, target:[-1.9,1.5,0.4]},
+  },
+  note: '管線與溝槽尺寸有放大。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-2.0, X1=2.0, H=2.8, ZW=0, PB={z:0.4,y:1.5};
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#c9c4bb',{roughness:1}), ghost: mat('#ffffff',{transparent:true, opacity:.12, depthWrite:false}),
+      mark: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), groove: mat('#57534e',{roughness:1}), conduit: mat('#f97316',{roughness:.5}),
+      box: mat('#1d4ed8',{roughness:.6}), fish: mat('#facc15'), panel: mat('#9ca3af',{metalness:.4}), door: mat('#d1d5db',{metalness:.4}),
+      brk: mat('#1f2937'), elcb: mat('#2563eb'), black: mat('#111827'), white: mat('#f8fafc'), green: mat('#16a34a'), red: mat('#dc2626'),
+      patch: mat('#b8b2a8',{roughness:1}), plate: mat('#fafaf9'), lamp: mat('#fff7cc',{emissive:'#ffe58a', emissiveIntensity:1}), tester: mat('#facc15'), dark: mat('#292524'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.2,-0.15,-0.4,2.2,0,1.6,M.slab));
+    fixed(span(-2.2,0,-0.25,X1,H,ZW,M.wall)); fixed(span(-2.2,0,ZW,X0,H,1.6,M.wall));
+    const ce=span(-2.2,H,-0.4,2.2,H+.12,1.6,M.ghost,{shadow:false}); ce.children[0].material.opacity=.45; fixed(ce);
+    // 出線口位置（後牆 z=0）
+    const OUT=[[-1.0,0.3],[0.8,0.3]], SW={x:-0.2,y:1.2}, LT={x:0.3,z:0.8};
+    const route=[ [[X0,PB.y,0.12],[X0+0.12,PB.y,0.0]], [[X0+0.12,PB.y,0],[X0+0.12,0.3,0]], [[X0+0.12,0.3,0],[0.8,0.3,0]], [[X0+0.12,PB.y,0],[X0+0.12,2.6,0]], [[X0+0.12,2.6,0],[SW.x,2.6,0]], [[SW.x,2.6,0],[SW.x,1.2,0]], [[SW.x,2.6,0],[LT.x,2.6,0]] ];
+
+    /* ① 放樣 */
+    add(1, group(...OUT.map(([x,y])=>span(x-.05,y-.06,.001,x+.05,y+.06,.004,M.mark,NE)), span(SW.x-.05,SW.y-.06,.001,SW.x+.05,SW.y+.06,.004,M.mark,NE), pipe([LT.x,H-.002,LT.z],[LT.x,H-.001,LT.z],.08,M.mark)),{until:2, drop:0, glow:false});
+    add(1, label('插座 30 cm・開關 120 cm（依圖說）',0,2.1,0.3,2.0),{until:1, drop:0, glow:false});
+    /* ② 開槽 */
+    { const g=group(); route.forEach(([a,b])=>{ if (Math.abs(a[2])>.01||Math.abs(b[2])>.01) return; const xa=Math.min(a[0],b[0])-.03, xb=Math.max(a[0],b[0])+.03, ya=Math.min(a[1],b[1])-.03, yb=Math.max(a[1],b[1])+.03; g.add(span(xa,ya,-0.035,xb,yb,.001,M.groove,NE)); });
+      add(2, g, {drop:0, until:8}); }
+    add(2, label('垂直・水平開槽',0,2.1,0.3,1.0),{until:2, drop:0, glow:false});
+    /* ③ 導線管＋出線盒 */
+    route.forEach(([a,b],i)=> add(3, pipe([a[0],a[1],-0.018],[b[0],b[1],-0.018],.012,M.conduit),{delay:i*.12, drop:0}));
+    add(3, pipe([LT.x,2.6,-0.018],[LT.x,H,LT.z>0?0.2:0],.012,M.conduit),{delay:.9, drop:0});
+    add(3, group(...OUT.map(([x,y])=>span(x-.04,y-.06,-0.035,x+.04,y+.06,-.002,M.box)), span(SW.x-.04,SW.y-.06,-0.035,SW.x+.04,SW.y+.06,-.002,M.box)),{delay:.6, drop:0});
+    add(3, group(span(X0,PB.y-.3,PB.z-.2,X0+.12,PB.y+.3,PB.z+.2,M.panel)),{drop:.2});
+    /* ④ 引線 */
+    add(4, group(pipe([X0+0.12,0.3,-0.018],[0.8,0.3,-0.018],.004,M.fish), pipe([0.8,0.3,0.0],[0.9,0.15,0.2],.004,M.fish)),{until:4, drop:0, glow:false});
+    add(4, label('管口去毛邊・穿引線',0,0.7,0.3,1.2),{until:4, drop:0, glow:false});
+    /* ⑤ 穿線（三色） */
+    [[M.black,-.006],[M.white,0],[M.green,.006]].forEach(([m,dy],i)=> add(5, pipe([X0+0.12,0.3+dy,-0.006],[0.8,0.3+dy,-0.006],.003,m),{delay:i*.2, drop:0, glow:false}));
+    [[M.black,-.02],[M.white,0],[M.green,.02]].forEach(([m,dx],i)=> add(5, pipe([0.8+dx,0.3,-0.01],[0.8+dx*2.5,0.2,0.14],.005,m),{delay:.6+i*.15, drop:0, glow:false}));
+    add(5, label('綠＝接地・白＝中性・管內不得有接頭',0.5,0.62,0.2,2.1),{until:5, drop:0, glow:false});
+    /* ⑥ 分路・斷路器（打開配電箱） */
+    add(6, group(span(X0+.12,PB.y-.28,PB.z-.18,X0+.125,PB.y+.28,PB.z+.18,M.door,NE),
+      ...[0,1,2,3].map(i=>span(X0+.125,PB.y+.15-i*.1,PB.z-.12,X0+.16,PB.y+.22-i*.1,PB.z-.04,M.brk)),
+      span(X0+.125,PB.y-.15,PB.z+.02,X0+.165,PB.y-.02,PB.z+.14,M.elcb)),{drop:0});
+    add(6, label('各分路斷路器・潮濕場所漏電斷路器',X0+0.4,PB.y+0.42,PB.z,2.1),{until:6, drop:0, glow:false});
+    /* ⑦ 接地 */
+    add(7, group(pipe([X0+.13,PB.y-.25,PB.z],[X0+.13,0.05,PB.z],.004,M.green), pipe([X0+.13,0.05,PB.z],[X0+.13,-0.15,PB.z+.1],.012,M.green)),{drop:0, glow:false});
+    add(7, label('接地線綠色・不得裝開關',X0+0.5,0.6,PB.z,1.5),{until:7, drop:0, glow:false});
+    /* ⑧ 封槽 */
+    { const g=group(); route.forEach(([a,b])=>{ if (Math.abs(a[2])>.01||Math.abs(b[2])>.01) return; const xa=Math.min(a[0],b[0])-.035, xb=Math.max(a[0],b[0])+.035, ya=Math.min(a[1],b[1])-.035, yb=Math.max(a[1],b[1])+.035; g.add(span(xa,ya,-0.035,xb,yb,.002,M.patch,NE)); });
+      OUT.concat([[SW.x,SW.y]]).forEach(([x,y])=> g.add(span(x-.04,y-.06,.002,x+.04,y+.06,.003,M.box,NE)));
+      add(8, g, {delay:.3, drop:0}); }
+    add(8, label('隱蔽前檢查・拍照 → 封槽粉刷',0,2.1,0.3,1.8),{until:8, drop:0, glow:false});
+    /* ⑨ 面板＋燈具 */
+    add(9, group(...OUT.map(([x,y])=>span(x-.06,y-.08,.002,x+.06,y+.08,.01,M.plate)), span(SW.x-.06,SW.y-.08,.002,SW.x+.06,SW.y+.08,.01,M.plate), pipe([LT.x,H,LT.z],[LT.x,H-.05,LT.z],.15,M.plate)),{drop:.1});
+    /* ⑩ 測試 */
+    add(10, group(span(0.9,0.05,0.4,1.1,0.2,0.55,M.tester), span(0.93,0.15,0.55,1.07,0.19,0.552,M.dark,NE), pipe([0.95,0.1,0.4],[0.8,0.3,0.01],.003,M.red), pipe([1.05,0.1,0.4],[0.82,0.28,0.01],.003,M.black)),{until:10, drop:.1});
+    add(10, pipe([LT.x,H-.05,LT.z],[LT.x,H-.06,LT.z],.13,M.lamp),{delay:.6, drop:0, glow:false});
+    add(10, label('絕緣電阻合格 → 通電・點燈',0,2.1,0.3,1.7),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浴室給排水配管施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：浴室給排水配管 9 步驟施工順序 3D 互動動畫，含洩水坡度、存水彎水封、通氣管、冷熱給水、試壓與通水試驗。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'浴室 RC 樓板與牆面，角落有排水立管與通氣立管，要配置馬桶、面盆、落水頭的給排水管。',
+   tip:'術科考過「排水系統管路中，通氣管的 3 種功用」。本動畫步驟依一般施工實務整理，通氣管功用依題庫答案。'},
+  {t:'放樣器具位置', d:'依圖放樣馬桶、面盆、落水頭的位置與管口中心。', tip:'馬桶管口中心離牆的距離（管距）要符合馬桶規格。'},
+  {t:'排水管・洩水坡度', d:'排水橫管接到排水立管，並保持洩水坡度。', tip:'坡度不足排水慢、易堵塞；圖中坡度有放大。'},
+  {t:'存水彎（水封）', d:'面盆、落水頭的排水設存水彎，保持水封。', tip:'存水彎裡的水封擋住下水道的臭氣與蟲。'},
+  {t:'通氣管', d:'排水管連接通氣管，接到通氣立管通往室外。', tip:'通氣管功用：①平衡管內氣壓，防止水封被虹吸或壓出 ②排水順暢、減少噪音 ③把臭氣排到室外 ④空氣流通減緩腐蝕。'},
+  {t:'給水管（冷熱水）', d:'配置冷水（藍）、熱水（紅）給水管到面盆與馬桶。', tip:'冷熱水管要分開標示；熱水管要保溫。'},
+  {t:'固定・穿牆止水', d:'管線以管夾固定；穿牆、穿樓板處以防水砂漿或止水材填實。', tip:'穿樓板處是浴室最常漏水的地方。'},
+  {t:'給水試壓', d:'給水管封口加壓，維持規定時間，壓力不下降。', tip:'試壓沒通過就封牆，日後漏水要打掉磁磚。'},
+  {t:'排水通水試驗', d:'排水管通水，確認排水順暢、接頭不漏。', tip:'通水時一併確認存水彎有保持水封。'},
+  {t:'隱蔽前檢查・保護', d:'拍照記錄管線路徑，管口加蓋保護，再進行防水與貼磚。', tip:'管口不封住，泥作時砂漿掉進去就堵了。'},
+];
+
+createAnim({
+  title: '浴室給排水配管施工順序',
+  steps: STEPS,
+  groundY: -0.35,
+  minDist: 1.2,
+  sun: [3, 8, 6],
+  views: {
+    def:{dir:[0.55,0.55,0.63], dist:4.6, target:[0,0.3,0.4]},
+    3:  {dir:[0.6,0.35,0.72],  dist:2.4, target:[0.5,0.1,0.6]},
+    4:  {dir:[0.6,0.3,0.74],   dist:3.4, target:[-0.6,0.8,0.3]},
+  },
+  note: '管徑與坡度有放大；樓板以透明表示，看得到板下管線。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const X0=-1.2, X1=1.2, Z0=0, Z1=1.6, ST={x:-1.05,z:0.15}, VT={x:-0.75,z:0.12};
+    const M = {
+      slab: mat('#cfcac4',{transparent:true, opacity:.45, depthWrite:false}), wall: mat('#c9c4bb',{roughness:1}),
+      mark: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), drain: mat('#9ca3af',{roughness:.5}), stack: mat('#6b7280'),
+      vent: mat('#16a34a',{roughness:.5}), cold: mat('#2563eb',{roughness:.4}), hot: mat('#dc2626',{roughness:.4}), insul: mat('#f8fafc',{roughness:.9}),
+      clip: mat('#f97316'), seal: mat('#44403c'), water: mat('#38bdf8',{transparent:true, opacity:.7}), gauge: mat('#f8fafc'), cap: mat('#facc15'),
+      ghostWC: mat('#ffffff',{transparent:true, opacity:.35, depthWrite:false}),
+    };
+    const NE={edges:false, shadow:false};
+    const sl=span(-1.4,-0.15,-0.2,X1+0.2,0,Z1+0.2,M.slab,{shadow:false}); sl.renderOrder=1; fixed(sl);
+    fixed(span(-1.4,0,-0.2,X1+0.2,2.4,Z0,M.wall)); fixed(span(-1.4,0,Z0,X0,2.4,Z1+0.2,M.wall));
+    fixed(pipe([ST.x,-0.35,ST.z],[ST.x,2.4,ST.z],.06,M.stack)); fixed(pipe([VT.x,-0.35,VT.z],[VT.x,2.4,VT.z],.035,M.vent));
+    const WC={x:0.6,z:0.25}, BS={x:-0.2,z:0.2}, FD={x:0.2,z:1.0};
+
+    add(1, group(span(WC.x-.2,.001,WC.z-.05,WC.x+.2,.004,WC.z+.5,M.ghostWC,NE), pipe([WC.x,.001,WC.z+.15],[WC.x,.004,WC.z+.15],.05,M.mark), pipe([BS.x,.001,BS.z],[BS.x,.004,BS.z],.03,M.mark), pipe([FD.x,.001,FD.z],[FD.x,.004,FD.z],.05,M.mark)),{until:9, drop:0, glow:false});
+    add(1, label('馬桶・面盆・落水頭位置',0.2,0.6,0.6,1.5),{until:1, drop:0, glow:false});
+    /* ② 排水橫管（板下，往立管降） */
+    const Y0=-0.05, DY=-0.1;
+    add(2, group(pipe([WC.x,0,WC.z+.15],[WC.x,Y0,WC.z+.15],.05,M.drain), pipe([WC.x,Y0,WC.z+.15],[ST.x,Y0+DY,ST.z],.05,M.drain)),{drop:0});
+    add(2, group(pipe([FD.x,0,FD.z],[FD.x,Y0-.04,FD.z],.03,M.drain), pipe([FD.x,Y0-.04,FD.z],[ST.x+.05,Y0+DY+.02,ST.z+.05],.03,M.drain), pipe([BS.x,0.5,Z0+.05],[BS.x,Y0-.02,Z0+.05],.022,M.drain), pipe([BS.x,Y0-.02,Z0+.05],[ST.x+.05,Y0+DY+.03,Z0+.05],.022,M.drain)),{delay:.4, drop:0});
+    add(2, arrow([0.9,-0.02,0.9],[-0.5,-0.1,0.4],M.mark),{until:2, drop:0, glow:false});
+    add(2, label('往立管保持洩水坡度',0.2,0.5,0.8,1.3),{until:2, drop:0, glow:false});
+    /* ③ 存水彎 */
+    { const trap=(x,y,z,r)=>{ const pts=[[x,y+0.08,z],[x,y,z],[x+0.06,y-0.05,z],[x+0.12,y,z],[x+0.12,y+0.04,z]].map(p=>new THREE.Vector3(...p)); return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),24,r,10), M.drain.clone()); };
+      add(3, trap(BS.x,0.45,Z0+.05,.022),{drop:0}); add(3, trap(FD.x,-0.03,FD.z,.03),{delay:.2, drop:0});
+      add(3, group(pipe([BS.x+.03,0.4,Z0+.05],[BS.x+.09,0.4,Z0+.05],.016,M.water)),{delay:.4, drop:0, glow:false});
+      add(3, label('存水彎保持水封・擋臭氣',0.2,0.75,0.6,1.5),{until:3, drop:0, glow:false}); }
+    /* ④ 通氣管 */
+    add(4, group(pipe([BS.x+0.12,0.49,Z0+.05],[BS.x+0.12,1.1,Z0+.05],.016,M.vent), pipe([BS.x+0.12,1.1,Z0+.05],[VT.x,1.1,VT.z],.016,M.vent)),{drop:0});
+    add(4, group(arrow([VT.x,1.6,VT.z+.1],[VT.x,2.2,VT.z+.1],M.vent)),{until:4, drop:0, glow:false});
+    add(4, label('通氣：平衡氣壓・保護水封・排臭氣',-0.4,1.55,0.3,2.0),{until:4, drop:0, glow:false});
+    /* ⑤ 給水 */
+    add(5, group(pipe([X0+.05,0.9,Z0+.03],[BS.x-.05,0.9,Z0+.03],.012,M.cold), pipe([BS.x-.05,0.9,Z0+.03],[BS.x-.05,0.55,Z0+.03],.012,M.cold), pipe([BS.x-.05,0.9,Z0+.03],[WC.x+.15,0.9,Z0+.03],.012,M.cold), pipe([WC.x+.15,0.9,Z0+.03],[WC.x+.15,0.2,Z0+.03],.012,M.cold)),{drop:0});
+    add(5, group(pipe([X0+.05,1.0,Z0+.03],[BS.x+.05,1.0,Z0+.03],.018,M.insul), pipe([X0+.05,1.0,Z0+.03],[BS.x+.05,1.0,Z0+.03],.012,M.hot), pipe([BS.x+.05,1.0,Z0+.03],[BS.x+.05,0.55,Z0+.03],.012,M.hot)),{delay:.3, drop:0});
+    add(5, label('冷水（藍）・熱水（紅，保溫）',0.3,1.35,0.3,1.8),{until:5, drop:0, glow:false});
+    /* ⑥ 固定・止水 */
+    add(6, group(...[-0.9,-0.5,0.2].map(x=>span(x-.015,0.86,Z0,x+.015,1.04,Z0+.05,M.clip)), pipe([WC.x,-.01,WC.z+.15],[WC.x,.012,WC.z+.15],.075,M.seal), pipe([FD.x,-.01,FD.z],[FD.x,.012,FD.z],.055,M.seal)),{drop:0});
+    add(6, label('管夾固定・穿樓板止水',0.3,0.6,0.6,1.3),{until:6, drop:0, glow:false});
+    /* ⑦ 試壓 */
+    add(7, group(pipe([X0+.05,0.9,Z0+.03],[X0+.05,0.9,Z0+.15],.012,M.cold), pipe([X0+.05,0.9,Z0+.19],[X0+.05,0.9,Z0+.2],.06,M.gauge)),{until:7, drop:0});
+    add(7, label('封口加壓・壓力不下降',-0.6,1.35,0.4,1.3),{until:7, drop:0, glow:false});
+    /* ⑧ 通水 */
+    for (let i=0;i<12;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.018,8,6), M.water.clone()); const u=i/12; d.position.set(WC.x+(ST.x-WC.x)*u, Y0+DY*u+.0, WC.z+.15+(ST.z-WC.z-.15)*u); add(8, d, {delay:i*.08, drop:0, until:8, glow:false}); }
+    add(8, label('通水順暢・接頭不漏',0.2,0.6,0.6,1.2),{until:8, drop:0, glow:false});
+    /* ⑨ 管口加蓋 */
+    add(9, group(pipe([WC.x,0,WC.z+.15],[WC.x,.02,WC.z+.15],.055,M.cap), pipe([FD.x,0,FD.z],[FD.x,.02,FD.z],.035,M.cap), pipe([BS.x,0.5,Z0+.05],[BS.x,0.52,Z0+.05],.026,M.cap)),{drop:.1});
+    add(9, label('拍照記錄・管口加蓋保護',0.2,0.6,0.6,1.5),{until:9, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>
