@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>天花出風口・回風口開口施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：空調天花出風口、回風口開口 8 步驟施工順序 3D 互動動畫，含放樣協調、風管吊架、開口補強、軟管連接、回風濾網、試運轉風量。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'天花板內有吊隱式空調的風管，要在暗架天花板上做出風口與回風口（天花板以半透明表示）。',
+   tip:'學科考過「天花板內空調配管會影響輕鋼架天花進場時程」。本動畫依一般施工實務整理，請對照課本確認。'},
+  {t:'放樣・設備協調', d:'放樣出風口、回風口位置，並與燈具、撒水頭、偵煙器協調。', tip:'出風口與回風口不可太近，否則冷風還沒吹到人就被吸回去（短循環）。'},
+  {t:'風管與吊架', d:'配置風管，以獨立吊架吊掛在樓板上。', tip:'風管、空調機不可吊在天花骨架上。'},
+  {t:'開口補強', d:'天花骨架在出風口、回風口位置加副骨補強。', tip:'開口切斷骨架，四周要補強，出風口才鎖得牢。'},
+  {t:'封板・開孔', d:'封天花板，依出風口、回風口尺寸開孔。', tip:'開孔尺寸要比風口面板小一圈，面板才蓋得住孔邊。'},
+  {t:'出風口安裝', d:'出風口以軟管連接風管，固定在補強骨架上。', tip:'軟管不可過度彎折，否則風量會變小。'},
+  {t:'回風口・濾網', d:'安裝回風口與濾網，可拆卸清洗，兼作檢修口。', tip:'回風口常兼作檢修口，方便維修天花板內的空調機。'},
+  {t:'接縫處理・保護', d:'天花接縫批土塗裝，風口加保護膜避免沾漆。', tip:'塗裝時漆霧會黏在風口格柵上。'},
+  {t:'試運轉', d:'試運轉，檢查出風量、出風方向與噪音。', tip:'出風口葉片可調整方向，讓氣流分布均勻。'},
+];
+
+createAnim({
+  title: '天花出風口・回風口開口施工順序',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.93,
+  views: {
+    def:{dir:[0.55,-0.4,0.73], dist:5.6, target:[0,2.6,0]},
+    2:  {dir:[0.55,-0.12,0.83], dist:5.0, target:[0,2.8,0]},
+    5:  {dir:[0.5,-0.3,0.81],  dist:3.2, target:[-0.6,2.65,0.3]},
+  },
+  note: '風管尺寸為示意；天花板以半透明表示。',
+  build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9); fill.position.set(2,-6,5); scene.add(fill);
+    const X0=-1.8, X1=1.8, Z0=-1.2, Z1=1.2, SB=3.0, FC=2.6, BT=0.012, YS=FC+BT;
+    const SA={x:-0.6,z:0.3,s:0.3}, RA={x:1.0,z:-0.5,w:0.6,d:0.3};
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}),
+      board: mat('#f1eee6',{transparent:true, opacity:.55, depthWrite:false, roughness:.9}), steel: mat('#b9c1c9',{metalness:.3}), steel2: mat('#8f9aa5',{metalness:.3}),
+      duct: mat('#cbd5e1',{metalness:.5, roughness:.4}), flex: mat('#e5e7eb',{roughness:.6}), unit: mat('#9ca3af',{metalness:.3}), rod: mat('#8b939b',{metalness:.3}),
+      grille: mat('#fafafa',{roughness:.4}), slot: mat('#94a3b8'), filter: mat('#d6d3d1',{roughness:1}), film: mat('#60a5fa',{transparent:true, opacity:.5, depthWrite:false}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), lamp: mat('#e5e7eb',{metalness:.5}), fire: mat('#dc2626'), air: mat('#38bdf8',{transparent:true, opacity:.4, depthWrite:false}), mud: mat('#fafaf9'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.9,SB,-1.3,1.9,SB+.15,1.3,M.slab,{shadow:false}));
+    fixed(span(-1.9,1.2,-1.3,1.9,SB,Z0,M.wall)); fixed(span(-1.9,1.2,Z0,X0,SB,1.3,M.wall));
+    // 暗架骨架（簡化）
+    for (let z=-1.2;z<=1.21;z+=0.4) fixed(span(X0,YS,z-.012,X1,YS+.03,z+.012,M.steel));
+    // 吊隱式空調機（左後）、燈具、撒水頭
+    fixed(span(-1.6,2.72,-1.1,-0.8,2.95,-0.5,M.unit));
+    fixed(pipe([0.4,FC-.01,0.6],[0.4,FC,0.6],.07,M.lamp)); fixed(pipe([0.2,SB-.05,-0.2],[0.2,FC-.03,-0.2],.012,M.fire));
+
+    add(1, group(span(SA.x-SA.s/2,FC-.004,SA.z-SA.s/2,SA.x+SA.s/2,FC-.001,SA.z+SA.s/2,M.laser,NE), span(RA.x-RA.w/2,FC-.004,RA.z-RA.d/2,RA.x+RA.w/2,FC-.001,RA.z+RA.d/2,M.laser,NE)),{until:4, drop:0, glow:false});
+    add(1, label('出風口 ↔ 回風口保持距離・避開燈具撒水頭',0,2.15,0.3,2.4),{until:1, drop:0, glow:false});
+    /* ② 風管＋獨立吊架 */
+    add(2, group(span(-0.8,2.78,-0.9,0.0,2.92,-0.7,M.duct), span(-0.2,2.78,-0.9,0.0,2.92,SA.z,M.duct)),{drop:-.2});
+    add(2, group(...[[-0.5,-0.8],[-0.1,-0.4],[-0.1,0.1]].map(([x,z])=>pipe([x,SB,z],[x,2.92,z],.005,M.rod))),{delay:.3, drop:-.2});
+    add(2, label('風管以獨立吊架吊在樓板',-0.3,2.3,-0.4,1.5),{until:2, drop:0, glow:false});
+    /* ③ 開口補強 */
+    add(3, group(span(SA.x-SA.s/2-.03,YS,SA.z-SA.s/2-.03,SA.x-SA.s/2,YS+.03,SA.z+SA.s/2+.03,M.steel2), span(SA.x+SA.s/2,YS,SA.z-SA.s/2-.03,SA.x+SA.s/2+.03,YS+.03,SA.z+SA.s/2+.03,M.steel2),
+      span(RA.x-RA.w/2-.03,YS,RA.z-RA.d/2-.03,RA.x-RA.w/2,YS+.03,RA.z+RA.d/2+.03,M.steel2), span(RA.x+RA.w/2,YS,RA.z-RA.d/2-.03,RA.x+RA.w/2+.03,YS+.03,RA.z+RA.d/2+.03,M.steel2)),{drop:-.2});
+    add(3, label('開口四周加副骨補強',0,2.2,0.3,1.3),{until:3, drop:0, glow:false});
+    /* ④ 封板（留孔） */
+    { const g=group(); const holes=[[SA.x-SA.s/2,SA.x+SA.s/2,SA.z-SA.s/2,SA.z+SA.s/2],[RA.x-RA.w/2,RA.x+RA.w/2,RA.z-RA.d/2,RA.z+RA.d/2]];
+      const N=12, dx=(X1-X0)/N, dz=(Z1-Z0)/8;
+      for (let i=0;i<N;i++) for (let j=0;j<8;j++){ const a=X0+i*dx, b=a+dx, c=Z0+j*dz, d=c+dz; const cx=(a+b)/2, cz=(c+d)/2;
+        if (holes.some(([h0,h1,h2,h3])=>cx>h0&&cx<h1&&cz>h2&&cz<h3)) continue; g.add(span(a,FC,c,b,YS,d,M.board,NE)); }
+      const b=g; b.renderOrder=2; add(4, b, {drop:-.2}); }
+    /* ⑤ 出風口（軟管） */
+    { const pts=[[-0.1,2.78,SA.z],[-0.25,2.72,SA.z],[SA.x,2.7,SA.z],[SA.x,YS+.02,SA.z]].map(p=>new THREE.Vector3(...p));
+      add(5, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.08,12), M.flex.clone()),{drop:0}); }
+    add(5, group(span(SA.x-SA.s/2-.03,FC-.015,SA.z-SA.s/2-.03,SA.x+SA.s/2+.03,FC,SA.z+SA.s/2+.03,M.grille), ...[0,1,2].map(i=>span(SA.x-SA.s/2+.04+i*.08,FC-.018,SA.z-SA.s/2+.04,SA.x-SA.s/2+.08+i*.08,FC-.015,SA.z+SA.s/2-.04,M.slot,NE))),{delay:.4, drop:-.15});
+    add(5, label('軟管連接・固定於補強骨架',SA.x,2.2,SA.z,1.6),{until:5, drop:0, glow:false});
+    /* ⑥ 回風口＋濾網 */
+    add(6, group(span(RA.x-RA.w/2-.03,FC-.015,RA.z-RA.d/2-.03,RA.x+RA.w/2+.03,FC,RA.z+RA.d/2+.03,M.grille), span(RA.x-RA.w/2,FC,RA.z-RA.d/2,RA.x+RA.w/2,FC+.02,RA.z+RA.d/2,M.filter), ...[0,1,2,3,4,5].map(i=>span(RA.x-RA.w/2+.03+i*.09,FC-.018,RA.z-RA.d/2+.03,RA.x-RA.w/2+.05+i*.09,FC-.015,RA.z+RA.d/2-.03,M.slot,NE))),{drop:-.15});
+    add(6, label('回風口＋濾網・兼檢修口',RA.x,2.2,RA.z,1.5),{until:6, drop:0, glow:false});
+    /* ⑦ 接縫處理＋保護膜 */
+    add(7, group(...[-0.6,0.0,0.6].map(x=>span(x-.03,FC-.002,Z0,x+.03,FC-.001,Z1,M.mud,NE))),{drop:0});
+    add(7, group(span(SA.x-SA.s/2-.04,FC-.02,SA.z-SA.s/2-.04,SA.x+SA.s/2+.04,FC-.016,SA.z+SA.s/2+.04,M.film,NE), span(RA.x-RA.w/2-.04,FC-.02,RA.z-RA.d/2-.04,RA.x+RA.w/2+.04,FC-.016,RA.z+RA.d/2+.04,M.film,NE)),{drop:0, until:7});
+    add(7, label('批土塗裝・風口加保護膜',0,2.2,0.3,1.5),{until:7, drop:0, glow:false});
+    /* ⑧ 試運轉 */
+    add(8, (()=>{ const c=new THREE.Mesh(new THREE.ConeGeometry(.45,.7,24,1,true), M.air.clone()); c.position.set(SA.x,FC-.37,SA.z); return c; })(),{drop:0, glow:false});
+    add(8, arrow([RA.x,FC-0.5,RA.z],[RA.x,FC-0.05,RA.z],M.air),{drop:0, glow:false});
+    add(8, label('出風量・方向・噪音',0,2.0,0.3,1.2),{until:8, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

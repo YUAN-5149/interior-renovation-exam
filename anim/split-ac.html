@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>分離式冷暖氣機安裝施作程序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：分離式冷暖氣機安裝施作程序 11 步驟 3D 互動動畫，含室內機背板、穿牆孔外低內高、室外機支架、冷媒銅管保溫、排水坡度、抽真空、測漏、試運轉。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'室內牆面要裝分離式冷暖氣的室內機，室外牆面裝室外機（左側室內、右側室外）。',
+   tip:'本動畫依一般安裝實務整理（題庫沒有此題的步驟答案），請對照你的課本確認用詞與順序。'},
+  {t:'確認位置', d:'確認室內機、室外機位置與配管路徑；室外機要通風良好並留維修空間。', tip:'室內機出風不要直吹人；室外機前後要有足夠散熱空間。'},
+  {t:'室內機背板', d:'在牆面固定室內機背板，確認水平，必要時預設補強。', tip:'背板不水平，排水盤的水會積在一側溢出來。'},
+  {t:'鑽穿牆孔・外低內高', d:'於牆面鑽配管孔，孔向室外略往下傾斜，裝入穿牆套管。', tip:'外低內高，雨水不會倒灌、冷凝水也能順利排出。'},
+  {t:'室外機支架', d:'於室外牆面固定支架（膨脹螺栓），室外機放上並加防震墊固定。', tip:'支架要能承受室外機重量；防震墊減少震動與噪音。'},
+  {t:'冷媒管配置', d:'冷媒銅管（高壓、低壓兩支）連接室內外機，喇叭口確實鎖緊，管外包覆保溫材。', tip:'銅管保溫不足會結露滴水；彎管不可壓扁。'},
+  {t:'排水管配置', d:'排水管保持洩水坡度引到排水處，不可有回升或積水段。', tip:'排水管有往上彎的地方就會積水、漏水。'},
+  {t:'電源與訊號線', d:'配置專用迴路電源線與室內外機訊號線，並確實接地。', tip:'冷氣用電量大，一定要用專用迴路。'},
+  {t:'包紮・封孔', d:'冷媒管、排水管、電線一起包紮；穿牆孔以填縫材封填並防水。', tip:'封孔不確實，雨水和蟲會從孔洞進入。'},
+  {t:'抽真空', d:'以真空泵將冷媒管內空氣與水氣抽除。', tip:'管內殘留空氣與水氣會降低效率、損壞壓縮機。'},
+  {t:'開閥・測漏', d:'打開室外機閥門讓冷媒流通，並以肥皂水或檢漏儀檢查接頭。', tip:'冒泡代表接頭漏冷媒，要重新鎖緊或重做喇叭口。'},
+  {t:'試運轉', d:'試運轉：冷、暖模式、出風溫差、排水是否順暢、有無異音。', tip:'確認排水管出口有水流出，代表排水正常。'},
+];
+
+createAnim({
+  title: '分離式冷暖氣機安裝施作程序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.2,
+  sun: [5, 8, 4],
+  views: {
+    def:{dir:[0.8,0.3,0.52],   dist:5.2, target:[0,1.4,-0.3]},
+    2:  {dir:[0.45,0.15,0.88], dist:3.0, target:[-0.2,2.1,0]},
+    3:  {dir:[0.95,0.15,0.25], dist:2.4, target:[0.35,2.0,-0.1]},
+    4:  {dir:[0.55,0.2,-0.81], dist:3.6, target:[0.2,1.0,-0.6]},
+    5:  {dir:[0.85,0.2,-0.48], dist:3.4, target:[0.3,1.5,-0.4]},
+    10: {dir:[0.6,0.25,-0.75], dist:2.6, target:[0.3,0.9,-0.6]},
+  },
+  note: '配管尺寸與傾斜角度有放大；牆以局部剖切表示。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const T=0.2, HX=0.35, HY=2.05;                      // 穿牆孔位置
+    const IU={x0:-0.6,x1:0.5,y0:2.1,y1:2.4};
+    const OU={x0:-0.2,x1:0.7,y0:0.7,y1:1.3,z0:-T-0.65,z1:-T-0.25};
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}), out: mat('#a8a29e',{roughness:1}),
+      plate: mat('#9ca3af',{metalness:.4}), indoor: mat('#f8fafc',{roughness:.4}), vent: mat('#cbd5e1'),
+      outdoor: mat('#e5e7eb',{roughness:.5}), fan: mat('#475569'), bracket: mat('#374151',{metalness:.5}), pad: mat('#111827'), bolt: mat('#f97316'),
+      sleeve: mat('#f8fafc'), cu: mat('#b45309',{metalness:.7, roughness:.3}), insul: mat('#f1f5f9',{roughness:.9}), drain: mat('#94a3b8'),
+      cable: mat('#111827'), green: mat('#16a34a'), tape: mat('#e2e8f0',{roughness:.8}), putty: mat('#78716c'),
+      pump: mat('#1d4ed8'), gauge: mat('#f8fafc'), soap: mat('#bae6fd',{transparent:true, opacity:.7}), cold: mat('#38bdf8',{transparent:true, opacity:.45, depthWrite:false}),
+      laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}), level: mat('#facc15'), drop: mat('#60a5fa',{roughness:.2}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.6,-0.15,-1.6,1.4,0,1.2,M.slab));
+    // 牆：中間挖穿牆孔（以四塊組成）
+    const hr=0.04;
+    // 牆在穿牆孔處剖切（右端剛好切過孔中心），看得到管線穿牆
+    fixed(span(-1.4,0,-T,HX-hr,2.8,0,M.wall));
+    fixed(span(HX-hr,0,-T,HX,HY-hr,0,M.wall)); fixed(span(HX-hr,HY+hr,-T,HX,2.8,0,M.wall));
+    fixed(span(-1.4,0,-T-.004,HX,2.8,-T,M.out,NE));
+
+    /* ① 位置 */
+    add(1, group(span(IU.x0,IU.y0,.001,IU.x1,IU.y1,.004,M.laser,NE)),{until:2, drop:0, glow:false});
+    add(1, group(span(OU.x0,-T-.004,OU.y0,OU.x1,-T-.001,OU.y1,M.laser,NE)),{until:1, drop:0, glow:false});
+    add(1, label('室內機・室外機位置與配管路徑',0,2.65,0.3,1.9),{until:1, drop:0, glow:false});
+    add(1, label('室外機：通風・維修空間',0.3,1.6,-T-0.5,1.5),{until:1, drop:0, glow:false});
+    /* ② 背板 */
+    add(2, span(IU.x0+0.05,IU.y0+0.05,0,IU.x1-0.05,IU.y1-0.05,.01,M.plate),{drop:0});
+    add(2, span(-0.3,IU.y1+.02,.01,0.2,IU.y1+.05,.04,M.level),{until:2, drop:-.1});
+    add(2, label('背板固定・確認水平',-0.05,2.65,0.3,1.2),{until:2, drop:0, glow:false});
+    /* ③ 穿牆孔＋套管（外低內高） */
+    add(3, pipe([HX,HY,0.01],[HX,HY-0.03,-T-.01],.036,M.sleeve),{drop:0});
+    add(3, arrow([HX+0.15,HY+0.12,0.05],[HX+0.15,HY+0.06,-T-0.15],M.laser),{until:3, drop:0, glow:false});
+    add(3, label('外低內高・裝穿牆套管',HX,HY+0.35,-0.1,1.3),{until:3, drop:0, glow:false});
+    /* ④ 室外機支架＋室外機 */
+    add(4, group(...[OU.x0+0.1,OU.x1-0.1].map(x=>group(span(x-.02,OU.y0-0.35,-T-.04,x+.02,OU.y0,-T,M.bracket), span(x-.02,OU.y0-.04,-T-0.7,x+.02,OU.y0,-T,M.bracket), pipe([x,OU.y0-0.3,-T-.02],[x,OU.y0-.02,-T-0.65],.012,M.bracket)))),{drop:.2});
+    add(4, group(...[OU.x0+0.1,OU.x1-0.1].map(x=>span(x-.04,OU.y0,OU.z0+0.05,x+.04,OU.y0+.02,OU.z1-0.05,M.pad))),{delay:.3, drop:0});
+    add(4, group(span(OU.x0,OU.y0+.02,OU.z0,OU.x1,OU.y1,OU.z1,M.outdoor), pipe([OU.x0+0.3,(OU.y0+OU.y1)/2+.01,OU.z0-.002],[OU.x0+0.3,(OU.y0+OU.y1)/2+.01,OU.z0-.004],.22,M.fan)),{delay:.6, drop:.3});
+    add(4, label('支架鎖固・防震墊・室外機',0.25,1.6,-T-0.5,1.6),{until:4, drop:0, glow:false});
+    /* 室內機（第 ④ 步一起掛上，方便後面看配管） */
+    add(4, group(span(IU.x0,IU.y0,.01,IU.x1,IU.y1,0.22,M.indoor), span(IU.x0+0.05,IU.y0,.15,IU.x1-0.05,IU.y0+.02,0.21,M.vent,NE)),{delay:.9, drop:.2});
+    /* ⑤ 冷媒管（兩支，保溫） */
+    const cuRoute=(dy,dx)=>[[HX+dx,HY+dy,0.1],[HX+dx,HY+dy-0.03,-T-.02],[HX+dx,HY+dy-0.06,-T-0.08],[OU.x1-0.05+dx*0.5,OU.y0+0.25+dy,-T-0.08],[OU.x1-0.05+dx*0.5,OU.y0+0.25+dy,OU.z1-0.02]];
+    [[0.012,-0.012],[-0.012,0.012]].forEach(([dy,dx],k)=>{ const pts=cuRoute(dy,dx).map(p=>new THREE.Vector3(...p));
+      add(5, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'catmullrom',0.1),60,.012,8), M.insul.clone()),{delay:k*.3, drop:0});
+      add(5, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'catmullrom',0.1),60,.006,8), M.cu.clone()),{delay:k*.3, drop:0, until:5}); });
+    add(5, label('冷媒銅管（高壓・低壓）＋保溫',0.3,1.75,-0.4,1.9),{until:5, drop:0, glow:false});
+    /* ⑥ 排水管（一路往下） */
+    { const pts=[[HX-0.02,HY-0.02,0.1],[HX-0.02,HY-0.06,-T-.02],[HX-0.02,HY-0.2,-T-0.06],[HX-0.4,0.3,-T-0.06],[HX-0.45,0.02,-T-0.08]].map(p=>new THREE.Vector3(...p));
+      add(6, new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),60,.01,8), M.drain.clone()),{drop:0}); }
+    add(6, label('洩水坡度・不可回升',HX-0.4,1.2,-T-0.2,1.2),{until:6, drop:0, glow:false});
+    /* ⑦ 電源・訊號線 */
+    add(7, group(pipe([HX+0.02,HY+0.02,0.1],[HX+0.02,HY-0.01,-T-.02],.004,M.cable), pipe([HX+0.02,HY-0.01,-T-.02],[OU.x1,OU.y1-0.1,-T-0.08],.004,M.cable), pipe([OU.x1,OU.y1-0.1,-T-0.08],[OU.x1,OU.y1-0.1,OU.z1],.004,M.cable), pipe([OU.x0+.05,OU.y0+.05,OU.z1],[OU.x0+.05,OU.y0-0.2,-T-.02],.003,M.green)),{drop:0, glow:false});
+    add(7, label('專用迴路・訊號線・接地',0.3,1.75,-0.4,1.5),{until:7, drop:0, glow:false});
+    /* ⑧ 包紮・封孔 */
+    add(8, group(pipe([HX,HY-0.02,-T-.02],[HX,HY-0.07,-T-0.1],.03,M.tape), pipe([HX,HY,0.012],[HX,HY,0.03],.045,M.putty), pipe([HX,HY-0.03,-T-.003],[HX,HY-0.03,-T-.02],.045,M.putty)),{drop:0});
+    add(8, label('配管包紮・穿牆孔封填防水',HX,HY+0.35,-0.1,1.7),{until:8, drop:0, glow:false});
+    /* ⑨ 抽真空 */
+    add(9, group(span(OU.x1+0.1,0.0,OU.z1-0.2,OU.x1+0.4,0.2,OU.z1+0.05,M.pump), pipe([OU.x1+0.15,0.25,OU.z1-0.1],[OU.x1+0.15,0.25,OU.z1-0.12],.05,M.gauge), pipe([OU.x1+0.2,0.2,OU.z1-0.08],[OU.x1-0.05,OU.y0+0.25,OU.z1+0.02],.006,M.bolt)),{until:9, drop:.2});
+    add(9, label('真空泵抽除空氣與水氣',OU.x1+0.2,0.6,OU.z1,1.4),{until:9, drop:0, glow:false});
+    /* ⑩ 開閥・測漏 */
+    for (let i=0;i<6;i++){ const b=new THREE.Mesh(new THREE.SphereGeometry(.012,8,6), M.soap.clone()); b.position.set(OU.x1-0.05+(i%2)*.02,OU.y0+0.25+(i%3)*.012,OU.z1-0.01+i*.006); add(10, b, {delay:i*.1, drop:0, until:10, glow:false}); }
+    add(10, label('開閥・肥皂水檢查接頭',OU.x1,OU.y0+0.55,OU.z1,1.4),{until:10, drop:0, glow:false});
+    /* ⑪ 試運轉 */
+    add(11, span(IU.x0+0.05,IU.y0-0.5,0.15,IU.x1-0.05,IU.y0,0.45,M.cold,NE),{drop:0, glow:false});
+    for (let i=0;i<5;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(.013,8,6), M.drop.clone()); d.position.set(HX-0.45,0.25-i*0.05,-T-0.08); add(11, d, {delay:.4+i*.1, drop:0, until:11, glow:false}); }
+    add(11, label('冷暖・溫差・排水・異音',0,2.65,0.3,1.6),{until:11, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

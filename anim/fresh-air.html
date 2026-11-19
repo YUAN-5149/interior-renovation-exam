@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新風換氣系統安裝施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：新風換氣系統（全熱交換器）安裝 10 步驟施工順序 3D 互動動畫，含 OA／EA／SA／RA 四種風管、外牆開孔防雨罩、保溫、檢修口、試運轉。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'天花板內要裝全熱交換器（新風換氣主機），從外牆引進新鮮空氣、排出室內污濁空氣。天花板以半透明表示。',
+   tip:'四種風管：OA 外氣（室外新風進來）、EA 排氣（排到室外）、SA 送風（送進室內）、RA 回風（室內空氣回到主機）。本動畫依一般施工實務整理，請對照課本確認。'},
+  {t:'放樣', d:'放樣主機、外牆進排氣口、室內送風口與回風口位置。', tip:'外牆的進氣口（OA）和排氣口（EA）要拉開距離，避免排出去的髒空氣又被吸進來。'},
+  {t:'吊架安裝', d:'以吊筋與防震吊架固定於樓板，確認主機位置可預留檢修口。', tip:'主機不可吊在天花骨架上；防震吊架減少運轉噪音。'},
+  {t:'主機吊裝・水平', d:'主機吊上吊架，調整水平並固定。', tip:'主機有濾網要定期清洗，正下方要留檢修口。'},
+  {t:'外牆開孔・防雨罩', d:'外牆開 OA、EA 兩個孔，外側裝防雨罩與防蟲網，孔向外略往下傾斜。', tip:'外低內高，雨水才不會倒灌。'},
+  {t:'風管配置', d:'配置 OA、EA（接外牆）與 SA、RA（接室內風口）四條風管。', tip:'風管走向盡量短、少彎折，風量損失才小。'},
+  {t:'保溫・封膠', d:'OA、EA 風管包覆保溫材，接頭以鋁箔膠帶封密。', tip:'外氣管內外溫差大，不保溫會結露滴水。'},
+  {t:'室內送風口・回風口', d:'安裝室內送風口與回風口。', tip:'送風口與回風口拉開距離，讓新鮮空氣能流過整個空間。'},
+  {t:'電源・控制配線', d:'配置主機電源與牆面控制面板配線。', tip:'控制面板裝在容易操作的位置。'},
+  {t:'天花封板・檢修口', d:'天花封板，主機下方預留檢修口。', tip:'沒有檢修口就無法清洗濾網與維修。'},
+  {t:'試運轉', d:'試運轉：檢查送風量、回風量、噪音與濾網。', tip:'試運轉時確認外牆排氣口有氣流排出。'},
+];
+
+createAnim({
+  title: '新風換氣系統安裝施工順序',
+  steps: STEPS,
+  groundY: -20,
+  maxPolar: 0.93,
+  views: {
+    def:{dir:[0.55,-0.38,0.74], dist:6.0, target:[0,2.7,0]},
+    4:  {dir:[0.35,0.05,-0.94],  dist:4.2, target:[0,2.6,-1.7]},
+    5:  {dir:[0.55,-0.25,0.8],  dist:5.4, target:[0,2.8,-0.3]},
+  },
+  note: '風管與主機尺寸為示意；天花板以半透明表示。',
+  build({THREE, scene, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9); fill.position.set(2,-6,5); scene.add(fill);
+    const X0=-1.8, X1=1.8, Z0=-1.2, Z1=1.2, SB=3.0, FC=2.6, YD=2.8;
+    const U={x0:-0.4,x1:0.4,y0:2.68,y1:2.92,z0:-0.6,z1:0.0};
+    const OA={x:-1.2}, EA={x:1.2}, SA={x:-0.9,z:0.7}, RA={x:1.0,z:0.6};
+    const M = {
+      slab: mat('#cfcac4',{roughness:1}), wall: mat('#f5f4f1',{roughness:.95}), ext: mat('#a8a29e',{roughness:1}),
+      ceil: mat('#f1eee6',{transparent:true, opacity:.45, depthWrite:false, roughness:.9}), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      rod: mat('#8b939b',{metalness:.3}), spring: mat('#f97316'), unit: mat('#e5e7eb',{metalness:.3, roughness:.4}), hood: mat('#78716c',{metalness:.3}),
+      oa: mat('#38bdf8'), ea: mat('#a16207'), sa: mat('#22c55e'), ra: mat('#a855f7'), insul: mat('#d4d4d8',{roughness:.6}), tape: mat('#cbd5e1',{metalness:.7}),
+      grille: mat('#fafafa'), cable: mat('#111827'), panel: mat('#f8fafc'), hatch: mat('#9ca3af'), airIn: mat('#38bdf8',{transparent:true, opacity:.4, depthWrite:false}), airOut: mat('#f59e0b',{transparent:true, opacity:.4, depthWrite:false}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.9,SB,-1.6,1.9,SB+.15,1.3,M.slab,{shadow:false}));
+    fixed(span(-1.9,1.2,-1.6,1.9,SB,Z0-0.2,M.wall));           // 外牆（厚 0.2）
+    fixed(span(-1.9,1.2,-1.604,1.9,SB,-1.6,M.ext,NE));
+    fixed(span(-1.9,1.2,Z0-0.2,X0,SB,1.3,M.wall));
+
+    /* ① 放樣 */
+    add(1, group(span(U.x0,SB-.004,U.z0,U.x1,SB-.001,U.z1,M.laser,NE), ...[OA.x,EA.x].map(x=>pipe([x,YD,Z0-0.19],[x,YD,Z0-0.18],.09,M.laser)),
+      ...[[SA.x,SA.z],[RA.x,RA.z]].map(([x,z])=>span(x-.15,FC-.004,z-.15,x+.15,FC-.001,z+.15,M.laser,NE))),{until:5, drop:0, glow:false});
+    add(1, label('OA ↔ EA 拉開距離',0,2.3,-0.9,1.2),{until:1, drop:0, glow:false});
+    /* ② 吊架（防震） */
+    add(2, group(...[[U.x0+.05,U.z0+.05],[U.x1-.05,U.z0+.05],[U.x0+.05,U.z1-.05],[U.x1-.05,U.z1-.05]].map(([x,z])=>group(pipe([x,SB,z],[x,U.y0,z],.006,M.rod), pipe([x,2.95,z],[x,3.0-.01,z],.02,M.spring)))),{drop:.3});
+    add(2, label('吊筋＋防震吊架・預留檢修位置',0,2.3,0,1.9),{until:2, drop:0, glow:false});
+    /* ③ 主機 */
+    add(3, span(U.x0,U.y0,U.z0,U.x1,U.y1,U.z1,M.unit),{drop:-.3});
+    add(3, label('全熱交換器主機・調整水平',0,2.3,0,1.5),{until:3, drop:0, glow:false});
+    /* ④ 外牆開孔＋防雨罩 */
+    [OA.x,EA.x].forEach((x,i)=> add(4, group(pipe([x,YD,Z0-0.2],[x,YD-0.02,-1.62],.08,M.hood), span(x-.12,YD+.05,-1.75,x+.12,YD+.07,-1.6,M.hood)),{delay:i*.3, drop:0}));
+    add(4, label('外牆開孔・防雨罩・外低內高',0,2.2,-1.9,1.8),{until:4, drop:0, glow:false});
+    /* ⑤ 風管 */
+    const duct=(pts,m,r=.06)=> new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.1),50,r,10), m.clone());
+    add(5, duct([[OA.x,YD,Z0-0.2],[OA.x,YD,-0.9],[U.x0-0.1,YD,-0.45],[U.x0,YD,-0.45]],M.oa),{drop:0});
+    add(5, duct([[EA.x,YD,Z0-0.2],[EA.x,YD,-0.9],[U.x1+0.1,YD,-0.45],[U.x1,YD,-0.45]],M.ea),{delay:.2, drop:0});
+    add(5, duct([[U.x0,YD,-0.15],[SA.x,YD,0.2],[SA.x,YD,SA.z],[SA.x,FC+.02,SA.z]],M.sa),{delay:.4, drop:0});
+    add(5, duct([[U.x1,YD,-0.15],[RA.x,YD,0.2],[RA.x,YD,RA.z],[RA.x,FC+.02,RA.z]],M.ra),{delay:.6, drop:0});
+    add(5, label('OA 外氣・EA 排氣・SA 送風・RA 回風',0,2.1,0.8,2.2),{until:5, drop:0, glow:false});
+    /* ⑥ 保溫＋封膠 */
+    add(6, duct([[OA.x,YD,Z0-0.2],[OA.x,YD,-0.9],[U.x0-0.1,YD,-0.45],[U.x0,YD,-0.45]],M.insul,.075),{drop:0});
+    add(6, duct([[EA.x,YD,Z0-0.2],[EA.x,YD,-0.9],[U.x1+0.1,YD,-0.45],[U.x1,YD,-0.45]],M.insul,.075),{delay:.2, drop:0});
+    add(6, group(pipe([U.x0-.02,YD,-0.45],[U.x0+.01,YD,-0.45],.08,M.tape), pipe([U.x1-.01,YD,-0.45],[U.x1+.02,YD,-0.45],.08,M.tape)),{delay:.4, drop:0});
+    add(6, label('OA・EA 保溫防結露・接頭封膠',0,2.25,-0.6,1.9),{until:6, drop:0, glow:false});
+    /* ⑦ 室內風口 */
+    add(7, group(span(SA.x-.15,FC-.015,SA.z-.15,SA.x+.15,FC,SA.z+.15,M.grille), span(RA.x-.2,FC-.015,RA.z-.12,RA.x+.2,FC,RA.z+.12,M.grille)),{drop:-.15});
+    add(7, label('送風口・回風口拉開距離',0,2.25,0.7,1.5),{until:7, drop:0, glow:false});
+    /* ⑧ 配線 */
+    add(8, group(pipe([U.x0+0.1,U.y1,U.z1],[X0+.02,2.9,0.5],.005,M.cable), pipe([X0+.02,2.9,0.5],[X0+.02,1.5,0.5],.005,M.cable), span(X0,1.4,0.44,X0+.02,1.55,0.56,M.panel)),{drop:0, glow:false});
+    add(8, label('主機電源・控制面板',X0+0.3,1.9,0.5,1.2),{until:8, drop:0, glow:false});
+    /* ⑨ 天花封板＋檢修口 */
+    { const g=group(span(X0,FC,Z0-0.2,X1,FC+.012,Z1,M.ceil,NE)); g.renderOrder=2; add(9, g, {drop:0}); }
+    add(9, group(span(U.x0+0.1,FC-.008,U.z0+0.1,U.x1-0.1,FC-.002,U.z0+0.12,M.hatch), span(U.x0+0.1,FC-.008,U.z1-0.12,U.x1-0.1,FC-.002,U.z1-0.1,M.hatch), span(U.x0+0.1,FC-.008,U.z0+0.1,U.x0+0.12,FC-.002,U.z1-0.1,M.hatch), span(U.x1-0.12,FC-.008,U.z0+0.1,U.x1-0.1,FC-.002,U.z1-0.1,M.hatch)),{delay:.3, drop:0});
+    add(9, label('主機下方預留檢修口',0,2.25,-0.3,1.3),{until:9, drop:0, glow:false});
+    /* ⑩ 試運轉 */
+    add(10, (()=>{ const c=new THREE.Mesh(new THREE.ConeGeometry(.35,.6,24,1,true), M.airIn.clone()); c.position.set(SA.x,FC-.32,SA.z); return c; })(),{drop:0, glow:false});
+    add(10, arrow([RA.x,FC-0.5,RA.z],[RA.x,FC-0.05,RA.z],M.airOut),{drop:0, glow:false});
+    add(10, arrow([EA.x,YD,-1.7],[EA.x,YD,-2.2],M.airOut),{drop:0, glow:false});
+    add(10, label('送風量・回風量・噪音・濾網',0,2.25,0.3,1.8),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>分離式室外機安裝・抽真空程序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：分離式冷暖氣機室外機安裝與抽真空程序 10 步驟 3D 互動動畫，含散熱空間、支架防震墊、喇叭口扭力、歧管錶、真空泵、保壓、開閥、檢漏、試運轉。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'室外牆面要安裝分離式冷暖氣的室外機，冷媒管已從室內機穿牆拉出。',
+   tip:'本動畫依一般安裝實務整理，真空度、保壓時間等數值依各廠商規定，請對照你的課本確認。'},
+  {t:'確認位置・散熱空間', d:'確認室外機位置：通風良好，前後左右保留散熱與維修空間，牆體能承重。', tip:'散熱空間不足，熱風回吸，冷氣效率會大幅下降。'},
+  {t:'支架安裝', d:'以膨脹螺栓固定支架，確認水平與承重。', tip:'支架是承重構件，螺栓要鎖在結構體上，不可只鎖在磁磚或粉刷層。'},
+  {t:'防震墊・固定室外機', d:'支架上放防震墊，室外機就位並以螺栓固定。', tip:'防震墊減少運轉震動傳到牆面與室內。'},
+  {t:'冷媒管連接', d:'銅管做喇叭口，連接室外機的液管閥、氣管閥，以扭力扳手鎖緊。', tip:'喇叭口不平整或扭力不足，是冷媒洩漏最常見的原因。'},
+  {t:'接上歧管錶與真空泵', d:'歧管錶（壓力錶組）接到室外機的維修口，另一端接真空泵。', tip:'藍色錶是低壓、紅色錶是高壓，中間黃色管接真空泵。'},
+  {t:'抽真空', d:'打開歧管錶低壓閥，啟動真空泵，抽到規定真空度並持續規定時間。', tip:'抽真空是把管內的空氣與水氣抽掉；水氣會在系統內結冰、腐蝕。'},
+  {t:'保壓', d:'關閉錶閥、停止真空泵，觀察一段時間，壓力不可回升。', tip:'壓力回升代表有洩漏或殘留水氣，要找出漏點再重抽。'},
+  {t:'開閥', d:'拆除真空泵，用六角扳手打開室外機液管閥與氣管閥，冷媒流入管路。', tip:'閥門要全開，否則冷媒流量不足。'},
+  {t:'檢漏', d:'以肥皂水或檢漏儀檢查喇叭口與閥門接頭。', tip:'冒泡就是漏氣，要重新鎖緊或重做喇叭口。'},
+  {t:'鎖回閥帽・試運轉', d:'拆下歧管錶，鎖回閥帽與維修口帽，試運轉量測運轉壓力與電流。', tip:'閥帽也有密封作用，一定要鎖回。'},
+];
+
+createAnim({
+  title: '分離式室外機安裝・抽真空程序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.0,
+  sun: [4, 8, 6],
+  views: {
+    def:{dir:[0.45,0.3,0.84], dist:3.6, target:[0.1,1.0,0.3]},
+    4:  {dir:[0.85,0.25,0.46], dist:1.8, target:[0.55,0.95,0.2]},
+    5:  {dir:[0.7,0.35,0.62],  dist:2.6, target:[0.6,0.7,0.5]},
+    6:  {dir:[0.7,0.35,0.62],  dist:2.6, target:[0.6,0.7,0.5]},
+    7:  {dir:[0.6,0.3,0.74],   dist:1.6, target:[0.9,0.6,0.7]},
+    10: {dir:[0.85,0.25,0.46], dist:2.4, target:[0.5,1.05,0.2]},
+  },
+  note: '室外側視角；尺寸與錶頭為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed}) {
+    const OU={x0:-0.4,x1:0.5,y0:0.8,y1:1.4,z0:0.1,z1:0.45};
+    const LV={x:0.52,y:0.95,z:0.28}, GV={x:0.52,y:1.05,z:0.36};   // 液管閥、氣管閥（右側）
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#a8a29e',{roughness:1}), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      bracket: mat('#374151',{metalness:.5}), bolt: mat('#f97316'), pad: mat('#111827'), unit: mat('#e5e7eb',{roughness:.5}), fan: mat('#475569'), grill: mat('#94a3b8'),
+      valve: mat('#ca8a04',{metalness:.7, roughness:.3}), cu: mat('#b45309',{metalness:.7, roughness:.3}), insul: mat('#f1f5f9',{roughness:.9}),
+      wrench: mat('#dc2626'), body: mat('#1f2937'), gaugeL: mat('#2563eb'), gaugeH: mat('#dc2626'), face: mat('#f8fafc'),
+      hoseB: mat('#2563eb'), hoseR: mat('#dc2626'), hoseY: mat('#facc15'), pump: mat('#f97316'), soap: mat('#bae6fd',{transparent:true, opacity:.7}),
+      cap: mat('#ca8a04',{metalness:.7}), air: mat('#fca5a5',{transparent:true, opacity:.35, depthWrite:false}), hex: mat('#57534e'),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-1.4,-0.15,-0.3,1.6,0,1.6,M.slab));
+    fixed(span(-1.4,0,-0.3,1.6,2.4,0,M.wall));
+    // 從室內來的冷媒管（保溫）
+    fixed(pipe([0.85,2.0,0.06],[0.85,1.2,0.06],.03,M.insul)); fixed(pipe([0.85,1.2,0.06],[0.62,1.0,0.32],.03,M.insul));
+
+    /* ① 位置與散熱空間 */
+    add(1, group(span(OU.x0,-.0,OU.z0,OU.x1,.004,OU.z1,M.laser,NE)),{until:1, drop:0, glow:false});
+    add(1, group(span(OU.x0,OU.y0,OU.z1+.01,OU.x1,OU.y1,OU.z1+0.6,M.air,NE), span(OU.x0-0.3,OU.y0,OU.z0,OU.x0,OU.y1,OU.z1,M.air,NE)),{until:1, drop:0, glow:false});
+    add(1, label('前方與兩側保留散熱・維修空間',0,1.75,0.5,1.9),{until:1, drop:0, glow:false});
+    /* ② 支架 */
+    add(2, group(...[OU.x0+0.1,OU.x1-0.1].map(x=>group(span(x-.02,OU.y0-0.4,0,x+.02,OU.y0,.04,M.bracket), span(x-.02,OU.y0-.04,0,x+.02,OU.y0,OU.z1+0.05,M.bracket), pipe([x,OU.y0-0.35,.02],[x,OU.y0-.02,OU.z1],.012,M.bracket))),
+      ...[OU.x0+0.1,OU.x1-0.1].flatMap(x=>[OU.y0-0.3,OU.y0-0.08].map(y=>pipe([x,y,.04],[x,y,.06],.012,M.bolt)))),{drop:.2});
+    add(2, label('膨脹螺栓鎖在結構體・水平・承重',0,1.75,0.4,2.0),{until:2, drop:0, glow:false});
+    /* ③ 防震墊＋室外機 */
+    add(3, group(...[OU.x0+0.1,OU.x1-0.1].map(x=>span(x-.04,OU.y0,OU.z0+0.03,x+.04,OU.y0+.025,OU.z1-0.03,M.pad))),{drop:0});
+    add(3, group(span(OU.x0,OU.y0+.025,OU.z0,OU.x1,OU.y1,OU.z1,M.unit), pipe([OU.x0+0.3,(OU.y0+OU.y1)/2,OU.z1+.002],[OU.x0+0.3,(OU.y0+OU.y1)/2,OU.z1+.004],.22,M.fan), span(OU.x1-0.25,OU.y0+0.1,OU.z1,OU.x1-0.05,OU.y1-0.1,OU.z1+.003,M.grill,NE)),{delay:.3, drop:.3});
+    add(3, group(pipe([LV.x-.02,LV.y,LV.z],[LV.x+.04,LV.y,LV.z],.018,M.valve), pipe([GV.x-.02,GV.y,GV.z],[GV.x+.04,GV.y,GV.z],.024,M.valve)),{delay:.6, drop:0});
+    /* ④ 冷媒管連接（喇叭口＋扭力扳手） */
+    add(4, group(pipe([0.62,1.0,0.32],[LV.x+.04,LV.y,LV.z],.008,M.cu), pipe([0.62,1.0,0.32],[GV.x+.04,GV.y,GV.z],.011,M.cu)),{drop:0});
+    add(4, group(span(LV.x+.05,LV.y-.01,LV.z-.15,LV.x+.07,LV.y+.01,LV.z,M.wrench)),{until:4, drop:-.1});
+    add(4, label('喇叭口・扭力扳手鎖緊',0.55,1.4,0.4,1.4),{until:4, drop:0, glow:false});
+    /* ⑤ 歧管錶＋真空泵 */
+    const MG={x:0.75,y:0.75,z:0.75}, VP={x:1.0,y:0.12,z:0.85};
+    const manifold=group(span(MG.x-.12,MG.y-.05,MG.z-.03,MG.x+.12,MG.y+.03,MG.z+.03,M.body),
+      pipe([MG.x-.07,MG.y+.03,MG.z],[MG.x-.07,MG.y+.03,MG.z+.035],.055,M.gaugeL), pipe([MG.x-.07,MG.y+.03,MG.z+.035],[MG.x-.07,MG.y+.03,MG.z+.037],.048,M.face),
+      pipe([MG.x+.07,MG.y+.03,MG.z],[MG.x+.07,MG.y+.03,MG.z+.035],.055,M.gaugeH), pipe([MG.x+.07,MG.y+.03,MG.z+.035],[MG.x+.07,MG.y+.03,MG.z+.037],.048,M.face));
+    add(5, manifold, {until:9, drop:.2});
+    add(5, group(span(VP.x-.12,0,VP.z-.08,VP.x+.12,0.2,VP.z+.08,M.pump)),{until:8, drop:.2});
+    { const hose=(a,b,m)=>{ const mid=[(a[0]+b[0])/2,Math.min(a[1],b[1])-0.15,(a[2]+b[2])/2]; return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([a,mid,b].map(p=>new THREE.Vector3(...p))),30,.007,8), m.clone()); };
+      add(5, hose([MG.x-.1,MG.y-.05,MG.z],[GV.x+.05,GV.y,GV.z+.03],M.hoseB),{until:9, drop:0, glow:false});
+      add(5, hose([MG.x,MG.y-.05,MG.z],[VP.x,0.2,VP.z],M.hoseY),{until:8, drop:0, glow:false}); }
+    add(5, label('低壓（藍）接維修口・中間（黃）接真空泵',0.7,1.3,0.7,2.2),{until:5, drop:0, glow:false});
+    /* ⑥ 抽真空 */
+    add(6, group(arrow([GV.x+.1,GV.y+.12,GV.z+.15],[MG.x,MG.y+.15,MG.z],M.hoseY)),{until:6, drop:0, glow:false});
+    add(6, label('抽到規定真空度並持續規定時間',0.7,1.3,0.7,2.0),{until:6, drop:0, glow:false});
+    /* ⑦ 保壓 */
+    add(7, label('關閥停泵・觀察壓力不回升',MG.x,MG.y+0.3,MG.z,1.7),{until:7, drop:0, glow:false});
+    /* ⑧ 開閥 */
+    add(8, group(span(LV.x+.04,LV.y-.005,LV.z-.005,LV.x+.12,LV.y+.005,LV.z+.005,M.hex), span(GV.x+.04,GV.y-.005,GV.z-.005,GV.x+.12,GV.y+.005,GV.z+.005,M.hex)),{until:8, drop:0});
+    add(8, label('拆真空泵・六角扳手開啟液管閥與氣管閥',0.55,1.4,0.4,2.3),{until:8, drop:0, glow:false});
+    /* ⑨ 檢漏 */
+    for (let i=0;i<8;i++){ const b=new THREE.Mesh(new THREE.SphereGeometry(.01,8,6), M.soap.clone()); const v=i<4?LV:GV; b.position.set(v.x+.045,v.y+(i%2?.012:-.012),v.z+((i%4)-1.5)*.008); add(9, b, {delay:i*.08, drop:0, until:9, glow:false}); }
+    add(9, label('肥皂水檢查喇叭口・閥門',0.55,1.4,0.4,1.6),{until:9, drop:0, glow:false});
+    /* ⑩ 閥帽＋試運轉 */
+    add(10, group(pipe([LV.x+.04,LV.y,LV.z],[LV.x+.07,LV.y,LV.z],.02,M.cap), pipe([GV.x+.04,GV.y,GV.z],[GV.x+.07,GV.y,GV.z],.026,M.cap)),{drop:0});
+    add(10, label('鎖回閥帽・試運轉量壓力電流',0.55,1.4,0.4,1.8),{until:10, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>
