@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>弱電電信電纜施工順序｜3D 工法動畫</title>
+<meta name="description" content="室裝乙級：弱電電信電纜（網路線、電話、電視同軸電纜）施工順序 8 步驟 3D 互動動畫：放樣、強弱電分管、大彎與拉線、穿線拉力、預留與標示、弱電箱配線、RJ45 壓接、測試。">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<meta name="theme-color" content="#292524">
+<link rel="stylesheet" href="anim.css?v=2026111801">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import { createAnim, THREE } from './engine.js?v=2026111908';
+
+const STEPS = [
+  {t:'施工前', d:'室內牆面要配設弱電（網路、電話、電視、對講）管線。左側是強電的電力分電盤，右側是弱電箱（資訊箱）。',
+   tip:'本動畫依一般施工實務與屋內線路裝置規則整理，間距等數值請對照你的課本與現行法規。'},
+  {t:'放樣・出線口位置', d:'依圖面放樣弱電出線口（網路、電話、電視）與弱電箱位置，並與插座、開關位置協調。', tip:'出線口要避開家具背後擋住的位置，高度與插座一致較美觀。'},
+  {t:'強弱電分管配設', d:'弱電管與強電管分開配設，不可同管、同盒；平行時保持間距，交叉時以直角交叉。', tip:'強電會對弱電訊號產生電磁干擾（雜訊），而且強電漏電會危及弱電設備與人員。'},
+  {t:'大彎・預留拉線', d:'配管轉彎用大彎，避免銳角與過多彎頭；管內預留拉線（引線），方便穿線與日後換線。', tip:'網路線、同軸電纜不可過度彎折，否則傳輸性能下降。'},
+  {t:'穿線', d:'網路線、電話線、同軸電纜依序穿入管內，拉力不可過大、不可扭結或刮傷外皮；管內不可有接頭。', tip:'電纜接續只能在出線盒或弱電箱內，管內接頭無法檢修。'},
+  {t:'預留長度・標示', d:'出線盒與弱電箱端各預留足夠線長，兩端貼上相同編號的標籤。', tip:'標示清楚，日後才知道哪條線通到哪個房間。'},
+  {t:'弱電箱配線', d:'電纜集中到弱電箱，整理綁紮後接到配線架（網路）、電話端子與電視分配器。', tip:'弱電箱內也要分類整理，並保留檢修空間。'},
+  {t:'出線口模組・面板', d:'網路線依色碼（常用 T568B）壓接 RJ45 資訊插座模組，同軸電纜接 F 接頭，裝上面板。', tip:'兩端色碼要一致，否則網路不通。'},
+  {t:'測試', d:'以網路線測試器做導通、線序測試，電視訊號量測訊號強度，確認後標記完成。', tip:'測試結果可列表記錄，作為驗收資料。'},
+];
+
+createAnim({
+  title: '弱電電信電纜施工順序',
+  steps: STEPS,
+  groundY: -0.15,
+  minDist: 1.0,
+  sun: [4, 8, 6],
+  views: {
+    def:{dir:[0.25,0.2,0.95], dist:5.4, target:[0,1.35,0]},
+    2:  {dir:[0.2,0.15,0.97], dist:4.6, target:[0.3,1.4,0]},
+    3:  {dir:[0.45,0.2,0.87], dist:2.2, target:[0.8,2.2,0]},
+    6:  {dir:[0.3,0.15,0.94], dist:3.0, target:[1.3,1.6,0]},
+    7:  {dir:[0.3,0.2,0.93],  dist:1.8, target:[0.75,0.45,0]},
+    8:  {dir:[0.3,0.2,0.93],  dist:1.8, target:[0.75,0.45,0]},
+  },
+  note: '管線以明配表示（實際多為牆內暗管）；尺寸為示意。',
+  build({THREE, mat, box, span, pipe, group, arrow, label, add, fixed, mark}) {
+    const M = {
+      slab: mat('#d3cec8',{roughness:1}), wall: mat('#eeece7',{roughness:.95}),
+      panel: mat('#9ca3af',{metalness:.4}), weak: mat('#cbd5e1',{metalness:.3}), door: mat('#e5e7eb'),
+      hi: mat('#f97316'), lo: mat('#2563eb'), lo2: mat('#0891b2'), laser: mat('#ef4444',{emissive:'#ef4444', emissiveIntensity:.8}),
+      pull: mat('#111827'), net: mat('#3b82f6'), coax: mat('#1f2937'), tel: mat('#f8fafc'), tag: mat('#facc15'),
+      patch: mat('#1f2937'), led: mat('#22c55e',{emissive:'#22c55e', emissiveIntensity:1}), split: mat('#a8a29e',{metalness:.6}),
+      box: mat('#78716c'), plate: mat('#fafafa',{roughness:.4}), port: mat('#334155'), tester: mat('#eab308'), screen: mat('#22c55e',{emissive:'#16a34a', emissiveIntensity:.7}),
+      no: mat('#dc2626',{emissive:'#dc2626', emissiveIntensity:.5}),
+    };
+    const NE={edges:false, shadow:false};
+    fixed(span(-2.2,-0.15,-0.4,2.2,0,1.6,M.slab));
+    fixed(span(-2.2,0,-0.25,2.2,2.9,0,M.wall));
+    // 強電分電盤（左）・弱電箱（右）
+    fixed(group(span(-1.65,1.3,0,-1.15,1.9,0.1,M.panel), span(-1.62,1.33,0.1,-1.18,1.87,0.105,M.door,NE)));
+    const WB={x0:1.1,x1:1.6,y0:1.25,y1:1.85};
+    fixed(span(WB.x0,WB.y0,0,WB.x1,WB.y1,0.08,M.weak));
+
+    // 圓角管線
+    const R=0.12;
+    const run=(pts,r,m)=>{ const P=pts.map(p=>new THREE.Vector3(...p)); const path=new THREE.CurvePath(); let cur=P[0];
+      for (let i=1;i<P.length-1;i++){ const C=P[i], a=C.clone().add(P[i-1].clone().sub(C).setLength(R)), b=C.clone().add(P[i+1].clone().sub(C).setLength(R));
+        path.add(new THREE.LineCurve3(cur,a)); path.add(new THREE.QuadraticBezierCurve3(a,C,b)); cur=b; }
+      path.add(new THREE.LineCurve3(cur,P[P.length-1]));
+      return new THREE.Mesh(new THREE.TubeGeometry(path,120,r,10), m.clone()); };
+    const OB=(x,m)=>span(x-.06,0.3,0,x+.06,0.42,0.04,m);
+    const Z=0.03;
+    const strong=[[-1.4,1.9,Z],[-1.4,2.55,Z],[0.15,2.55,Z],[0.15,0.42,Z]];
+    const netR=[[1.25,1.85,Z],[1.25,2.4,Z],[0.6,2.4,Z],[0.6,0.42,Z]];
+    const tvR=[[1.45,1.85,Z],[1.45,2.55,Z],[0.95,2.55,Z],[0.95,0.42,Z]];
+
+    /* ① 放樣 */
+    add(1, group(...[0.15,0.6,0.95].map(x=>span(x-.07,0.29,.001,x+.07,0.43,.004,M.laser,NE))),{until:1, drop:0, glow:false});
+    add(1, label('插座',0.15,0.7,0.1,0.5),{until:2, drop:0, glow:false});
+    add(1, label('網路・電話',0.6,0.85,0.1,0.8),{until:2, drop:0, glow:false});
+    add(1, label('電視',0.95,0.7,0.1,0.5),{until:2, drop:0, glow:false});
+    /* ② 強弱電分管 */
+    add(2, run(strong,.018,M.hi),{drop:0});
+    add(2, OB(0.15,M.box),{drop:0});
+    add(2, run(netR,.018,M.lo),{delay:.3, drop:0});
+    add(2, run(tvR,.018,M.lo2),{delay:.45, drop:0});
+    add(2, group(OB(0.6,M.box), OB(0.95,M.box)),{delay:.3, drop:0});
+    add(2, group(arrow([0.17,1.3,0.08],[0.58,1.3,0.08],M.laser), arrow([0.58,1.3,0.08],[0.17,1.3,0.08],M.laser)),{until:2, drop:0, glow:false});
+    add(2, label('強電（橘）與弱電（藍）分管・保持間距',0.4,1.55,0.15,2.2),{until:2, drop:0, glow:false});
+    add(2, label('不可同管・同盒',-0.7,2.15,0.1,1.0,'bad'),{until:2, drop:0, glow:false});
+    /* ③ 大彎・拉線 */
+    mark(3, 0.6,2.4,Z,{r:.14, text:'轉彎用大彎・避免銳角', tx:0.6, ty:2.75, tw:1.3});
+    add(3, run(netR.map(p=>[p[0],p[1],p[2]+.001]),.004,M.pull),{until:3, drop:0, glow:false});
+    add(3, label('管內預留拉線',0.95,2.0,0.15,0.9),{until:3, drop:0, glow:false});
+    /* ④ 穿線（出線盒端露出） */
+    add(4, group(pipe([0.58,0.36,0.04],[0.5,0.18,0.12],.006,M.net), pipe([0.62,0.36,0.04],[0.66,0.16,0.12],.005,M.tel), pipe([0.95,0.36,0.04],[0.98,0.16,0.12],.008,M.coax)),{drop:0, until:6});
+    add(4, label('拉力不可過大・不扭結・管內無接頭',0.6,1.05,0.2,2.1),{until:4, drop:0, glow:false});
+    /* ⑤ 預留・標籤 */
+    add(5, group(span(0.47,0.2,0.11,0.53,0.24,0.13,M.tag), span(0.95,0.2,0.11,1.01,0.24,0.13,M.tag), span(1.2,1.2,0.09,1.26,1.24,0.11,M.tag), span(1.42,1.2,0.09,1.48,1.24,0.11,M.tag)),{drop:0, until:6});
+    add(5, group(pipe([1.25,1.3,0.06],[1.22,1.05,0.12],.006,M.net), pipe([1.45,1.3,0.06],[1.48,1.05,0.12],.008,M.coax)),{drop:0, until:5});
+    add(5, label('兩端預留線長・貼相同編號標籤',0.9,1.05,0.25,1.9),{until:5, drop:0, glow:false});
+    /* ⑥ 弱電箱配線 */
+    add(6, group(span(WB.x0+.04,WB.y1-.2,0.08,WB.x1-.04,WB.y1-.1,0.1,M.patch), ...[0,1,2,3,4,5].map(i=>{ const s=new THREE.Mesh(new THREE.SphereGeometry(.008,8,6), M.led.clone()); s.position.set(WB.x0+.08+i*.065,WB.y1-.12,0.102); return s; }),
+      span(WB.x0+.05,WB.y0+.08,0.08,WB.x0+.2,WB.y0+.18,0.1,M.tel), span(WB.x1-.2,WB.y0+.08,0.08,WB.x1-.05,WB.y0+.2,0.1,M.split)),{drop:0});
+    add(6, label('配線架（網路）',1.35,2.1,0.15,0.9),{until:6, drop:0, glow:false});
+    add(6, label('電話端子・電視分配器',1.35,1.0,0.15,1.3),{until:6, drop:0, glow:false});
+    /* ⑦ 模組・面板 */
+    add(7, group(span(0.52,0.28,0.04,0.68,0.44,0.05,M.plate), span(0.54,0.37,0.05,0.585,0.40,0.055,M.port,NE), span(0.615,0.37,0.05,0.66,0.40,0.055,M.port,NE),
+      span(0.87,0.28,0.04,1.03,0.44,0.05,M.plate), pipe([0.95,0.36,0.05],[0.95,0.36,0.065],.012,M.split),
+      span(0.07,0.28,0.04,0.23,0.44,0.05,M.plate)),{drop:0});
+    add(7, label('RJ45 依 T568B 色碼壓接・同軸接 F 接頭',0.6,0.75,0.2,2.0),{until:7, drop:0, glow:false});
+    /* ⑧ 測試 */
+    add(8, group(span(0.48,0.05,0.12,0.66,0.25,0.18,M.tester), span(0.51,0.15,0.18,0.63,0.22,0.185,M.screen,NE), pipe([0.57,0.25,0.15],[0.56,0.385,0.06],.004,M.net)),{drop:.1});
+    add(8, label('導通・線序測試 OK',0.6,0.75,0.2,1.2,'good'),{until:8, drop:0, glow:false});
+  },
+});
+</script>
+</body>
+</html>
